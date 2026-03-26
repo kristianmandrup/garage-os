@@ -105,8 +105,8 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 
 ### 3.3 Invoicing
 - [x] Invoice generation from job cards
-- [ ] Tax calculation
-- [ ] Payment recording
+- [x] Tax calculation
+- [x] Payment recording
 - [x] Invoice status tracking
 
 ---
