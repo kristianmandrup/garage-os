@@ -5,7 +5,8 @@ test.describe('Authentication Flow', () => {
     await page.goto('/auth/login');
 
     // Check page title and main elements
-    await expect(page.locator('text=Welcome to GarageOS')).toBeVisible();
+    await expect(page.locator('text=GarageOS').first()).toBeVisible();
+    await expect(page.locator('text=Welcome Back')).toBeVisible();
     await expect(page.locator('text=Sign in to manage your auto repair shop')).toBeVisible();
 
     // Check Google sign in button exists
