@@ -20,6 +20,7 @@ import {
   MessageSquare,
   FileText,
   BarChart3,
+  Search,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
@@ -37,6 +38,7 @@ const navigation = [
   { name: 'Customers', href: '/dashboard/customers', icon: Users },
   { name: 'Inventory', href: '/dashboard/inventory', icon: Package },
   { name: 'Invoices', href: '/dashboard/invoices', icon: FileText },
+  { name: 'AI Diagnostics', href: '/dashboard/diagnostics', icon: Search },
   { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
   { name: 'Reminders', href: '/dashboard/reminders', icon: Bell },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
