@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { job_card_id, customer_id, subtotal, tax_rate = 0, discount = 0, due_date, notes } = body;
+    const { job_card_id, customer_id, tax_rate = 7, discount = 0, due_date, notes } = body;
 
     if (!job_card_id || !customer_id) {
       return NextResponse.json(
@@ -86,10 +86,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get job card to verify it exists and get vehicle info
+    // Get job card with parts and labor info
     const { data: jobCard } = await supabase
       .from('job_cards')
-      .select('*, vehicle:vehicles(*)')
+      .select(`
+        *,
+        vehicle:vehicles(*),
+        part_usages:part_usage(*, part:parts(*))
+      `)
       .eq('id', job_card_id)
       .single();
 
@@ -107,7 +111,15 @@ export async function POST(request: Request) {
 
     const invoiceNumber = `INV-${dateStr}-${String((count || 0) + 1).padStart(4, '0')}`;
 
-    // Calculate totals
+    // Calculate subtotal from parts and labor
+    const partsTotal = jobCard.part_usages?.reduce(
+      (sum: number, pu: any) => sum + (pu.quantity * pu.unit_price),
+      0
+    ) || 0;
+    const laborCost = jobCard.actual_cost || 0;
+    const subtotal = partsTotal + laborCost;
+
+    // Calculate totals with tax rate
     const tax = subtotal * (tax_rate / 100);
     const total = subtotal + tax - discount;
 

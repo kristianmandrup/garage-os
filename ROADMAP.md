@@ -98,10 +98,10 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] Ready for pickup notifications
 
 ### 3.2 Customer Portal
-- [ ] Vehicle history view
-- [ ] Pending approvals
-- [ ] Invoice viewing and payment
-- [ ] Service reminders
+- [x] Vehicle history view
+- [x] Pending approvals
+- [x] Invoice viewing and payment
+- [x] Service reminders
 
 ### 3.3 Invoicing
 - [x] Invoice generation from job cards
