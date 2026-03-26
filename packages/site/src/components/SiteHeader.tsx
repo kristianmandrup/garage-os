@@ -7,10 +7,10 @@ import { LocaleSwitcher } from './LocaleSwitcher';
 import { useLocale } from './LocaleProvider';
 
 interface SiteHeaderProps {
-  onGetStarted?: () => void;
+  onContact?: () => void;
 }
 
-export function SiteHeader({ onGetStarted }: SiteHeaderProps) {
+export function SiteHeader({ onContact }: SiteHeaderProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { t } = useLocale();
 
@@ -21,13 +21,13 @@ export function SiteHeader({ onGetStarted }: SiteHeaderProps) {
   ];
 
   return (
-    <header className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50">
+    <header className="border-b border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <Wrench className="h-8 w-8 text-blue-600 shrink-0" />
-            <span className="text-xl font-bold text-gray-900">GarageOS</span>
+            <Wrench className="h-8 w-8 text-blue-600 dark:text-blue-400 shrink-0" />
+            <span className="text-xl font-bold text-gray-900 dark:text-white">GarageOS</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -36,7 +36,7 @@ export function SiteHeader({ onGetStarted }: SiteHeaderProps) {
               <a
                 key={item.href}
                 href={item.href}
-                className="text-base font-semibold text-gray-600 hover:text-blue-600 transition-colors"
+                className="text-base font-semibold text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 {item.label}
               </a>
@@ -48,8 +48,8 @@ export function SiteHeader({ onGetStarted }: SiteHeaderProps) {
             <LocaleSwitcher />
             <ThemeToggle />
             <button
-              onClick={onGetStarted}
-              className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 shadow-lg shadow-blue-600/25 transition-all"
+              onClick={onContact}
+              className="bg-blue-600 dark:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/25 dark:shadow-blue-500/25 transition-all"
             >
               {t('getStarted')}
             </button>
@@ -58,38 +58,38 @@ export function SiteHeader({ onGetStarted }: SiteHeaderProps) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Toggle menu"
           >
             {isMobileOpen ? (
-              <X className="h-6 w-6 text-gray-700" />
+              <X className="h-6 w-6 text-gray-700 dark:text-gray-300" />
             ) : (
-              <Menu className="h-6 w-6 text-gray-700" />
+              <Menu className="h-6 w-6 text-gray-700 dark:text-gray-300" />
             )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {isMobileOpen && (
-          <div className="md:hidden py-4 border-t">
+          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
             <nav className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className="text-lg font-semibold text-gray-700 hover:text-blue-600 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="text-lg font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   {item.label}
                 </a>
               ))}
             </nav>
-            <div className="flex items-center gap-3 mt-4 pt-4 border-t">
+            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <LocaleSwitcher />
               <ThemeToggle />
               <button
-                onClick={onGetStarted}
-                className="flex-1 bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-blue-700"
+                onClick={onContact}
+                className="flex-1 bg-blue-600 dark:bg-blue-500 text-white px-5 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600"
               >
                 {t('getStarted')}
               </button>

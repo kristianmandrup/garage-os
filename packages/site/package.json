@@ -13,9 +13,13 @@
   "dependencies": {
     "@garageos/shared": "*",
     "@garageos/ui": "*",
+    "@hookform/resolvers": "^5.2.2",
     "next": "^16.0.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.72.0",
+    "resend": "^6.9.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
