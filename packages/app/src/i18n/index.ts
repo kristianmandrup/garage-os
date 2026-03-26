@@ -9,3 +9,9 @@ export {
   formatLongDateOnly,
   formatRelativeTime,
 } from './format';
+export {
+  formatNumber,
+  formatCurrency,
+  formatPercent,
+  formatCompact,
+} from './number';

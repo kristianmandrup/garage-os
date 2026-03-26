@@ -56,6 +56,21 @@ export const translations = {
       createFirstJobCard: 'Create First Job Card',
       allStockedUp: 'All stocked up!',
       noLowStockAlerts: 'No low stock alerts',
+      quickActionsLabels: {
+        newJobCard: 'New Job Card',
+        addVehicle: 'Add Vehicle',
+        addCustomer: 'Add Customer',
+        aiInspection: 'AI Inspection',
+      },
+      statuses: {
+        inspection: 'Inspection',
+        diagnosed: 'Diagnosed',
+        partsOrdered: 'Parts Ordered',
+        inProgress: 'In Progress',
+        pendingApproval: 'Pending Approval',
+        completed: 'Completed',
+        cancelled: 'Cancelled',
+      },
     },
     tasks: {
       title: 'Tasks',
@@ -215,6 +230,21 @@ export const translations = {
       createFirstJobCard: 'สร้างใบงานแรก',
       allStockedUp: 'สินค้าพร้อม!',
       noLowStockAlerts: 'ไม่มีการแจ้งเตือนสินค้าใกล้หมด',
+      quickActionsLabels: {
+        newJobCard: 'ใบงานใหม่',
+        addVehicle: 'เพิ่มยานพาหนะ',
+        addCustomer: 'เพิ่มลูกค้า',
+        aiInspection: 'ตรวจสอบด้วย AI',
+      },
+      statuses: {
+        inspection: 'ตรวจสอบ',
+        diagnosed: 'วินิจฉัยแล้ว',
+        partsOrdered: 'สั่งอะไหล่แล้ว',
+        inProgress: 'กำลังดำเนินการ',
+        pendingApproval: 'รอการอนุมัติ',
+        completed: 'เสร็จสิ้น',
+        cancelled: 'ยกเลิก',
+      },
     },
     tasks: {
       title: 'งานที่ต้องทำ',

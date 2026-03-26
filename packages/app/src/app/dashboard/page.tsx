@@ -20,6 +20,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gara
 import { Button } from '@garageos/ui/button';
 import { Badge } from '@garageos/ui/badge';
 import { Progress } from '@garageos/ui/progress';
+import { useTranslation, useLocale } from '@/i18n';
+import { formatRelativeTime } from '@/i18n';
 
 interface JobCard {
   id: string;
@@ -46,24 +48,19 @@ interface Stats {
   lowStockCount: number;
 }
 
-const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle }> = {
-  inspection: { label: 'Inspection', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
-  diagnosed: { label: 'Diagnosed', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: FileText },
-  parts_ordered: { label: 'Parts Ordered', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400', icon: Package },
-  in_progress: { label: 'In Progress', color: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400', icon: Wrench },
-  pending_approval: { label: 'Pending Approval', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400', icon: AlertCircle },
-  completed: { label: 'Completed', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
-  cancelled: { label: 'Cancelled', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400', icon: AlertCircle },
+const statusConfig: Record<string, { labelKey: string; color: string; icon: typeof CheckCircle }> = {
+  inspection: { labelKey: 'inspection', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
+  diagnosed: { labelKey: 'diagnosed', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: FileText },
+  parts_ordered: { labelKey: 'partsOrdered', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400', icon: Package },
+  in_progress: { labelKey: 'inProgress', color: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400', icon: Wrench },
+  pending_approval: { labelKey: 'pendingApproval', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400', icon: AlertCircle },
+  completed: { labelKey: 'completed', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
+  cancelled: { labelKey: 'cancelled', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400', icon: AlertCircle },
 };
 
-const quickActions = [
-  { name: 'New Job Card', href: '/dashboard/job-cards/new', icon: Wrench, color: 'blue' },
-  { name: 'Add Vehicle', href: '/dashboard/vehicles/new', icon: Car, color: 'emerald' },
-  { name: 'Add Customer', href: '/dashboard/customers/new', icon: Users, color: 'purple' },
-  { name: 'AI Inspection', href: '/dashboard/inspection', icon: Camera, color: 'amber' },
-];
-
 export default function DashboardPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
     activeJobs: 0,
@@ -120,22 +117,21 @@ export default function DashboardPage() {
 
   const getTimeAgo = (dateStr: string) => {
     const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 60) return `${diffMins} mins ago`;
-    if (diffHours < 24) return `${diffHours} hours ago`;
-    return `${diffDays} days ago`;
+    return formatRelativeTime(date, locale, t.dateTime);
   };
 
   const statCards = [
-    { name: 'Active Jobs', value: stats.activeJobs, icon: Wrench, color: 'blue' },
-    { name: 'Total Vehicles', value: stats.totalVehicles, icon: Car, color: 'emerald' },
-    { name: 'Total Customers', value: stats.totalCustomers, icon: Users, color: 'purple' },
-    { name: 'Low Stock Items', value: stats.lowStockCount, icon: AlertCircle, color: stats.lowStockCount > 0 ? 'red' : 'amber' },
+    { nameKey: 'activeJobs' as const, value: stats.activeJobs, icon: Wrench, color: 'blue' },
+    { nameKey: 'totalVehicles' as const, value: stats.totalVehicles, icon: Car, color: 'emerald' },
+    { nameKey: 'totalCustomers' as const, value: stats.totalCustomers, icon: Users, color: 'purple' },
+    { nameKey: 'lowStockItems' as const, value: stats.lowStockCount, icon: AlertCircle, color: stats.lowStockCount > 0 ? 'red' : 'amber' },
+  ];
+
+  const quickActions = [
+    { nameKey: 'newJobCard' as const, href: '/dashboard/job-cards/new', icon: Wrench, color: 'blue' },
+    { nameKey: 'addVehicle' as const, href: '/dashboard/vehicles/new', icon: Car, color: 'emerald' },
+    { nameKey: 'addCustomer' as const, href: '/dashboard/customers/new', icon: Users, color: 'purple' },
+    { nameKey: 'aiInspection' as const, href: '/dashboard/inspection', icon: Camera, color: 'amber' },
   ];
 
   return (
@@ -143,16 +139,16 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.dashboard}</h1>
           <p className="text-muted-foreground">
-            Welcome back! Here&apos;s what&apos;s happening at your shop.
+            {t.dashboard.welcome}
           </p>
         </div>
         <div className="flex gap-3">
           <Link href="/dashboard/job-cards/new">
             <Button className="btn-gradient">
               <Plus className="h-4 w-4 mr-2" />
-              New Job Card
+              {t.dashboard.newJobCard}
             </Button>
           </Link>
         </div>
@@ -161,7 +157,7 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => (
-          <Card key={stat.name} className="card-hover">
+          <Card key={stat.nameKey} className="card-hover">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
@@ -182,7 +178,7 @@ export default function DashboardPage() {
               </div>
               <div className="mt-4">
                 <p className="text-2xl font-bold">{loading ? '-' : stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.name}</p>
+                <p className="text-sm text-muted-foreground">{t.dashboard[stat.nameKey]}</p>
               </div>
             </CardContent>
           </Card>
@@ -192,7 +188,7 @@ export default function DashboardPage() {
       {/* Quick Actions */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {quickActions.map((action) => (
-          <Link key={action.name} href={action.href}>
+          <Link key={action.nameKey} href={action.href}>
             <Card className="card-hover cursor-pointer h-full">
               <CardContent className="p-6 flex flex-col items-center text-center">
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 ${
@@ -208,7 +204,7 @@ export default function DashboardPage() {
                     'text-amber-600 dark:text-amber-400'
                   }`} />
                 </div>
-                <p className="font-medium">{action.name}</p>
+                <p className="font-medium">{t.dashboard.quickActionsLabels[action.nameKey]}</p>
               </CardContent>
             </Card>
           </Link>
@@ -221,12 +217,12 @@ export default function DashboardPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Recent Job Cards</CardTitle>
-              <CardDescription>Latest jobs across your shop</CardDescription>
+              <CardTitle>{t.dashboard.recentJobCards}</CardTitle>
+              <CardDescription>{t.dashboard.welcome}</CardDescription>
             </div>
             <Link href="/dashboard/job-cards">
               <Button variant="ghost" size="sm">
-                View All
+                {t.dashboard.viewAll}
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </Link>
@@ -241,9 +237,9 @@ export default function DashboardPage() {
             ) : recentJobs.length === 0 ? (
               <div className="text-center py-8">
                 <Wrench className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p className="text-muted-foreground">No job cards yet</p>
+                <p className="text-muted-foreground">{t.dashboard.noJobCards}</p>
                 <Link href="/dashboard/job-cards/new" className="mt-2 inline-block">
-                  <Button size="sm">Create First Job Card</Button>
+                  <Button size="sm">{t.dashboard.createFirstJobCard}</Button>
                 </Link>
               </div>
             ) : (
@@ -267,7 +263,7 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-3">
                           <Badge className={status.color}>
                             <status.icon className="h-3 w-3 mr-1" />
-                            {status.label}
+                            {t.dashboard.statuses[status.labelKey as keyof typeof t.dashboard.statuses]}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             {getTimeAgo(job.created_at)}
@@ -285,8 +281,8 @@ export default function DashboardPage() {
         {/* Inventory Alerts */}
         <Card>
           <CardHeader>
-            <CardTitle>Inventory Alerts</CardTitle>
-            <CardDescription>Items running low</CardDescription>
+            <CardTitle>{t.dashboard.inventoryAlerts}</CardTitle>
+            <CardDescription>{t.dashboard.lowStockItems}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -298,8 +294,8 @@ export default function DashboardPage() {
             ) : lowStockParts.length === 0 ? (
               <div className="text-center py-8">
                 <CheckCircle className="h-12 w-12 mx-auto text-emerald-500 mb-3" />
-                <p className="font-medium">All stocked up!</p>
-                <p className="text-sm text-muted-foreground">No low stock alerts</p>
+                <p className="font-medium">{t.dashboard.allStockedUp}</p>
+                <p className="text-sm text-muted-foreground">{t.dashboard.noLowStockAlerts}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -323,7 +319,7 @@ export default function DashboardPage() {
             )}
             <Link href="/dashboard/inventory">
               <Button variant="outline" className="w-full mt-4">
-                Manage Inventory
+                {t.nav.inventory}
               </Button>
             </Link>
           </CardContent>
