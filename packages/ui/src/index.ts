@@ -11,3 +11,11 @@ export { EmptyState } from './components/empty-state';
 export { StatusBadge } from './components/status-badge';
 export { Progress } from './components/progress';
 export { Label } from './components/label';
+export {
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent,
+  DropdownItem,
+  DropdownSeparator,
+  DropdownLabel,
+} from './components/dropdown-menu';

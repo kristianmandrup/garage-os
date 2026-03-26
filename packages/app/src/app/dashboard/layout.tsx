@@ -29,6 +29,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@garageos/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
 import { signOut } from '@/lib/supabase/auth';
+import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -119,6 +120,13 @@ export default function DashboardLayout({
               <X className="h-5 w-5" />
             </button>
           </div>
+
+          {/* Shop Switcher */}
+          {!isCollapsed && (
+            <div className="px-3 py-2 border-b">
+              <ShopSwitcher />
+            </div>
+          )}
 
           {/* Navigation */}
           <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
