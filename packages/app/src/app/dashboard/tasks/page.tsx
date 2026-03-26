@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CheckCircle, Circle, Clock, ExternalLink, Filter, X } from 'lucide-react';
+import { CheckCircle, Circle, Clock, ExternalLink, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Button } from '@garageos/ui/button';
 import { Badge } from '@garageos/ui/badge';
@@ -113,10 +113,10 @@ export default function TasksPage() {
   };
 
   const statusTabs = [
-    { value: 'all', label: 'ทั้งหมด', labelEn: 'All' },
-    { value: 'todo', label: 'รอดำเนินการ', labelEn: 'To Do' },
-    { value: 'in_progress', label: 'กำลังดำเนินการ', labelEn: 'In Progress' },
-    { value: 'done', label: 'เสร็จสิ้น', labelEn: 'Done' },
+    { value: 'all', label: 'ทั้งหมด' },
+    { value: 'todo', label: 'รอดำเนินการ' },
+    { value: 'in_progress', label: 'กำลังดำเนินการ' },
+    { value: 'done', label: 'เสร็จสิ้น' },
   ];
 
   return (

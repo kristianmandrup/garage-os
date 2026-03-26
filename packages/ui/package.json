@@ -27,7 +27,9 @@
     "./dialog": "./src/components/dialog.tsx",
     "./slider": "./src/components/slider.tsx",
     "./label": "./src/components/label.tsx",
-    "./dropdown-menu": "./src/components/dropdown-menu.tsx"
+    "./dropdown-menu": "./src/components/dropdown-menu.tsx",
+    "./toast": "./src/components/toast.tsx",
+    "./toaster": "./src/components/toaster.tsx"
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap",
@@ -36,6 +38,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-toast": "^1.2.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.575.0",
