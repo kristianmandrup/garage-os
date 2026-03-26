@@ -19,6 +19,7 @@ import {
   X,
   MessageSquare,
   FileText,
+  BarChart3,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
@@ -30,6 +31,7 @@ import { signOut } from '@/lib/supabase/auth';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   { name: 'Job Cards', href: '/dashboard/job-cards', icon: Wrench },
   { name: 'Vehicles', href: '/dashboard/vehicles', icon: Car },
   { name: 'Customers', href: '/dashboard/customers', icon: Users },
