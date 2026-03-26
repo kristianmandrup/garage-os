@@ -7,26 +7,32 @@ const features = [
   {
     icon: Wrench,
     key: 'digitalJobCards',
+    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400&q=80',
   },
   {
     icon: Camera,
     key: 'aiInspection',
+    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80',
   },
   {
     icon: FileText,
     key: 'customerCommunication',
+    image: 'https://images.unsplash.com/photo-1606152421802-db97b9c7a11b?w=400&q=80',
   },
   {
     icon: Package,
     key: 'inventoryManagement',
+    image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400&q=80',
   },
   {
     icon: Bell,
     key: 'paymentTracking',
+    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&q=80',
   },
   {
     icon: Users,
     key: 'analyticsDashboard',
+    image: 'https://images.unsplash.com/photo-1493238792000-8113da705763?w=400&q=80',
   },
 ];
 
@@ -50,7 +56,12 @@ export function FeaturesSection() {
               key={feature.key}
               className="p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <div className="flex items-center gap-3 mb-3">
+              <img
+                src={feature.image}
+                alt={t(feature.key)}
+                className="w-full h-40 object-cover rounded-lg mb-4"
+              />
+              <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                   <feature.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
