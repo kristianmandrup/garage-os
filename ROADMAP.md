@@ -28,7 +28,8 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] **Predictive maintenance & reminders** — Reminder system with due date and mileage tracking
 
 ### Todo
-- Analytics dashboard
+- Service history analysis for predictive maintenance
+- Customer retention triggers
 
 ---
 
@@ -125,10 +126,10 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [ ] Customer retention triggers
 
 ### 4.3 Analytics Dashboard
-- [ ] Revenue metrics
-- [ ] Job completion rates
-- [ ] Parts inventory turnover
-- [ ] Mechanic productivity
+- [x] Revenue metrics
+- [x] Job completion rates
+- [x] Parts inventory turnover
+- [x] Mechanic productivity
 
 ---
 
