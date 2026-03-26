@@ -8,6 +8,7 @@ import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { Textarea } from '@garageos/ui/textarea';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation } from '@/i18n';
 
 interface ShopSettings {
   id: string;
@@ -25,6 +26,7 @@ interface ShopSettings {
 }
 
 export default function SettingsPage() {
+  const t = useTranslation();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -93,18 +95,18 @@ export default function SettingsPage() {
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          alert('TaskMaster connection successful! Test task created and deleted.');
+          alert(t.settings.taskmasterSuccess);
           fetchTaskmasterStatus();
         } else {
-          alert(`Connection failed: ${data.error}`);
+          alert(`${t.settings.taskmasterFailed}: ${data.error}`);
         }
       } else {
         const error = await response.json();
-        alert(`Connection failed: ${error.error}`);
+        alert(`${t.settings.testFailed}: ${error.error}`);
       }
     } catch (error) {
       console.error('Failed to test TaskMaster connection:', error);
-      alert('Failed to test TaskMaster connection');
+      alert(t.settings.taskmasterFailed);
     } finally {
       setTestingConnection(false);
     }
@@ -142,11 +144,11 @@ export default function SettingsPage() {
         alert(`LINE Rich Menu created! Portal URL: ${data.portalUrl}`);
       } else {
         const error = await response.json();
-        alert(`Failed to create Rich Menu: ${error.error}`);
+        alert(`${t.settings.testFailed}: ${error.error}`);
       }
     } catch (error) {
       console.error('Failed to create LINE Rich Menu:', error);
-      alert('Failed to create LINE Rich Menu');
+      alert(t.settings.testFailed);
     } finally {
       setCreatingRichMenu(false);
     }
@@ -168,8 +170,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your shop settings and integrations</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t.settings.title}</h1>
+        <p className="text-muted-foreground">{t.settings.description}</p>
       </div>
 
       {/* Messaging Status */}
@@ -177,10 +179,10 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            Messaging Status
+            {t.settings.messagingStatus}
           </CardTitle>
           <CardDescription>
-            Check which messaging providers are configured
+            {t.settings.messagingStatusDescription}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -191,9 +193,9 @@ export default function SettingsPage() {
             )}>
               <CheckCircle className={cn('h-5 w-5', messagingStatus.twilio ? 'text-emerald-600' : 'text-muted-foreground')} />
               <div>
-                <p className="font-medium">Twilio SMS/WhatsApp</p>
+                <p className="font-medium">{t.settings.twilioSMSWhatsApp}</p>
                 <p className="text-sm text-muted-foreground">
-                  {messagingStatus.twilio ? 'Configured' : 'Not configured'}
+                  {messagingStatus.twilio ? t.settings.configured : t.settings.notConfigured}
                 </p>
               </div>
             </div>
@@ -203,9 +205,9 @@ export default function SettingsPage() {
             )}>
               <CheckCircle className={cn('h-5 w-5', messagingStatus.line ? 'text-emerald-600' : 'text-muted-foreground')} />
               <div>
-                <p className="font-medium">LINE Messaging</p>
+                <p className="font-medium">{t.settings.lineMessaging}</p>
                 <p className="text-sm text-muted-foreground">
-                  {messagingStatus.line ? 'Configured' : 'Not configured'}
+                  {messagingStatus.line ? t.settings.configured : t.settings.notConfigured}
                 </p>
               </div>
             </div>
@@ -218,10 +220,10 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ListTodo className="h-5 w-5" />
-            TaskMaster Integration
+            {t.settings.taskmasterIntegration}
           </CardTitle>
           <CardDescription>
-            Sync garage events to your TaskMaster project. Tasks are created automatically for new jobs, status changes, and more.
+            {t.settings.taskmasterIntegrationDescription}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -231,7 +233,7 @@ export default function SettingsPage() {
               <div>
                 <p className="font-medium">TaskMaster</p>
                 <p className="text-sm text-muted-foreground">
-                  {taskmasterStatus.enabled ? 'Connected - Tasks will sync automatically' : 'Not configured'}
+                  {taskmasterStatus.enabled ? t.settings.connectedTasksSync : t.settings.notConfiguredTaskmaster}
                 </p>
               </div>
             </div>
@@ -239,17 +241,17 @@ export default function SettingsPage() {
             {taskmasterStatus.enabled && taskmasterStatus.projects.length > 0 && (
               <div className="p-3 rounded-lg border bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800">
                 <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
-                  Default Project: {taskmasterStatus.projects.find((p: any) => p.id === taskmasterStatus.projects[0]?.id)?.name || 'Unknown'}
+                  {t.settings.defaultProject}: {taskmasterStatus.projects.find((p: any) => p.id === taskmasterStatus.projects[0]?.id)?.name || 'Unknown'}
                 </p>
                 <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
-                  {taskmasterStatus.projects.length} project(s) available
+                  {taskmasterStatus.projects.length} {t.settings.projectsAvailable}
                 </p>
               </div>
             )}
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="taskmaster_api_url">API URL</Label>
+                <Label htmlFor="taskmaster_api_url">{t.settings.apiUrl}</Label>
                 <Input
                   id="taskmaster_api_url"
                   placeholder="https://taskmaster.vercel.app"
@@ -258,7 +260,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="taskmaster_api_key">API Key</Label>
+                <Label htmlFor="taskmaster_api_key">{t.settings.apiKey}</Label>
                 <Input
                   id="taskmaster_api_key"
                   type="password"
@@ -268,7 +270,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="taskmaster_project_id">Default Project ID</Label>
+                <Label htmlFor="taskmaster_project_id">{t.settings.defaultProjectId}</Label>
                 <Input
                   id="taskmaster_project_id"
                   placeholder="project_xxxxxxxx"
@@ -288,17 +290,17 @@ export default function SettingsPage() {
                 {testingConnection ? (
                   <>
                     <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    Testing...
+                    {t.settings.testing}
                   </>
                 ) : (
                   <>
                     <ListTodo className="h-4 w-4" />
-                    Test Connection
+                    {t.settings.testConnection}
                   </>
                 )}
               </Button>
               <p className="text-xs text-muted-foreground mt-2">
-                Set environment variables TASKMASTER_API_URL, TASKMASTER_API_KEY, and TASKMASTER_DEFAULT_PROJECT_ID to enable auto-sync.
+                {t.settings.setEnvironmentVars}
               </p>
             </div>
           </div>
@@ -310,16 +312,16 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            Shop Information
+            {t.settings.shopInformation}
           </CardTitle>
           <CardDescription>
-            Basic information about your shop
+            {t.settings.shopDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Shop Name</Label>
+              <Label htmlFor="name">{t.settings.shopName}</Label>
               <Input
                 id="name"
                 value={settings.name || ''}
@@ -327,7 +329,7 @@ export default function SettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">{t.settings.phone}</Label>
               <Input
                 id="phone"
                 value={settings.phone || ''}
@@ -336,7 +338,7 @@ export default function SettingsPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t.settings.descriptionLabel}</Label>
             <Textarea
               id="description"
               value={settings.description || ''}
@@ -351,18 +353,15 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            Twilio Configuration
+            {t.settings.twilioConfiguration}
           </CardTitle>
           <CardDescription>
-            Configure Twilio for SMS and WhatsApp messaging. Get credentials from{' '}
-            <a href="https://console.twilio.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              Twilio Console
-            </a>
+            {t.settings.twilioDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="twilio_account_sid">Account SID</Label>
+            <Label htmlFor="twilio_account_sid">{t.settings.accountSid}</Label>
             <Input
               id="twilio_account_sid"
               type="password"
@@ -372,7 +371,7 @@ export default function SettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="twilio_auth_token">Auth Token</Label>
+            <Label htmlFor="twilio_auth_token">{t.settings.authToken}</Label>
             <Input
               id="twilio_auth_token"
               type="password"
@@ -383,7 +382,7 @@ export default function SettingsPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="twilio_phone_number">SMS Phone Number</Label>
+              <Label htmlFor="twilio_phone_number">{t.settings.smsPhoneNumber}</Label>
               <Input
                 id="twilio_phone_number"
                 placeholder="+1234567890"
@@ -392,7 +391,7 @@ export default function SettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="twilio_whatsapp_from">WhatsApp From</Label>
+              <Label htmlFor="twilio_whatsapp_from">{t.settings.whatsappFrom}</Label>
               <Input
                 id="twilio_whatsapp_from"
                 placeholder="+1234567890"
@@ -409,18 +408,15 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            LINE Messaging Configuration
+            {t.settings.lineConfiguration}
           </CardTitle>
           <CardDescription>
-            Configure LINE Official Account for LINE messaging. Get credentials from{' '}
-            <a href="https://developers.line.me" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              LINE Developers Console
-            </a>
+            {t.settings.lineDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="line_channel_access_token">Channel Access Token</Label>
+            <Label htmlFor="line_channel_access_token">{t.settings.channelAccessToken}</Label>
             <Textarea
               id="line_channel_access_token"
               placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -430,7 +426,7 @@ export default function SettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="line_user_id">Your LINE User ID (for testing)</Label>
+            <Label htmlFor="line_user_id">{t.settings.yourLineUserId}</Label>
             <Input
               id="line_user_id"
               placeholder="U1234567890abcdef..."
@@ -449,17 +445,17 @@ export default function SettingsPage() {
                 {creatingRichMenu ? (
                   <>
                     <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    Creating...
+                    {t.settings.creating}
                   </>
                 ) : (
                   <>
                     <Plus className="h-4 w-4" />
-                    Create LINE Rich Menu
+                    {t.settings.createRichMenu}
                   </>
                 )}
               </Button>
               <p className="text-xs text-muted-foreground mt-2">
-                Creates a quick-action menu in your LINE Official Account with Call, Chat, and Vehicle Status buttons.
+                {t.settings.richMenuDescription}
               </p>
             </div>
           )}
@@ -469,12 +465,12 @@ export default function SettingsPage() {
       {/* Save Button */}
       <div className="flex items-center gap-4">
         <Button onClick={handleSave} disabled={saving} className="btn-gradient">
-          {saving ? 'Saving...' : 'Save Settings'}
+          {saving ? t.settings.saving : t.settings.saveSettings}
         </Button>
         {saved && (
           <span className="flex items-center gap-2 text-emerald-600">
             <CheckCircle className="h-4 w-4" />
-            Settings saved successfully
+            {t.settings.settingsSaved}
           </span>
         )}
       </div>

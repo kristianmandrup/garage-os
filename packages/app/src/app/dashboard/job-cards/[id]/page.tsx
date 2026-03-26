@@ -12,6 +12,7 @@ import { Textarea } from '@garageos/ui/textarea';
 import { Label } from '@garageos/ui/label';
 import { StatusBadge } from '@garageos/ui/status-badge';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
 
 interface JobCard {
   id: string;
@@ -62,6 +63,7 @@ interface JobCard {
 
 // Create Invoice Button Component
 function CreateInvoiceButton({ jobCardId, customerId }: { jobCardId: string; customerId?: string }) {
+  const t = useTranslation();
   const [creating, setCreating] = useState(false);
   const router = useRouter();
 
@@ -116,13 +118,14 @@ function CreateInvoiceButton({ jobCardId, customerId }: { jobCardId: string; cus
       disabled={creating}
     >
       <FileText className="h-4 w-4 mr-2" />
-      {creating ? 'Creating...' : 'Create Invoice'}
+      {creating ? t.jobCard.creating : t.jobCard.createInvoice}
     </Button>
   );
 }
 
 // Share Report Button Component
 function ShareReportButton({ jobCardId }: { jobCardId: string }) {
+  const t = useTranslation();
   const [sharing, setSharing] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -161,24 +164,16 @@ function ShareReportButton({ jobCardId }: { jobCardId: string }) {
       ) : (
         <>
           <Share2 className="h-4 w-4 mr-2" />
-          {sharing ? 'Generating...' : 'Share Report'}
+          {sharing ? t.jobCard.creating : t.jobCard.shareReport}
         </>
       )}
     </Button>
   );
 }
 
-const statusOptions = [
-  { value: 'inspection', label: 'Inspection' },
-  { value: 'diagnosed', label: 'Diagnosed' },
-  { value: 'parts_ordered', label: 'Parts Ordered' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'pending_approval', label: 'Pending Approval' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'cancelled', label: 'Cancelled' },
-];
-
 export default function JobCardDetailPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const params = useParams();
   const router = useRouter();
   const [jobCard, setJobCard] = useState<JobCard | null>(null);
@@ -253,7 +248,7 @@ export default function JobCardDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this job card?')) return;
+    if (!confirm(t.jobCard.confirmDelete)) return;
 
     try {
       const response = await fetch(`/api/job-cards/${params.id}`, {
@@ -279,9 +274,9 @@ export default function JobCardDetailPage() {
   if (!jobCard) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold">Job card not found</h2>
+        <h2 className="text-xl font-semibold">{t.jobCard.jobNotFound}</h2>
         <Link href="/dashboard/job-cards" className="text-primary hover:underline mt-4 inline-block">
-          Back to job cards
+          {t.jobCard.backToJobCards}
         </Link>
       </div>
     );
@@ -305,7 +300,7 @@ export default function JobCardDetailPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{jobCard.title}</h1>
             <p className="text-muted-foreground">
-              Created {new Date(jobCard.created_at).toLocaleDateString()}
+              {t.jobCard.created} {formatDateOnly(new Date(jobCard.created_at), locale)}
             </p>
           </div>
         </div>
@@ -315,7 +310,7 @@ export default function JobCardDetailPage() {
             <>
               <Button variant="outline" onClick={() => setEditing(true)}>
                 <Edit2 className="h-4 w-4 mr-2" />
-                Edit
+                {t.common.edit}
               </Button>
               <Button variant="destructive" size="icon" onClick={handleDelete}>
                 <Trash2 className="h-4 w-4" />
@@ -331,7 +326,7 @@ export default function JobCardDetailPage() {
           {/* Vehicle & Customer */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Vehicle & Customer</CardTitle>
+              <CardTitle className="text-lg">{t.jobCard.vehicleAndCustomer}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
@@ -356,19 +351,19 @@ export default function JobCardDetailPage() {
           {/* Description */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Description</CardTitle>
+              <CardTitle className="text-lg">{t.jobCard.description}</CardTitle>
             </CardHeader>
             <CardContent>
               {editing ? (
                 <Textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Add a description..."
+                  placeholder={t.jobCard.description}
                   rows={4}
                 />
               ) : (
                 <p className="text-muted-foreground">
-                  {jobCard.description || 'No description provided'}
+                  {jobCard.description || t.jobCard.noDescriptionProvided}
                 </p>
               )}
             </CardContent>
@@ -377,11 +372,11 @@ export default function JobCardDetailPage() {
           {/* Photos */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Photos</CardTitle>
+              <CardTitle className="text-lg">{t.jobCard.photos}</CardTitle>
               <Link href={`/dashboard/job-cards/${jobCard.id}/photos`}>
                 <Button size="sm">
                   <Camera className="h-4 w-4 mr-2" />
-                  Add Photo
+                  {t.jobCard.addPhoto}
                 </Button>
               </Link>
             </CardHeader>
@@ -400,7 +395,7 @@ export default function JobCardDetailPage() {
                 </div>
               ) : (
                 <p className="text-muted-foreground text-center py-8">
-                  No photos yet. Add photos to document the job.
+                  {t.jobCard.noPhotosYet}
                 </p>
               )}
             </CardContent>
@@ -409,7 +404,7 @@ export default function JobCardDetailPage() {
           {/* Parts Used */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Parts Used</CardTitle>
+              <CardTitle className="text-lg">{t.jobCard.partsUsed}</CardTitle>
             </CardHeader>
             <CardContent>
               {jobCard.part_usages && jobCard.part_usages.length > 0 ? (
@@ -421,15 +416,15 @@ export default function JobCardDetailPage() {
                         <p className="text-sm text-muted-foreground">{pu.part.part_number}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">฿{(pu.quantity * pu.unit_price).toLocaleString()}</p>
-                        <p className="text-sm text-muted-foreground">Qty: {pu.quantity}</p>
+                        <p className="font-medium">{formatCurrency(pu.quantity * pu.unit_price, locale)}</p>
+                        <p className="text-sm text-muted-foreground">{t.jobCard.qty}: {pu.quantity}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <p className="text-muted-foreground text-center py-8">
-                  No parts used yet
+                  {t.jobCard.noPartsUsedYet}
                 </p>
               )}
             </CardContent>
@@ -441,28 +436,28 @@ export default function JobCardDetailPage() {
           {/* Status & Assignment */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Status & Assignment</CardTitle>
+              <CardTitle className="text-lg">{t.jobCard.statusAndAssignment}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {editing ? (
                 <>
                   <div className="space-y-2">
-                    <Label>Status</Label>
+                    <Label>{t.jobCard.status}</Label>
                     <select
                       value={formData.status}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                       className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <option value="">Select status</option>
-                      {statusOptions.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
+                      {Object.entries(t.jobCard.statuses).map(([key, label]) => (
+                        <option key={key} value={key}>
+                          {label}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Estimated Cost (฿)</Label>
+                    <Label>{t.jobCard.estimatedCost}</Label>
                     <Input
                       type="number"
                       value={formData.estimated_cost}
@@ -471,7 +466,7 @@ export default function JobCardDetailPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Actual Cost (฿)</Label>
+                    <Label>{t.jobCard.actualCost}</Label>
                     <Input
                       type="number"
                       value={formData.actual_cost}
@@ -481,7 +476,7 @@ export default function JobCardDetailPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Est. Hours</Label>
+                      <Label>{t.jobCard.estimatedHours}</Label>
                       <Input
                         type="number"
                         value={formData.estimated_hours}
@@ -490,7 +485,7 @@ export default function JobCardDetailPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Actual Hours</Label>
+                      <Label>{t.jobCard.actualHours}</Label>
                       <Input
                         type="number"
                         value={formData.actual_hours}
@@ -501,10 +496,10 @@ export default function JobCardDetailPage() {
                   </div>
                   <div className="flex gap-2">
                     <Button onClick={handleSave} disabled={saving} className="flex-1">
-                      {saving ? 'Saving...' : 'Save'}
+                      {saving ? t.jobCard.saving : t.common.save}
                     </Button>
                     <Button variant="outline" onClick={() => setEditing(false)}>
-                      Cancel
+                      {t.jobCard.cancel}
                     </Button>
                   </div>
                 </>
@@ -512,31 +507,31 @@ export default function JobCardDetailPage() {
                 <>
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Estimated Cost</span>
-                      <span className="font-medium">฿{jobCard.estimated_cost?.toLocaleString() || '0'}</span>
+                      <span className="text-muted-foreground">{t.jobCard.estimatedCost}</span>
+                      <span className="font-medium">{formatCurrency(jobCard.estimated_cost || 0, locale)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Actual Cost</span>
-                      <span className="font-medium">฿{jobCard.actual_cost?.toLocaleString() || '0'}</span>
+                      <span className="text-muted-foreground">{t.jobCard.actualCost}</span>
+                      <span className="font-medium">{formatCurrency(jobCard.actual_cost || 0, locale)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Parts Cost</span>
-                      <span className="font-medium">฿{totalPartsCost.toLocaleString()}</span>
+                      <span className="text-muted-foreground">{t.jobCard.partsCost}</span>
+                      <span className="font-medium">{formatCurrency(totalPartsCost, locale)}</span>
                     </div>
                     <div className="border-t pt-3 flex justify-between">
-                      <span className="font-medium">Total</span>
+                      <span className="font-medium">{t.jobCard.total}</span>
                       <span className="font-bold text-lg">
-                        ฿{((jobCard.actual_cost || 0) + totalPartsCost).toLocaleString()}
+                        {formatCurrency((jobCard.actual_cost || 0) + totalPartsCost, locale)}
                       </span>
                     </div>
                   </div>
                   <div className="space-y-3 pt-4 border-t">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Est. Hours</span>
+                      <span className="text-muted-foreground">{t.jobCard.estimatedHours}</span>
                       <span className="font-medium">{jobCard.estimated_hours || 0}h</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Actual Hours</span>
+                      <span className="text-muted-foreground">{t.jobCard.actualHours}</span>
                       <span className="font-medium">{jobCard.actual_hours || 0}h</span>
                     </div>
                   </div>
@@ -547,7 +542,7 @@ export default function JobCardDetailPage() {
                       </div>
                       <div>
                         <p className="font-medium">{jobCard.assigned_to.name}</p>
-                        <p className="text-sm text-muted-foreground">Assigned to</p>
+                        <p className="text-sm text-muted-foreground">{t.jobCard.assignedTo}</p>
                       </div>
                     </div>
                   )}
@@ -559,25 +554,25 @@ export default function JobCardDetailPage() {
           {/* Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
+              <CardTitle className="text-lg">{t.jobCard.quickActions}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <Link href={`/dashboard/inspection?job_card_id=${jobCard.id}`} className="block">
                 <Button variant="outline" className="w-full justify-start">
                   <Camera className="h-4 w-4 mr-2" />
-                  AI Inspection
+                  {t.jobCard.aiInspection}
                 </Button>
               </Link>
               <Link href={`/dashboard/inventory?job_card_id=${jobCard.id}`} className="block">
                 <Button variant="outline" className="w-full justify-start">
                   <Package className="h-4 w-4 mr-2" />
-                  Add Parts
+                  {t.jobCard.addParts}
                 </Button>
               </Link>
               <Link href={`/dashboard/messages?customer_id=${jobCard.customer?.id}&job_card_id=${jobCard.id}`} className="block">
                 <Button variant="outline" className="w-full justify-start">
                   <MessageSquare className="h-4 w-4 mr-2" />
-                  Send Message
+                  {t.jobCard.sendMessage}
                 </Button>
               </Link>
               {jobCard.status === 'completed' && (
