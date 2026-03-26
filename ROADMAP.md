@@ -24,9 +24,7 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] **Invoice Generation** — Create invoices from job cards, payment tracking
 - [x] **RLS Policies** — Supabase Row Level Security for multi-tenant isolation
 - [x] **Customer Messaging** — Multi-channel (LINE, WhatsApp, SMS, In-App) with Thai templates
-
-### In Progress
-- [ ] **Customer-facing reports** — Shareable inspection reports
+- [x] **Customer-facing reports** — Shareable inspection reports with Thai language UI
 
 ### Todo
 - Predictive maintenance & reminders
@@ -72,7 +70,7 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] AI vision analysis (Claude 4 Vision / Google Vision)
 - [x] Damage detection with severity scoring
 - [x] Generate inspection report with photo evidence
-- [ ] Customer-facing visual report
+- [x] Customer-facing visual report
 
 ### 2.3 Vehicle & Customer Management
 - [x] Vehicle registration with license plate, VIN
