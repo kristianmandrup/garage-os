@@ -140,10 +140,86 @@ export class TaskMasterService {
       };
     }
   }
+
+  async getTask(taskId: string): Promise<TaskMasterResponse> {
+    if (!this.isConfigured()) {
+      return { success: false, error: 'TaskMaster not configured' };
+    }
+
+    try {
+      const response = await this.request(`/api/tasks/${taskId}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        return { success: false, error };
+      }
+
+      const task = await response.json();
+      return { success: true, task };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to get task',
+      };
+    }
+  }
 }
 
 // Singleton instance
 export const taskmasterService = new TaskMasterService();
+
+// Types for webhook payload
+export interface TaskMasterWebhookPayload {
+  event: 'task.created' | 'task.updated' | 'task.status_changed' | 'task.deleted';
+  task: {
+    id: string;
+    projectId?: string;
+    title: string;
+    description?: string;
+    status: 'todo' | 'in_progress' | 'done';
+    priority?: 0 | 1 | 2 | 3 | 4;
+    dueDate?: string;
+    assigneeId?: string;
+    assigneeEmail?: string;
+    linkedEntityType?: 'job_card' | 'invoice' | 'reminder' | 'low_stock';
+    linkedEntityId?: string;
+  };
+  shopId: string;
+}
+
+// Sync task from webhook (called after local DB update)
+export async function syncTaskFromWebhook(payload: TaskMasterWebhookPayload): Promise<void> {
+  // This function can be extended to sync with external systems
+  // or trigger real-time updates via WebSockets/SSE
+  console.log(`TaskMaster webhook synced: ${payload.event} - ${payload.task.id}`);
+}
+
+// Update task status and sync back to TaskMaster
+export async function updateTaskStatus(
+  taskId: string,
+  status: 'todo' | 'in_progress' | 'done'
+): Promise<TaskMasterResponse> {
+  const config = getTaskMasterConfigFromEnv();
+  if (!config) {
+    return { success: false, error: 'TaskMaster not configured' };
+  }
+
+  taskmasterService.configure(config);
+  return taskmasterService.updateTask(taskId, { status });
+}
+
+// Get single task from TaskMaster
+export async function getTask(taskId: string): Promise<TaskMasterResponse> {
+  const config = getTaskMasterConfigFromEnv();
+  if (!config) {
+    return { success: false, error: 'TaskMaster not configured' };
+  }
+
+  taskmasterService.configure(config);
+  return taskmasterService.getTask(taskId);
+}
 
 // Helper functions for common garage events
 

@@ -28,7 +28,8 @@ export const activityTypeEnum = pgEnum('activity_type', [
   'invoice_sent', 'invoice_paid', 'message_sent', 'vehicle_added', 'part_used'
 ]);
 export const notificationTypeEnum = pgEnum('notification_type', [
-  'job_assigned', 'job_completed', 'payment_received', 'customer_message', 'parts_low', 'reminder_due'
+  'job_assigned', 'job_completed', 'payment_received', 'customer_message', 'parts_low', 'reminder_due',
+  'task_assigned', 'task_updated', 'task_completed'
 ]);
 
 // ---------------------------------------------------------------------------
@@ -358,6 +359,38 @@ export const notifications = pgTable('notifications', {
 });
 
 // ---------------------------------------------------------------------------
+// TaskMaster Integration
+// ---------------------------------------------------------------------------
+
+export const taskmasterTasks = pgTable('taskmaster_tasks', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  taskmasterId: varchar('taskmaster_id', { length: 255 }).notNull().unique(),
+  shopId: uuid('shop_id').notNull().references(() => shops.id),
+  taskmasterProjectId: varchar('taskmaster_project_id', { length: 255 }),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  status: varchar('status', { length: 50 }).notNull().default('todo'),
+  priority: integer('priority').notNull().default(2),
+  dueDate: timestamp('due_date'),
+  linkedEntityType: varchar('linked_entity_type', { length: 50 }), // 'job_card' | 'invoice' | 'reminder' | 'low_stock'
+  linkedEntityId: uuid('linked_entity_id'),
+  taskmasterAssigneeId: varchar('taskmaster_assignee_id', { length: 255 }),
+  garageosAssigneeId: uuid('garageos_assignee_id').references(() => users.id),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  syncedAt: timestamp('synced_at').notNull().defaultNow(),
+});
+
+export const taskmasterUserMappings = pgTable('taskmaster_user_mappings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  shopId: uuid('shop_id').notNull().references(() => shops.id),
+  garageosUserId: uuid('garageos_user_id').notNull().references(() => users.id),
+  taskmasterUserId: varchar('taskmaster_user_id', { length: 255 }).notNull(),
+  taskmasterEmail: varchar('taskmaster_email', { length: 255 }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+// ---------------------------------------------------------------------------
 // Relations
 // ---------------------------------------------------------------------------
 
@@ -366,6 +399,8 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   assignedJobCards: many(jobCards),
   activities: many(activityItems),
   notifications: many(notifications),
+  assignedTasks: many(taskmasterTasks),
+  taskmasterUserMappings: many(taskmasterUserMappings),
 }));
 
 export const shopsRelations = relations(shops, ({ one, many }) => ({
@@ -381,6 +416,8 @@ export const shopsRelations = relations(shops, ({ one, many }) => ({
   aiDiagnosticResults: many(aiDiagnosticResults),
   maintenanceReminders: many(maintenanceReminders),
   activityItems: many(activityItems),
+  taskmasterTasks: many(taskmasterTasks),
+  taskmasterUserMappings: many(taskmasterUserMappings),
 }));
 
 export const customersRelations = relations(customers, ({ one, many }) => ({
@@ -474,4 +511,14 @@ export const activityItemsRelations = relations(activityItems, ({ one }) => ({
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, { fields: [notifications.userId], references: [users.id] }),
+}));
+
+export const taskmasterTasksRelations = relations(taskmasterTasks, ({ one }) => ({
+  shop: one(shops, { fields: [taskmasterTasks.shopId], references: [shops.id] }),
+  assignee: one(users, { fields: [taskmasterTasks.garageosAssigneeId], references: [users.id] }),
+}));
+
+export const taskmasterUserMappingsRelations = relations(taskmasterUserMappings, ({ one }) => ({
+  shop: one(shops, { fields: [taskmasterUserMappings.shopId], references: [shops.id] }),
+  garageosUser: one(users, { fields: [taskmasterUserMappings.garageosUserId], references: [users.id] }),
 }));

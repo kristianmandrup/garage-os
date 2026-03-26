@@ -22,8 +22,9 @@ import {
   BarChart3,
   Search,
   Building2,
+  CheckSquare,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
 import { cn } from '@garageos/ui/utils';
 import { createClient } from '@/lib/supabase/client';
@@ -32,7 +33,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
 import { signOut } from '@/lib/supabase/auth';
 import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
 
-const navigation = [
+type NavItem = {
+  name: string;
+  nameTh?: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  roles?: string[];
+};
+
+const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   { name: 'Multi-Shop', href: '/dashboard/analytics/multi-shop', icon: Building2 },
@@ -41,6 +50,7 @@ const navigation = [
   { name: 'Customers', href: '/dashboard/customers', icon: Users },
   { name: 'Inventory', href: '/dashboard/inventory', icon: Package },
   { name: 'Invoices', href: '/dashboard/invoices', icon: FileText },
+  { name: 'Tasks', nameTh: 'งานที่ต้องทำ', href: '/dashboard/tasks', icon: CheckSquare, roles: ['owner', 'manager'] },
   { name: 'AI Diagnostics', href: '/dashboard/diagnostics', icon: Search },
   { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
   { name: 'Reminders', href: '/dashboard/reminders', icon: Bell },
@@ -55,7 +65,34 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string>('Garage Owner');
+  const [userEmail, setUserEmail] = useState<string>('owner@garage.com');
   const { isDark, setTheme } = useAppStore();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        // Get user profile with role
+        const { data: profile } = await supabase
+          .from('users')
+          .select('name, role')
+          .eq('id', user.id)
+          .single();
+
+        if (profile) {
+          setUserRole(profile.role || 'owner');
+          setUserName(profile.name || 'User');
+          setUserEmail(user.email || '');
+        } else {
+          setUserRole('owner');
+        }
+      }
+    };
+    fetchUser();
+  }, []);
 
   const toggleTheme = () => {
     setTheme(isDark ? 'light' : 'dark');
@@ -63,6 +100,16 @@ export default function DashboardLayout({
 
   const handleSignOut = async () => {
     await signOut();
+  };
+
+  const filteredNavigation = navigation.filter(item => {
+    if (!item.roles) return true;
+    return item.roles.includes(userRole || '');
+  });
+
+  const getNavLabel = (item: NavItem) => {
+    // Use Thai label if locale is Thai and Thai label exists
+    return item.nameTh || item.name;
   };
 
   return (
@@ -132,7 +179,7 @@ export default function DashboardLayout({
 
           {/* Navigation */}
           <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -148,7 +195,7 @@ export default function DashboardLayout({
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {!isCollapsed && (
-                    <span className="font-medium">{item.name}</span>
+                    <span className="font-medium">{getNavLabel(item)}</span>
                   )}
                 </Link>
               );
@@ -201,9 +248,9 @@ export default function DashboardLayout({
               </Avatar>
               {!isCollapsed && (
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">Garage Owner</p>
+                  <p className="text-sm font-medium truncate">{userName}</p>
                   <p className="text-xs text-muted-foreground truncate">
-                    owner@garage.com
+                    {userEmail}
                   </p>
                 </div>
               )}

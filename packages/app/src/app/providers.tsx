@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useAppStore } from '@/stores/useAppStore';
+import { Toaster } from '@garageos/ui';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const initTheme = useAppStore((state) => state.initTheme);
@@ -10,5 +11,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     initTheme();
   }, [initTheme]);
 
-  return <>{children}</>;
+  return (
+    <>
+      <Toaster />
+      {children}
+    </>
+  );
 }
