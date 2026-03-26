@@ -8,6 +8,7 @@ import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation, useLocale, formatDateOnly } from '@/i18n';
 
 interface Reminder {
   id: string;
@@ -32,22 +33,24 @@ interface Reminder {
   };
 }
 
-const REMINDER_TYPE_LABELS: Record<string, string> = {
-  oil_change: 'เปลี่ยนน้ำมันเครื่อง',
-  tire_rotation: 'หมุนยาง',
-  inspection: 'ตรวจสภาพรถ',
-  insurance: 'ต่อประกัน',
-  custom: 'แบบกำหนดเอง',
+const STATUS_CONFIG = {
+  pending: { labelKey: 'pending', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
+  sent: { labelKey: 'sent', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Bell },
+  completed: { labelKey: 'completed', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
+  cancelled: { labelKey: 'cancelled', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400', icon: AlertTriangle },
 };
 
-const STATUS_CONFIG = {
-  pending: { label: 'รอดำเนินการ', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
-  sent: { label: 'ส่งแล้ว', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Bell },
-  completed: { label: 'เสร็จสิ้น', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
-  cancelled: { label: 'ยกเลิก', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400', icon: AlertTriangle },
+const REMINDER_TYPE_KEYS: Record<string, 'oilChange' | 'tireRotation' | 'inspection' | 'insurance' | 'custom'> = {
+  oil_change: 'oilChange',
+  tire_rotation: 'tireRotation',
+  inspection: 'inspection',
+  insurance: 'insurance',
+  custom: 'custom',
 };
 
 export default function RemindersPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNew, setShowNew] = useState(false);
@@ -168,36 +171,38 @@ export default function RemindersPage() {
     return dueDate < today && r.status === 'pending';
   });
 
+  const statCards = [
+    { labelKey: 'totalReminders' as const, value: reminders.length, icon: Bell, color: 'blue' },
+    { labelKey: 'dueToday' as const, value: todayReminders.length, icon: Calendar, color: 'amber' },
+    { labelKey: 'overdue' as const, value: overdueReminders.length, icon: AlertTriangle, color: 'red' },
+    { labelKey: 'completed' as const, value: reminders.filter(r => r.status === 'completed').length, icon: CheckCircle, color: 'emerald' },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Reminders</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.reminders}</h1>
           <p className="text-muted-foreground">
-            Manage predictive maintenance reminders
+            {t.reminder.pageDescription}
           </p>
         </div>
         <Button className="btn-gradient" onClick={() => setShowNew(!showNew)}>
           <Plus className="h-4 w-4 mr-2" />
-          New Reminder
+          {t.reminder.newReminder}
         </Button>
       </div>
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
-        {[
-          { label: 'Total Reminders', value: reminders.length, icon: Bell, color: 'blue' },
-          { label: 'Due Today', value: todayReminders.length, icon: Calendar, color: 'amber' },
-          { label: 'Overdue', value: overdueReminders.length, icon: AlertTriangle, color: 'red' },
-          { label: 'Completed', value: reminders.filter(r => r.status === 'completed').length, icon: CheckCircle, color: 'emerald' },
-        ].map((stat) => (
-          <Card key={stat.label}>
+        {statCards.map((stat) => (
+          <Card key={stat.labelKey}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold">{loading ? '-' : stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-sm text-muted-foreground">{t.reminder[stat.labelKey]}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                   stat.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30' :
@@ -222,32 +227,32 @@ export default function RemindersPage() {
       {showNew && (
         <Card className="border-2 border-primary">
           <CardHeader>
-            <CardTitle>New Reminder</CardTitle>
-            <CardDescription>Create a predictive maintenance reminder</CardDescription>
+            <CardTitle>{t.reminder.newReminder}</CardTitle>
+            <CardDescription>{t.reminder.createDescription}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Customer *</Label>
+                <Label>{t.jobCard.customer} *</Label>
                 <select
                   value={formData.customer_id}
                   onChange={(e) => setFormData({ ...formData, customer_id: e.target.value })}
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
                 >
-                  <option value="">Select customer</option>
+                  <option value="">{t.reminder.selectCustomer}</option>
                   {customers.map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>
               </div>
               <div className="space-y-2">
-                <Label>Vehicle *</Label>
+                <Label>{t.jobCard.vehicle} *</Label>
                 <select
                   value={formData.vehicle_id}
                   onChange={(e) => setFormData({ ...formData, vehicle_id: e.target.value })}
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
                 >
-                  <option value="">Select vehicle</option>
+                  <option value="">{t.reminder.selectVehicle}</option>
                   {vehicles.map(v => (
                     <option key={v.id} value={v.id}>{v.license_plate} - {v.brand} {v.model}</option>
                   ))}
@@ -256,21 +261,21 @@ export default function RemindersPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Reminder Type *</Label>
+                <Label>{t.reminder.type} *</Label>
                 <select
                   value={formData.reminder_type}
                   onChange={(e) => setFormData({ ...formData, reminder_type: e.target.value })}
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
                 >
-                  <option value="oil_change">เปลี่ยนน้ำมันเครื่อง</option>
-                  <option value="tire_rotation">หมุนยาง</option>
-                  <option value="inspection">ตรวจสภาพรถ</option>
-                  <option value="insurance">ต่อประกัน</option>
-                  <option value="custom">แบบกำหนดเอง</option>
+                  <option value="oil_change">{t.reminder.types.oilChange}</option>
+                  <option value="tire_rotation">{t.reminder.types.tireRotation}</option>
+                  <option value="inspection">{t.reminder.types.inspection}</option>
+                  <option value="insurance">{t.reminder.types.insurance}</option>
+                  <option value="custom">{t.reminder.types.custom}</option>
                 </select>
               </div>
               <div className="space-y-2">
-                <Label>Due Date *</Label>
+                <Label>{t.reminder.dueDate} *</Label>
                 <Input
                   type="date"
                   value={formData.due_date}
@@ -279,15 +284,15 @@ export default function RemindersPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Description *</Label>
+              <Label>{t.reminder.reminderDescription} *</Label>
               <Input
-                placeholder="e.g., เปลี่ยนน้ำมันเครื่อง Castrol 5W-30"
+                placeholder={t.reminder.descriptionPlaceholder}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
             </div>
             <div className="space-y-2">
-              <Label>Due Mileage (optional)</Label>
+              <Label>{t.reminder.dueMileageOptional}</Label>
               <Input
                 type="number"
                 placeholder="e.g., 80000"
@@ -296,9 +301,9 @@ export default function RemindersPage() {
               />
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setShowNew(false)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setShowNew(false)}>{t.common.cancel}</Button>
               <Button onClick={handleCreateReminder} className="btn-gradient">
-                Create Reminder
+                {t.reminder.createReminder}
               </Button>
             </div>
           </CardContent>
@@ -312,11 +317,11 @@ export default function RemindersPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="h-10 px-3 rounded-md border border-input bg-background text-sm"
         >
-          <option value="">All Status</option>
-          <option value="pending">รอดำเนินการ</option>
-          <option value="sent">ส่งแล้ว</option>
-          <option value="completed">เสร็จสิ้น</option>
-          <option value="cancelled">ยกเลิก</option>
+          <option value="">{t.reminder.allStatus}</option>
+          <option value="pending">{t.reminder.statuses.pending}</option>
+          <option value="sent">{t.reminder.statuses.sent}</option>
+          <option value="completed">{t.reminder.statuses.completed}</option>
+          <option value="cancelled">{t.reminder.statuses.cancelled}</option>
         </select>
       </div>
 
@@ -335,13 +340,13 @@ export default function RemindersPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Bell className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No reminders yet</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.reminder.noRemindersYet}</h3>
             <p className="text-muted-foreground mb-4">
-              Create your first maintenance reminder
+              {t.reminder.createFirstReminder}
             </p>
             <Button onClick={() => setShowNew(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              New Reminder
+              {t.reminder.newReminder}
             </Button>
           </CardContent>
         </Card>
@@ -352,6 +357,7 @@ export default function RemindersPage() {
               {reminders.map((reminder) => {
                 const status = STATUS_CONFIG[reminder.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.pending;
                 const isOverdue = new Date(reminder.due_date) < new Date() && reminder.status === 'pending';
+                const typeKey = REMINDER_TYPE_KEYS[reminder.reminder_type] || 'custom';
 
                 return (
                   <div key={reminder.id} className="p-4 hover:bg-accent/50 transition-colors">
@@ -365,10 +371,10 @@ export default function RemindersPage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-medium">{REMINDER_TYPE_LABELS[reminder.reminder_type] || reminder.reminder_type}</p>
+                            <p className="font-medium">{t.reminder.types[typeKey]}</p>
                             <Badge className={cn('text-xs', status.color)}>
                               <status.icon className="h-3 w-3 mr-1" />
-                              {status.label}
+                              {t.reminder.statuses[status.labelKey as keyof typeof t.reminder.statuses]}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mt-1">
@@ -397,7 +403,7 @@ export default function RemindersPage() {
                           'text-sm',
                           isOverdue ? 'text-red-600 font-medium' : 'text-muted-foreground'
                         )}>
-                          {isOverdue ? 'เกินกำหนด' : ''} {new Date(reminder.due_date).toLocaleDateString('th-TH')}
+                          {isOverdue ? `${t.reminder.overdueLabel} ` : ''} {formatDateOnly(new Date(reminder.due_date), locale)}
                         </span>
                         {reminder.status === 'pending' && (
                           <Button
@@ -405,7 +411,7 @@ export default function RemindersPage() {
                             variant="outline"
                             onClick={() => handleMarkComplete(reminder.id)}
                           >
-                            Mark Complete
+                            {t.reminder.markComplete}
                           </Button>
                         )}
                       </div>
