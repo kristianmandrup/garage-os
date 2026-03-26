@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gara
 import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
 
 interface Invoice {
   id: string;
@@ -27,14 +28,16 @@ interface Invoice {
 }
 
 const STATUS_CONFIG = {
-  draft: { label: 'Draft', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400', icon: FileText },
-  sent: { label: 'Sent', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Clock },
-  paid: { label: 'Paid', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
-  overdue: { label: 'Overdue', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', icon: AlertTriangle },
-  cancelled: { label: 'Cancelled', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400', icon: XCircle },
+  draft: { labelKey: 'draft', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400', icon: FileText },
+  sent: { labelKey: 'sent', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Clock },
+  paid: { labelKey: 'paid', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
+  overdue: { labelKey: 'overdue', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', icon: AlertTriangle },
+  cancelled: { labelKey: 'cancelled', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400', icon: XCircle },
 };
 
 export default function InvoicesPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -80,9 +83,9 @@ export default function InvoicesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Invoices</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.invoices}</h1>
           <p className="text-muted-foreground">
-            Manage invoices and track payments
+            {t.invoice.description}
           </p>
         </div>
       </div>
@@ -94,7 +97,7 @@ export default function InvoicesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{invoices.length}</p>
-                <p className="text-sm text-muted-foreground">Total Invoices</p>
+                <p className="text-sm text-muted-foreground">{t.invoice.totalInvoices}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -107,8 +110,8 @@ export default function InvoicesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold">฿{totalOutstanding.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">Outstanding</p>
+                <p className="text-2xl font-bold">{formatCurrency(totalOutstanding, locale)}</p>
+                <p className="text-sm text-muted-foreground">{t.invoice.outstanding}</p>
               </div>
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${totalOutstanding > 0 ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'}`}>
                 <AlertTriangle className={`h-6 w-6 ${totalOutstanding > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`} />
@@ -121,8 +124,8 @@ export default function InvoicesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold">฿{totalPaid.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">Paid</p>
+                <p className="text-2xl font-bold">{formatCurrency(totalPaid, locale)}</p>
+                <p className="text-sm text-muted-foreground">{t.invoice.paid}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                 <CheckCircle className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
@@ -137,7 +140,7 @@ export default function InvoicesPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search invoices..."
+            placeholder={t.invoice.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -148,11 +151,11 @@ export default function InvoicesPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="h-10 px-3 rounded-md border border-input bg-background text-sm"
         >
-          <option value="">All Status</option>
-          <option value="draft">Draft</option>
-          <option value="sent">Sent</option>
-          <option value="paid">Paid</option>
-          <option value="overdue">Overdue</option>
+          <option value="">{t.invoice.allStatus}</option>
+          <option value="draft">{t.invoice.statuses.draft}</option>
+          <option value="sent">{t.invoice.statuses.sent}</option>
+          <option value="paid">{t.invoice.statuses.paid}</option>
+          <option value="overdue">{t.invoice.statuses.overdue}</option>
         </select>
       </div>
 
@@ -171,9 +174,9 @@ export default function InvoicesPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No invoices found</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.invoice.noInvoicesFound}</h3>
             <p className="text-muted-foreground mb-4">
-              {search ? 'Try adjusting your search' : 'Create an invoice from a completed job card'}
+              {search ? t.invoice.tryAdjustingSearch : t.invoice.noInvoicesDescription}
             </p>
           </CardContent>
         </Card>
@@ -203,13 +206,13 @@ export default function InvoicesPage() {
 
                         <div className="flex items-center gap-6">
                           <div className="text-right">
-                            <p className="font-medium">฿{invoice.total.toLocaleString()}</p>
+                            <p className="font-medium">{formatCurrency(invoice.total, locale)}</p>
                             <p className="text-xs text-muted-foreground">
-                              {new Date(invoice.created_at).toLocaleDateString()}
+                              {formatDateOnly(new Date(invoice.created_at), locale)}
                             </p>
                           </div>
                           <Badge className={status.color}>
-                            {status.label}
+                            {t.invoice.statuses[status.labelKey as keyof typeof t.invoice.statuses]}
                           </Badge>
                         </div>
                       </div>

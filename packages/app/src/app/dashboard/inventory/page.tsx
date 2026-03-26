@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gara
 import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { Progress } from '@garageos/ui/progress';
+import { useTranslation, useLocale, formatCurrency } from '@/i18n';
 
 interface Part {
   id: string;
@@ -24,6 +25,8 @@ interface Part {
 }
 
 export default function InventoryPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [parts, setParts] = useState<Part[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -60,9 +63,9 @@ export default function InventoryPage() {
   const totalValue = parts.reduce((sum, p) => sum + (p.quantity * p.sell_price), 0);
 
   const getStockStatus = (part: Part) => {
-    if (part.quantity === 0) return { label: 'Out of Stock', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' };
-    if (part.min_quantity && part.quantity <= part.min_quantity) return { label: 'Low Stock', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' };
-    return { label: 'In Stock', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' };
+    if (part.quantity === 0) return { labelKey: 'outOfStock' as const, color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' };
+    if (part.min_quantity && part.quantity <= part.min_quantity) return { labelKey: 'lowStock' as const, color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' };
+    return { labelKey: 'inStock' as const, color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' };
   };
 
   return (
@@ -70,15 +73,15 @@ export default function InventoryPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Inventory</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.inventory}</h1>
           <p className="text-muted-foreground">
-            Manage your parts and supplies
+            {t.inventory.description}
           </p>
         </div>
         <Link href="/dashboard/inventory/new">
           <Button className="btn-gradient">
             <Plus className="h-4 w-4 mr-2" />
-            Add Part
+            {t.inventory.addPart}
           </Button>
         </Link>
       </div>
@@ -90,7 +93,7 @@ export default function InventoryPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{parts.length}</p>
-                <p className="text-sm text-muted-foreground">Total Parts</p>
+                <p className="text-sm text-muted-foreground">{t.inventory.totalParts}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <Package className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -104,7 +107,7 @@ export default function InventoryPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{lowStockCount}</p>
-                <p className="text-sm text-muted-foreground">Low Stock Items</p>
+                <p className="text-sm text-muted-foreground">{t.dashboard.lowStockItems}</p>
               </div>
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${lowStockCount > 0 ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'}`}>
                 {lowStockCount > 0 ? (
@@ -121,8 +124,8 @@ export default function InventoryPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold">฿{totalValue.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">Total Inventory Value</p>
+                <p className="text-2xl font-bold">{formatCurrency(totalValue, locale)}</p>
+                <p className="text-sm text-muted-foreground">{t.inventory.totalValue}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                 <Package className="h-6 w-6 text-purple-600 dark:text-purple-400" />
@@ -137,7 +140,7 @@ export default function InventoryPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search parts by name, number, or category..."
+            placeholder={t.inventory.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -148,7 +151,7 @@ export default function InventoryPage() {
           onClick={() => setLowStockOnly(!lowStockOnly)}
         >
           <AlertTriangle className="h-4 w-4 mr-2" />
-          Low Stock Only
+          {t.inventory.lowStockOnly}
         </Button>
       </div>
 
@@ -167,12 +170,12 @@ export default function InventoryPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No parts found</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.inventory.noPartsFound}</h3>
             <p className="text-muted-foreground mb-4">
-              {search ? 'Try adjusting your search' : 'Add your first part to get started'}
+              {search ? t.invoice.tryAdjustingSearch : t.inventory.noPartsDescription}
             </p>
             <Link href="/dashboard/inventory/new">
-              <Button>Add Part</Button>
+              <Button>{t.inventory.addPart}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -217,12 +220,12 @@ export default function InventoryPage() {
                         </div>
 
                         <div className="text-right min-w-[80px]">
-                          <p className="font-medium">฿{part.sell_price}</p>
-                          <p className="text-xs text-muted-foreground">sell price</p>
+                          <p className="font-medium">{formatCurrency(part.sell_price, locale)}</p>
+                          <p className="text-xs text-muted-foreground">{t.inventory.sellPrice}</p>
                         </div>
 
                         <Badge className={status.color}>
-                          {status.label}
+                          {t.inventory[status.labelKey]}
                         </Badge>
                       </div>
                     </div>
