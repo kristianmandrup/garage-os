@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, MessageSquare, Bell, Shield, Users, Save, CheckCircle } from 'lucide-react';
+import { Settings, MessageSquare, Bell, Shield, Users, Save, CheckCircle, Plus } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
@@ -30,6 +30,7 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [settings, setSettings] = useState<Partial<ShopSettings>>({});
   const [messagingStatus, setMessagingStatus] = useState({ twilio: false, line: false });
+  const [creatingRichMenu, setCreatingRichMenu] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -81,6 +82,28 @@ export default function SettingsPage() {
       console.error('Failed to save settings:', error);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleCreateRichMenu = async () => {
+    setCreatingRichMenu(true);
+    try {
+      const response = await fetch('/api/integrations/line/rich-menu', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`LINE Rich Menu created! Portal URL: ${data.portalUrl}`);
+      } else {
+        const error = await response.json();
+        alert(`Failed to create Rich Menu: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Failed to create LINE Rich Menu:', error);
+      alert('Failed to create LINE Rich Menu');
+    } finally {
+      setCreatingRichMenu(false);
     }
   };
 
@@ -278,6 +301,31 @@ export default function SettingsPage() {
               onChange={(e) => setSettings({ ...settings, line_user_id: e.target.value })}
             />
           </div>
+          {settings.line_channel_access_token && (
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                onClick={handleCreateRichMenu}
+                disabled={creatingRichMenu}
+                className="flex items-center gap-2"
+              >
+                {creatingRichMenu ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" />
+                    Create LINE Rich Menu
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Creates a quick-action menu in your LINE Official Account with Call, Chat, and Vehicle Status buttons.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
