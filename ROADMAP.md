@@ -17,17 +17,17 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] **Marketing site** — Landing page with features, pricing, CTA
 - [x] **Database schema** — Drizzle ORM with full relational model (SQLite/Supabase)
 - [x] **Supabase Auth** — Google OAuth via Supabase
-- [x] **Core API Routes** — Full CRUD for shops, vehicles, customers, job-cards, parts, suppliers
+- [x] **Core API Routes** — Full CRUD for shops, vehicles, customers, job-cards, parts, suppliers, invoices
 - [x] **Dashboard** — Real-time stats, recent jobs, inventory alerts
 - [x] **AI Inspection** — Gemini Flash vision analysis with damage detection
 - [x] **Parts & Inventory** — Stock tracking, low stock alerts, supplier management
+- [x] **Invoice Generation** — Create invoices from job cards, payment tracking
+- [x] **RLS Policies** — Supabase Row Level Security for multi-tenant isolation
 
 ### In Progress
-- [ ] **RLS Policies** — Configure Supabase Row Level Security for production
 - [ ] **Customer-facing reports** — Shareable inspection reports
 
 ### Todo
-- Invoice generation
 - Customer messaging (LINE, WhatsApp, SMS)
 - Predictive maintenance & reminders
 - Analytics dashboard
