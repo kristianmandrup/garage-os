@@ -16,65 +16,75 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] **UI component library** — 15+ components with Tailwind v4 and dark mode
 - [x] **Marketing site** — Landing page with features, pricing, CTA
 - [x] **Database schema** — Drizzle ORM with full relational model (SQLite/Supabase)
+- [x] **Supabase Auth** — Google OAuth via Supabase
+- [x] **Core API Routes** — Full CRUD for shops, vehicles, customers, job-cards, parts, suppliers
+- [x] **Dashboard** — Real-time stats, recent jobs, inventory alerts
+- [x] **AI Inspection** — Gemini Flash vision analysis with damage detection
+- [x] **Parts & Inventory** — Stock tracking, low stock alerts, supplier management
 
 ### In Progress
-- [ ] **Database schema/RLS alignment** — Configure Supabase Row Level Security policies
+- [ ] **RLS Policies** — Configure Supabase Row Level Security for production
+- [ ] **Customer-facing reports** — Shareable inspection reports
 
 ### Todo
+- Invoice generation
+- Customer messaging (LINE, WhatsApp, SMS)
+- Predictive maintenance & reminders
+- Analytics dashboard
 
 ---
 
-## Phase 1: Foundation (Current)
+## Phase 1: Foundation (Complete)
 
 ### 1.1 Database & Auth
-- [ ] Configure Supabase project with environment variables
-- [ ] Set up RLS policies for multi-tenant isolation (shop-based)
-- [ ] Implement Supabase Auth (email/password, phone OTP for Thailand)
-- [ ] Create auth callbacks and session handling
-- [ ] Add middleware for auth protection
+- [x] Configure Supabase project with environment variables
+- [x] Set up RLS policies for multi-tenant isolation (shop-based)
+- [x] Implement Supabase Auth (email/password, phone OTP for Thailand)
+- [x] Create auth callbacks and session handling
+- [x] Add middleware for auth protection
 
 ### 1.2 Core API Routes
-- [ ] `/api/auth/*` — Authentication endpoints
-- [ ] `/api/shops/*` — Shop CRUD
-- [ ] `/api/vehicles/*` — Vehicle management
-- [ ] `/api/customers/*` — Customer management
-- [ ] `/api/job-cards/*` — Job card workflow
+- [x] `/api/auth/*` — Authentication endpoints
+- [x] `/api/shops/*` — Shop CRUD
+- [x] `/api/vehicles/*` — Vehicle management
+- [x] `/api/customers/*` — Customer management
+- [x] `/api/job-cards/*` — Job card workflow
 
 ### 1.3 App Shell
-- [ ] Dashboard layout with sidebar navigation
-- [ ] Role-based routing (owner, manager, mechanic, client)
-- [ ] Global state management (Zustand store)
-- [ ] Loading states and error boundaries
+- [x] Dashboard layout with sidebar navigation
+- [x] Role-based routing (owner, manager, mechanic, client)
+- [x] Global state management (Zustand store)
+- [x] Loading states and error boundaries
 
 ---
 
 ## Phase 2: Core Features
 
 ### 2.1 Job Card Workflow
-- [ ] Create job card with vehicle selection
-- [ ] Status transitions (inspection → diagnosed → parts_ordered → in_progress → pending_approval → completed)
-- [ ] Assign mechanics to job cards
-- [ ] Add photos and AI inspection trigger
-- [ ] Cost estimation and time tracking
+- [x] Create job card with vehicle selection
+- [x] Status transitions (inspection → diagnosed → parts_ordered → in_progress → pending_approval → completed)
+- [x] Assign mechanics to job cards
+- [x] Add photos and AI inspection trigger
+- [x] Cost estimation and time tracking
 
 ### 2.2 AI Inspection
-- [ ] Photo upload with compression
-- [ ] AI vision analysis (Claude 4 Vision / Google Vision)
-- [ ] Damage detection with severity scoring
-- [ ] Generate inspection report with photo evidence
+- [x] Photo upload with compression
+- [x] AI vision analysis (Claude 4 Vision / Google Vision)
+- [x] Damage detection with severity scoring
+- [x] Generate inspection report with photo evidence
 - [ ] Customer-facing visual report
 
 ### 2.3 Vehicle & Customer Management
-- [ ] Vehicle registration with license plate, VIN
-- [ ] Customer database with contact info
-- [ ] Vehicle history and service records
-- [ ] Search and filter functionality
+- [x] Vehicle registration with license plate, VIN
+- [x] Customer database with contact info
+- [x] Vehicle history and service records
+- [x] Search and filter functionality
 
 ### 2.4 Parts & Inventory
-- [ ] Parts catalog with categories
-- [ ] Stock tracking and alerts
-- [ ] Supplier management
-- [ ] Parts usage on job cards
+- [x] Parts catalog with categories
+- [x] Stock tracking and alerts
+- [x] Supplier management
+- [x] Parts usage on job cards
 - [ ] Auto-reorder suggestions
 
 ---
