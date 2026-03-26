@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { sendMessage, isMessagingConfigured } from '@/lib/messaging/service';
 
 // GET /api/messages - List messages for current shop
 export async function GET(request: Request) {
@@ -70,10 +71,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get user's shop
+    // Get user's shop with messaging credentials
     const { data: shop } = await supabase
       .from('shops')
-      .select('id')
+      .select(`
+        id,
+        twilio_account_sid,
+        twilio_auth_token,
+        twilio_phone_number,
+        twilio_whatsapp_from,
+        line_channel_access_token,
+        line_user_id
+      `)
       .eq('owner_id', user.id)
       .single();
 
@@ -82,7 +91,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { customer_id, job_card_id, type, channel, content } = body;
+    const { customer_id, job_card_id, type, channel, content, customer_line_id } = body;
 
     if (!customer_id || !channel || !content) {
       return NextResponse.json(
@@ -94,13 +103,28 @@ export async function POST(request: Request) {
     // Verify customer exists and belongs to shop
     const { data: customer } = await supabase
       .from('customers')
-      .select('id, name, phone')
+      .select('id, name, phone, line_id')
       .eq('id', customer_id)
       .eq('shop_id', shop.id)
       .single();
 
     if (!customer) {
       return NextResponse.json({ error: 'Customer not found' }, { status: 404 });
+    }
+
+    // Determine LINE ID - use provided one or customer's stored one
+    const lineId = customer_line_id || customer.line_id || shop.line_user_id;
+
+    // Set environment variables from shop credentials for the messaging service
+    if (channel === 'sms' || channel === 'whatsapp') {
+      if (shop.twilio_account_sid) process.env.TWILIO_ACCOUNT_SID = shop.twilio_account_sid;
+      if (shop.twilio_auth_token) process.env.TWILIO_AUTH_TOKEN = shop.twilio_auth_token;
+      if (shop.twilio_phone_number) process.env.TWILIO_PHONE_NUMBER = shop.twilio_phone_number;
+      if (shop.twilio_whatsapp_from) process.env.TWILIO_WHATSAPP_FROM = shop.twilio_whatsapp_from;
+    }
+
+    if (channel === 'line') {
+      if (shop.line_channel_access_token) process.env.LINE_CHANNEL_ACCESS_TOKEN = shop.line_channel_access_token;
     }
 
     // Create message record
@@ -120,21 +144,40 @@ export async function POST(request: Request) {
 
     if (error) throw error;
 
-    // TODO: Actually send via external API (LINE, Twilio, etc.)
-    // For now, simulate successful send
-    const { error: updateError } = await supabase
-      .from('messages')
-      .update({
-        status: 'sent',
-        sent_at: new Date().toISOString(),
-      })
-      .eq('id', message.id);
+    // Send via external API
+    const result = await sendMessage({
+      customer_id,
+      customer_phone: customer.phone || undefined,
+      customer_line_id: lineId,
+      channel,
+      content,
+      job_card_id,
+    });
 
-    if (updateError) {
-      console.error('Failed to update message status:', updateError);
+    if (result.success) {
+      await supabase
+        .from('messages')
+        .update({
+          status: 'sent',
+          sent_at: new Date().toISOString(),
+        })
+        .eq('id', message.id);
+
+      return NextResponse.json({ ...message, status: 'sent', external_id: result.message_id }, { status: 201 });
+    } else {
+      // Mark as failed
+      await supabase
+        .from('messages')
+        .update({
+          status: 'failed',
+        })
+        .eq('id', message.id);
+
+      return NextResponse.json(
+        { ...message, status: 'failed', error: result.error },
+        { status: 500 }
+      );
     }
-
-    return NextResponse.json({ ...message, status: 'sent' }, { status: 201 });
   } catch (error) {
     console.error('Error sending message:', error);
     return NextResponse.json(
@@ -142,4 +185,10 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+}
+
+// GET /api/messages/config - Check messaging provider status
+export async function OPTIONS() {
+  const config = isMessagingConfigured();
+  return NextResponse.json(config);
 }

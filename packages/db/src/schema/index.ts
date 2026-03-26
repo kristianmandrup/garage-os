@@ -71,6 +71,13 @@ export const shops = pgTable('shops', {
   status: shopStatusEnum('status').notNull().default('active'),
   timezone: varchar('timezone', { length: 50 }).notNull().default('Asia/Bangkok'),
   currency: varchar('currency', { length: 10 }).notNull().default('THB'),
+  // Messaging credentials
+  twilioAccountSid: varchar('twilio_account_sid', { length: 100 }),
+  twilioAuthToken: varchar('twilio_auth_token', { length: 255 }),
+  twilioPhoneNumber: varchar('twilio_phone_number', { length: 20 }),
+  twilioWhatsappFrom: varchar('twilio_whatsapp_from', { length: 20 }),
+  lineChannelAccessToken: varchar('line_channel_access_token', { length: 500 }),
+  lineUserId: varchar('line_user_id', { length: 255 }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -85,6 +92,7 @@ export const customers = pgTable('customers', {
   name: varchar('name', { length: 255 }).notNull(),
   phone: varchar('phone', { length: 20 }),
   email: varchar('email', { length: 255 }),
+  lineId: varchar('line_id', { length: 255 }),
   address: text('address'),
   notes: text('notes'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
