@@ -114,10 +114,10 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 ## Phase 4: Intelligence
 
 ### 4.1 AI Diagnostics
-- [ ] Symptom-based diagnosis suggestions
-- [ ] Possible causes ranked by likelihood
-- [ ] Recommended actions
-- [ ] Urgency scoring
+- [x] Symptom-based diagnosis suggestions
+- [x] Possible causes ranked by likelihood
+- [x] Recommended actions
+- [x] Urgency scoring
 
 ### 4.2 Predictive Maintenance
 - [x] Mileage-based reminders
