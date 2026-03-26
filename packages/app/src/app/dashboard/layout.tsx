@@ -21,6 +21,7 @@ import {
   FileText,
   BarChart3,
   Search,
+  Building2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
@@ -34,6 +35,7 @@ import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+  { name: 'Multi-Shop', href: '/dashboard/analytics/multi-shop', icon: Building2 },
   { name: 'Job Cards', href: '/dashboard/job-cards', icon: Wrench },
   { name: 'Vehicles', href: '/dashboard/vehicles', icon: Car },
   { name: 'Customers', href: '/dashboard/customers', icon: Users },
