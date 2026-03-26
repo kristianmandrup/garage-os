@@ -11,6 +11,7 @@ import { Textarea } from '@garageos/ui/textarea';
 import { Label } from '@garageos/ui/label';
 import { cn } from '@garageos/ui/utils';
 import { CHANNELS, generateMessageTemplate } from '@/lib/messaging/templates';
+import { useTranslation, useLocale, formatDateOnly } from '@/i18n';
 
 interface Customer {
   id: string;
@@ -30,14 +31,16 @@ interface Message {
 }
 
 const STATUS_CONFIG = {
-  pending: { label: 'Pending', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
-  sent: { label: 'Sent', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Send },
-  delivered: { label: 'Delivered', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
-  read: { label: 'Read', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400', icon: CheckCircle },
-  failed: { label: 'Failed', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', icon: XCircle },
+  pending: { labelKey: 'pending', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: Clock },
+  sent: { labelKey: 'sent', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Send },
+  delivered: { labelKey: 'delivered', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
+  read: { labelKey: 'read', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400', icon: CheckCircle },
+  failed: { labelKey: 'failed', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', icon: XCircle },
 };
 
 export default function MessagesPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [messages, setMessages] = useState<Message[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,36 +138,38 @@ export default function MessagesPage() {
     }
   };
 
+  const statCards = [
+    { labelKey: 'totalSent' as const, value: messages.length, icon: Send, color: 'blue' },
+    { labelKey: 'delivered' as const, value: messages.filter(m => ['delivered', 'read'].includes(m.status)).length, icon: CheckCircle, color: 'emerald' },
+    { labelKey: 'pending' as const, value: messages.filter(m => m.status === 'pending').length, icon: Clock, color: 'amber' },
+    { labelKey: 'failed' as const, value: messages.filter(m => m.status === 'failed').length, icon: XCircle, color: 'red' },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Messages</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.messages}</h1>
           <p className="text-muted-foreground">
-            Send updates and notifications to customers
+            {t.message.description}
           </p>
         </div>
         <Button className="btn-gradient" onClick={() => setShowNewMessage(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          New Message
+          {t.message.newMessage}
         </Button>
       </div>
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
-        {[
-          { label: 'Total Sent', value: messages.length, icon: Send, color: 'blue' },
-          { label: 'Delivered', value: messages.filter(m => ['delivered', 'read'].includes(m.status)).length, icon: CheckCircle, color: 'emerald' },
-          { label: 'Pending', value: messages.filter(m => m.status === 'pending').length, icon: Clock, color: 'amber' },
-          { label: 'Failed', value: messages.filter(m => m.status === 'failed').length, icon: XCircle, color: 'red' },
-        ].map((stat) => (
-          <Card key={stat.label}>
+        {statCards.map((stat) => (
+          <Card key={stat.labelKey}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold">{loading ? '-' : stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-sm text-muted-foreground">{t.message[stat.labelKey]}</p>
                 </div>
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                   stat.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30' :
@@ -189,18 +194,18 @@ export default function MessagesPage() {
       {showNewMessage && (
         <Card className="border-2 border-primary">
           <CardHeader>
-            <CardTitle>New Message</CardTitle>
-            <CardDescription>Send a message to a customer</CardDescription>
+            <CardTitle>{t.message.newMessage}</CardTitle>
+            <CardDescription>{t.message.description}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label>Customer *</Label>
+              <Label>{t.jobCard.customer} *</Label>
               <select
                 value={formData.customer_id}
                 onChange={(e) => setFormData({ ...formData, customer_id: e.target.value })}
                 className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
               >
-                <option value="">Select customer</option>
+                <option value="">{t.message.selectCustomer}</option>
                 {customers.map(c => (
                   <option key={c.id} value={c.id}>{c.name} - {c.phone}</option>
                 ))}
@@ -209,7 +214,7 @@ export default function MessagesPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Channel *</Label>
+                <Label>{t.message.channel} *</Label>
                 <select
                   value={formData.channel}
                   onChange={(e) => setFormData({ ...formData, channel: e.target.value })}
@@ -221,12 +226,12 @@ export default function MessagesPage() {
                 </select>
               </div>
               <div className="space-y-2">
-                <Label>Template</Label>
+                <Label>{t.message.template}</Label>
                 <select
                   onChange={(e) => handleTemplateSelect(e.target.value)}
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
                 >
-                  <option value="">Custom message</option>
+                  <option value="">{t.message.customMessage}</option>
                   <option value="status_update">Status Update</option>
                   <option value="approval">Approval Request</option>
                   <option value="ready">Ready for Pickup</option>
@@ -236,25 +241,25 @@ export default function MessagesPage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Message *</Label>
+              <Label>{t.message.messageContent} *</Label>
               <Textarea
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                placeholder="Type your message..."
+                placeholder={t.message.messagePlaceholder}
                 rows={5}
               />
             </div>
 
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => setShowNewMessage(false)}>
-                Cancel
+                {t.common.cancel}
               </Button>
               <Button
                 onClick={handleSendMessage}
                 disabled={sending || !formData.customer_id || !formData.content}
                 className="btn-gradient"
               >
-                {sending ? 'Sending...' : 'Send Message'}
+                {sending ? t.message.sending : t.message.sendMessage}
               </Button>
             </div>
           </CardContent>
@@ -266,7 +271,7 @@ export default function MessagesPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search messages..."
+            placeholder={t.message.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -277,7 +282,7 @@ export default function MessagesPage() {
           onChange={(e) => setChannelFilter(e.target.value)}
           className="h-10 px-3 rounded-md border border-input bg-background text-sm"
         >
-          <option value="">All Channels</option>
+          <option value="">{t.message.allChannels}</option>
           {CHANNELS.map(ch => (
             <option key={ch.value} value={ch.value}>{ch.label}</option>
           ))}
@@ -299,13 +304,13 @@ export default function MessagesPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No messages yet</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.message.noMessagesYet}</h3>
             <p className="text-muted-foreground mb-4">
-              Send your first message to a customer
+              {t.message.noMessagesDescription}
             </p>
             <Button onClick={() => setShowNewMessage(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              New Message
+              {t.message.newMessage}
             </Button>
           </CardContent>
         </Card>
@@ -334,7 +339,7 @@ export default function MessagesPage() {
                           </p>
                           {message.job_card && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              Job: {message.job_card.title}
+                              {t.message.job}: {message.job_card.title}
                             </p>
                           )}
                         </div>
@@ -342,10 +347,10 @@ export default function MessagesPage() {
                       <div className="flex items-center gap-2">
                         <Badge className={cn('text-xs', status.color)}>
                           <status.icon className="h-3 w-3 mr-1" />
-                          {status.label}
+                          {t.message.statuses[status.labelKey as keyof typeof t.message.statuses]}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          {new Date(message.sent_at).toLocaleDateString()}
+                          {formatDateOnly(new Date(message.sent_at), locale)}
                         </span>
                       </div>
                     </div>

@@ -7,6 +7,7 @@ import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
+import { useTranslation, useLocale, formatNumber } from '@/i18n';
 
 interface Vehicle {
   id: string;
@@ -23,6 +24,8 @@ interface Vehicle {
 }
 
 export default function VehiclesPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -57,15 +60,15 @@ export default function VehiclesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Vehicles</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.vehicles}</h1>
           <p className="text-muted-foreground">
-            Manage your customer vehicles
+            {t.vehicle.description}
           </p>
         </div>
         <Link href="/dashboard/vehicles/new">
           <Button className="btn-gradient">
             <Plus className="h-4 w-4 mr-2" />
-            Add Vehicle
+            {t.vehicle.addVehicle}
           </Button>
         </Link>
       </div>
@@ -74,7 +77,7 @@ export default function VehiclesPage() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search by plate, brand, model, or customer..."
+          placeholder={t.vehicle.searchPlaceholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10"
@@ -96,12 +99,12 @@ export default function VehiclesPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Car className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No vehicles found</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.vehicle.noVehiclesFound}</h3>
             <p className="text-muted-foreground mb-4">
-              {search ? 'Try adjusting your search' : 'Add your first vehicle to get started'}
+              {search ? t.vehicle.tryAdjustingSearch : t.vehicle.noVehiclesDescription}
             </p>
             <Link href="/dashboard/vehicles/new">
-              <Button>Add Vehicle</Button>
+              <Button>{t.vehicle.addVehicle}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -136,7 +139,7 @@ export default function VehiclesPage() {
                     {vehicle.mileage && (
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <MapPin className="h-4 w-4" />
-                        <span>{vehicle.mileage.toLocaleString()} km</span>
+                        <span>{formatNumber(vehicle.mileage, locale)} km</span>
                       </div>
                     )}
                     <div className="flex items-center gap-2">

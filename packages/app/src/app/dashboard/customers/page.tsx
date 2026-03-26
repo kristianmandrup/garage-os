@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gara
 import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
+import { useTranslation } from '@/i18n';
 
 interface Customer {
   id: string;
@@ -19,6 +20,7 @@ interface Customer {
 }
 
 export default function CustomersPage() {
+  const t = useTranslation();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -61,15 +63,15 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.customers}</h1>
           <p className="text-muted-foreground">
-            Manage your customer database
+            {t.customer.description}
           </p>
         </div>
         <Link href="/dashboard/customers/new">
           <Button className="btn-gradient">
             <Plus className="h-4 w-4 mr-2" />
-            Add Customer
+            {t.customer.addCustomer}
           </Button>
         </Link>
       </div>
@@ -78,7 +80,7 @@ export default function CustomersPage() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search by name, phone, or email..."
+          placeholder={t.customer.searchPlaceholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10"
@@ -92,7 +94,7 @@ export default function CustomersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{customers.length}</p>
-                <p className="text-sm text-muted-foreground">Total Customers</p>
+                <p className="text-sm text-muted-foreground">{t.customer.totalCustomers}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                 <Users className="h-6 w-6 text-purple-600 dark:text-purple-400" />
@@ -123,12 +125,12 @@ export default function CustomersPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No customers found</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.customer.noCustomersFound}</h3>
             <p className="text-muted-foreground mb-4">
-              {search ? 'Try adjusting your search' : 'Add your first customer to get started'}
+              {search ? t.customer.tryAdjustingSearch : t.customer.noCustomersDescription}
             </p>
             <Link href="/dashboard/customers/new">
-              <Button>Add Customer</Button>
+              <Button>{t.customer.addCustomer}</Button>
             </Link>
           </CardContent>
         </Card>
