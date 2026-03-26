@@ -36,6 +36,7 @@ const navigation = [
   { name: 'Inventory', href: '/dashboard/inventory', icon: Package },
   { name: 'Invoices', href: '/dashboard/invoices', icon: FileText },
   { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
+  { name: 'Reminders', href: '/dashboard/reminders', icon: Bell },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
