@@ -141,7 +141,7 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [ ] Staff management per shop
 
 ### 5.2 Integrations
-- [ ] LINE Official Account integration
+- [x] LINE Official Account integration
 - [ ] Payment gateway (PromptPay, QR)
 - [ ] Accounting software sync
 
