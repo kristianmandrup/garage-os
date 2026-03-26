@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gara
 import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation } from '@/i18n';
 
 interface Supplier {
   id: string;
@@ -19,6 +20,7 @@ interface Supplier {
 }
 
 export default function SuppliersPage() {
+  const t = useTranslation();
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -78,15 +80,15 @@ export default function SuppliersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Suppliers</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.supplier.title}</h1>
           <p className="text-muted-foreground">
-            Manage your parts suppliers
+            {t.supplier.description}
           </p>
         </div>
         <Link href="/dashboard/suppliers/new">
           <Button className="btn-gradient">
             <Plus className="h-4 w-4 mr-2" />
-            Add Supplier
+            {t.supplier.addSupplier}
           </Button>
         </Link>
       </div>
@@ -96,7 +98,7 @@ export default function SuppliersPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search suppliers..."
+            placeholder={t.supplier.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -119,12 +121,12 @@ export default function SuppliersPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Truck className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No suppliers found</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.supplier.noSuppliersFound}</h3>
             <p className="text-muted-foreground mb-4">
-              {search ? 'Try adjusting your search' : 'Add your first supplier to get started'}
+              {search ? t.supplier.tryAdjustingSearch : t.supplier.addFirstSupplier}
             </p>
             <Link href="/dashboard/suppliers/new">
-              <Button>Add Supplier</Button>
+              <Button>{t.supplier.addSupplier}</Button>
             </Link>
           </CardContent>
         </Card>

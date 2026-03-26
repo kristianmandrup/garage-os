@@ -6,6 +6,7 @@ import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
 import { Progress } from '@garageos/ui/progress';
+import { useTranslation, useLocale, formatCurrency } from '@/i18n';
 
 interface Detection {
   label: string;
@@ -38,6 +39,8 @@ const conditionConfig = {
 };
 
 export default function InspectionPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<InspectionResult | null>(null);
@@ -107,9 +110,9 @@ export default function InspectionPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">AI Inspection</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t.inspection.title}</h1>
         <p className="text-muted-foreground">
-          Upload vehicle photos for AI-powered damage detection
+          {t.inspection.description}
         </p>
       </div>
 
@@ -117,9 +120,9 @@ export default function InspectionPage() {
         {/* Upload Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Upload Photo</CardTitle>
+            <CardTitle>{t.inspection.uploadPhoto}</CardTitle>
             <CardDescription>
-              Take or upload a clear photo of the vehicle area to inspect
+              {t.inspection.uploadDescription}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -150,17 +153,17 @@ export default function InspectionPage() {
                     {analyzing ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Analyzing...
+                        {t.inspection.analyzing}
                       </>
                     ) : (
                       <>
                         <Camera className="h-4 w-4 mr-2" />
-                        Analyze with AI
+                        {t.inspection.analyzeWithAI}
                       </>
                     )}
                   </Button>
                   <Button variant="outline" onClick={handleReset}>
-                    Reset
+                    {t.inspection.reset}
                   </Button>
                 </div>
               </div>
@@ -170,9 +173,9 @@ export default function InspectionPage() {
                 className="border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors"
               >
                 <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-lg font-medium">Click to upload or take photo</p>
+                <p className="text-lg font-medium">{t.inspection.clickToUpload}</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Supports JPG, PNG up to 10MB
+                  {t.inspection.supportsFormat}
                 </p>
               </div>
             )}
@@ -191,9 +194,9 @@ export default function InspectionPage() {
         {/* Results Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Inspection Results</CardTitle>
+            <CardTitle>{t.inspection.inspectionResults}</CardTitle>
             <CardDescription>
-              AI-detected issues and overall condition
+              {t.inspection.resultsDescription}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -202,13 +205,13 @@ export default function InspectionPage() {
                 {/* Overall Condition */}
                 <div className={`p-6 rounded-xl ${conditionConfig[result.overallCondition].bg}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Overall Condition</span>
+                    <span className="text-sm font-medium">{t.inspection.overallCondition}</span>
                     <Badge className={severityConfig[result.overallCondition === 'critical' ? 'critical' : result.overallCondition === 'poor' ? 'warning' : 'info'].color}>
-                      {(result.confidence * 100).toFixed(0)}% confidence
+                      {t.inspection.confidencePercent.replace('{n}', ((result.confidence * 100)).toFixed(0))}
                     </Badge>
                   </div>
                   <p className={`text-3xl font-bold ${conditionConfig[result.overallCondition].color}`}>
-                    {conditionConfig[result.overallCondition].label}
+                    {t.inspection[result.overallCondition as keyof typeof t.inspection] || result.overallCondition}
                   </p>
                   <p className="text-sm mt-2 text-muted-foreground">{result.summary}</p>
                 </div>
@@ -217,22 +220,22 @@ export default function InspectionPage() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
                     <p className="text-2xl font-bold text-red-600">{criticalCount}</p>
-                    <p className="text-xs text-muted-foreground">Critical</p>
+                    <p className="text-xs text-muted-foreground">{t.inspection.critical}</p>
                   </div>
                   <div className="text-center p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20">
                     <p className="text-2xl font-bold text-amber-600">{warningCount}</p>
-                    <p className="text-xs text-muted-foreground">Warnings</p>
+                    <p className="text-xs text-muted-foreground">{t.inspection.warnings}</p>
                   </div>
                   <div className="text-center p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                    <p className="text-2xl font-bold text-blue-600">฿{totalCost.toLocaleString()}</p>
-                    <p className="text-xs text-muted-foreground">Est. Cost</p>
+                    <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalCost, locale)}</p>
+                    <p className="text-xs text-muted-foreground">{t.inspection.estCost}</p>
                   </div>
                 </div>
 
                 {/* Detections */}
                 {result.detections.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-medium">Detected Issues</h4>
+                    <h4 className="font-medium">{t.inspection.detectedIssues}</h4>
                     {result.detections.map((detection, index) => (
                       <div
                         key={index}
@@ -248,7 +251,7 @@ export default function InspectionPage() {
                             <span className="font-medium">{detection.label}</span>
                           </div>
                           <Badge className={severityConfig[detection.severity].color}>
-                            {detection.severity}
+                            {t.inspection[detection.severity as keyof typeof t.inspection] || detection.severity}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground mb-2">
@@ -260,13 +263,13 @@ export default function InspectionPage() {
                           </span>
                           {detection.estimatedRepairCost && (
                             <span className="font-medium">
-                              ฿{detection.estimatedRepairCost.toLocaleString()}
+                              {formatCurrency(detection.estimatedRepairCost, locale)}
                             </span>
                           )}
                         </div>
                         <div className="mt-2">
                           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                            <span>Confidence</span>
+                            <span>{t.inspection.confidence}</span>
                             <span>{(detection.confidence * 100).toFixed(0)}%</span>
                           </div>
                           <Progress value={detection.confidence * 100} className="h-1" />
@@ -279,9 +282,9 @@ export default function InspectionPage() {
                 {result.detections.length === 0 && (
                   <div className="text-center py-8">
                     <CheckCircle className="h-12 w-12 mx-auto text-emerald-500 mb-3" />
-                    <p className="font-medium">No issues detected</p>
+                    <p className="font-medium">{t.inspection.noIssuesDetected}</p>
                     <p className="text-sm text-muted-foreground">
-                      The inspected area looks good
+                      {t.inspection.inspectedAreaLooksGood}
                     </p>
                   </div>
                 )}
@@ -289,7 +292,7 @@ export default function InspectionPage() {
             ) : (
               <div className="text-center py-12 text-muted-foreground">
                 <Camera className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Upload a photo to see AI inspection results</p>
+                <p>{t.inspection.uploadToSeeResults}</p>
               </div>
             )}
           </CardContent>

@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gara
 import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation } from '@/i18n';
 
 interface JobCard {
   id: string;
@@ -30,6 +31,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
 };
 
 export default function JobCardsPage() {
+  const t = useTranslation();
   const [jobCards, setJobCards] = useState<JobCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -67,15 +69,15 @@ export default function JobCardsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Job Cards</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.jobCards}</h1>
           <p className="text-muted-foreground">
-            Manage your repair jobs and track progress
+            {t.jobCards.description}
           </p>
         </div>
         <Link href="/dashboard/job-cards/new">
           <Button className="btn-gradient">
             <Plus className="h-4 w-4 mr-2" />
-            New Job Card
+            {t.jobCards.newJobCard}
           </Button>
         </Link>
       </div>
@@ -85,7 +87,7 @@ export default function JobCardsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by title, vehicle, or customer..."
+            placeholder={t.jobCards.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -96,8 +98,8 @@ export default function JobCardsPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="h-10 px-3 rounded-md border border-input bg-background text-sm"
         >
-          <option value="">All Status</option>
-          {Object.entries(statusConfig).map(([key, { label }]) => (
+          <option value="">{t.jobCards.allStatus}</option>
+          {Object.entries(t.jobCard.statuses).map(([key, label]) => (
             <option key={key} value={key}>{label}</option>
           ))}
         </select>
@@ -105,8 +107,28 @@ export default function JobCardsPage() {
 
       {/* Stats */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        {Object.entries(statusConfig).slice(0, 4).map(([key, { label, color }]) => {
+        {Object.entries(t.jobCard.statuses).slice(0, 4).map(([key, label]) => {
           const count = jobCards.filter(c => c.status === key).length;
+          const statusColors: Record<string, string> = {
+            inspection: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+            diagnosed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+            parts_ordered: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+            in_progress: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400',
+            pending_approval: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+            completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+            cancelled: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400',
+          };
+          const statusIcons: Record<string, typeof Clock> = {
+            inspection: Clock,
+            diagnosed: AlertCircle,
+            parts_ordered: AlertCircle,
+            in_progress: Wrench,
+            pending_approval: AlertCircle,
+            completed: CheckCircle,
+            cancelled: AlertCircle,
+          };
+          const color = statusColors[key] || statusColors.completed;
+          const Icon = statusIcons[key] || Clock;
           return (
             <Card
               key={key}
@@ -139,19 +161,39 @@ export default function JobCardsPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Wrench className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No job cards found</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.jobCards.noJobCardsFound}</h3>
             <p className="text-muted-foreground mb-4">
-              {search ? 'Try adjusting your search' : 'Create your first job card to get started'}
+              {search ? t.jobCards.tryAdjustingSearch : t.jobCards.createFirstJobCard}
             </p>
             <Link href="/dashboard/job-cards/new">
-              <Button>Create Job Card</Button>
+              <Button>{t.jobCards.createJobCard}</Button>
             </Link>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4">
           {filteredJobCards.map((card) => {
-            const status = statusConfig[card.status];
+            const statusColors: Record<string, string> = {
+              inspection: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+              diagnosed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+              parts_ordered: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+              in_progress: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400',
+              pending_approval: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+              completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+              cancelled: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400',
+            };
+            const statusIcons: Record<string, typeof Clock> = {
+              inspection: Clock,
+              diagnosed: AlertCircle,
+              parts_ordered: AlertCircle,
+              in_progress: Wrench,
+              pending_approval: AlertCircle,
+              completed: CheckCircle,
+              cancelled: AlertCircle,
+            };
+            const color = statusColors[card.status] || statusColors.completed;
+            const Icon = statusIcons[card.status] || Clock;
+            const statusLabel = t.jobCard.statuses[card.status as keyof typeof t.jobCard.statuses] || card.status;
             return (
               <Link key={card.id} href={`/dashboard/job-cards/${card.id}`}>
                 <Card className="card-hover">
@@ -176,9 +218,9 @@ export default function JobCardsPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <Badge className={status.color}>
-                          <status.icon className="h-3 w-3 mr-1" />
-                          {status.label}
+                        <Badge className={color}>
+                          <Icon className="h-3 w-3 mr-1" />
+                          {statusLabel}
                         </Badge>
                         {card.assigned_to && (
                           <span className="text-sm text-muted-foreground">

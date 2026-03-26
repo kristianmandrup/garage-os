@@ -11,6 +11,7 @@ import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { Textarea } from '@garageos/ui/textarea';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
 
 interface Invoice {
   id: string;
@@ -78,6 +79,8 @@ const PAYMENT_METHODS = [
 ];
 
 export default function InvoiceDetailPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const params = useParams();
   const router = useRouter();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
@@ -172,9 +175,9 @@ export default function InvoiceDetailPage() {
   if (!invoice) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold">Invoice not found</h2>
+        <h2 className="text-xl font-semibold">{t.invoiceDetail.invoiceNotFound}</h2>
         <Link href="/dashboard/invoices" className="text-primary hover:underline mt-4 inline-block">
-          Back to invoices
+          {t.invoiceDetail.backToInvoices}
         </Link>
       </div>
     );
@@ -186,6 +189,13 @@ export default function InvoiceDetailPage() {
     0
   ) || 0;
   const laborCost = invoice.job_card?.actual_cost || 0;
+
+  const paymentMethodLabels: Record<string, string> = {
+    cash: t.invoiceDetail.cash,
+    transfer: t.invoiceDetail.bankTransfer,
+    card: t.invoiceDetail.creditDebitCard,
+    qr: t.invoiceDetail.qrPayment,
+  };
 
   return (
     <div className="space-y-6">
@@ -200,19 +210,19 @@ export default function InvoiceDetailPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{invoice.invoice_number}</h1>
             <p className="text-muted-foreground">
-              Created {new Date(invoice.created_at).toLocaleDateString()}
+              {t.invoiceDetail.title} {formatDateOnly(new Date(invoice.created_at), locale)}
             </p>
           </div>
         </div>
         <div className="flex gap-2">
           <Badge className={cn('text-sm px-3 py-1', statusConfig.color)}>
-            {statusConfig.label}
+            {t.invoice.statuses[invoice.status as keyof typeof t.invoice.statuses] || invoice.status}
           </Badge>
           {invoice.status === 'draft' && (
             <>
               <Button variant="outline" onClick={() => updateStatus('sent')} disabled={updating}>
                 <Send className="h-4 w-4 mr-2" />
-                Mark as Sent
+                {t.invoiceDetail.markAsSent}
               </Button>
             </>
           )}
@@ -223,9 +233,9 @@ export default function InvoiceDetailPage() {
                 className="h-10 px-3 rounded-md border border-input bg-background text-sm"
                 disabled={updating}
               >
-                <option value="">Mark as Paid</option>
-                {PAYMENT_METHODS.map(pm => (
-                  <option key={pm.value} value={pm.value}>{pm.label}</option>
+                <option value="">{t.invoiceDetail.markAsPaid}</option>
+                {Object.entries(paymentMethodLabels).map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
                 ))}
               </select>
             </div>
@@ -239,7 +249,7 @@ export default function InvoiceDetailPage() {
           {/* Job Card Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Service Details</CardTitle>
+              <CardTitle>{t.invoiceDetail.serviceDetails}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -249,7 +259,7 @@ export default function InvoiceDetailPage() {
                     {invoice.job_card?.vehicle?.brand} {invoice.job_card?.vehicle?.model} ({invoice.job_card?.vehicle?.year})
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    License: {invoice.job_card?.vehicle?.license_plate}
+                    {t.invoiceDetail.license}: {invoice.job_card?.vehicle?.license_plate}
                   </p>
                 </div>
                 {invoice.job_card?.description && (
@@ -262,19 +272,19 @@ export default function InvoiceDetailPage() {
           {/* Parts & Labor */}
           <Card>
             <CardHeader>
-              <CardTitle>Items</CardTitle>
+              <CardTitle>{t.invoiceDetail.items}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {/* Parts */}
                 {invoice.job_card?.part_usages && invoice.job_card.part_usages.length > 0 && (
                   <div>
-                    <h4 className="font-medium mb-2">Parts</h4>
+                    <h4 className="font-medium mb-2">{t.invoiceDetail.parts}</h4>
                     <div className="space-y-2">
                       {invoice.job_card.part_usages.map((pu) => (
                         <div key={pu.id} className="flex justify-between text-sm">
                           <span>{pu.part.name} x {pu.quantity}</span>
-                          <span className="font-medium">฿{(pu.quantity * pu.unit_price).toLocaleString()}</span>
+                          <span className="font-medium">{formatCurrency(pu.quantity * pu.unit_price, locale)}</span>
                         </div>
                       ))}
                     </div>
@@ -283,13 +293,13 @@ export default function InvoiceDetailPage() {
 
                 {/* Labor */}
                 <div className="flex justify-between text-sm pt-4 border-t">
-                  <span>Labor ({invoice.job_card?.actual_hours || 0} hours)</span>
-                  <span className="font-medium">฿{laborCost.toLocaleString()}</span>
+                  <span>{t.invoiceDetail.labor.replace('{hours}', String(invoice.job_card?.actual_hours || 0))}</span>
+                  <span className="font-medium">{formatCurrency(laborCost, locale)}</span>
                 </div>
 
                 <div className="flex justify-between text-sm pt-4 border-t">
-                  <span>Parts Total</span>
-                  <span className="font-medium">฿{partsTotal.toLocaleString()}</span>
+                  <span>{t.invoiceDetail.partsTotal}</span>
+                  <span className="font-medium">{formatCurrency(partsTotal, locale)}</span>
                 </div>
               </div>
             </CardContent>
@@ -298,13 +308,13 @@ export default function InvoiceDetailPage() {
           {/* Notes */}
           <Card>
             <CardHeader>
-              <CardTitle>Notes</CardTitle>
+              <CardTitle>{t.invoiceDetail.notes}</CardTitle>
             </CardHeader>
             <CardContent>
               <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Add notes..."
+                placeholder={t.invoiceDetail.addNotesPlaceholder}
                 rows={3}
               />
               <Button
@@ -314,7 +324,7 @@ export default function InvoiceDetailPage() {
                 onClick={saveNotes}
                 disabled={updating}
               >
-                {updating ? 'Saving...' : 'Save Notes'}
+                {updating ? t.invoiceDetail.saving : t.invoiceDetail.saveNotes}
               </Button>
             </CardContent>
           </Card>
@@ -325,7 +335,7 @@ export default function InvoiceDetailPage() {
           {/* Customer */}
           <Card>
             <CardHeader>
-              <CardTitle>Customer</CardTitle>
+              <CardTitle>{t.invoiceDetail.customer}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -341,27 +351,27 @@ export default function InvoiceDetailPage() {
           {/* Payment Summary */}
           <Card>
             <CardHeader>
-              <CardTitle>Payment Summary</CardTitle>
+              <CardTitle>{t.invoiceDetail.paymentSummary}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>฿{invoice.subtotal.toLocaleString()}</span>
+                  <span className="text-muted-foreground">{t.invoiceDetail.subtotal}</span>
+                  <span>{formatCurrency(invoice.subtotal, locale)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Tax (7%)</span>
-                  <span>฿{invoice.tax.toLocaleString()}</span>
+                  <span className="text-muted-foreground">{t.invoiceDetail.tax}</span>
+                  <span>{formatCurrency(invoice.tax, locale)}</span>
                 </div>
                 {invoice.discount > 0 && (
                   <div className="flex justify-between text-sm text-emerald-600">
-                    <span>Discount</span>
-                    <span>-฿{invoice.discount.toLocaleString()}</span>
+                    <span>{t.invoiceDetail.discount}</span>
+                    <span>-{formatCurrency(invoice.discount, locale)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-lg pt-4 border-t">
-                  <span>Total</span>
-                  <span>฿{invoice.total.toLocaleString()}</span>
+                  <span>{t.invoiceDetail.total}</span>
+                  <span>{formatCurrency(invoice.total, locale)}</span>
                 </div>
               </div>
 
@@ -369,11 +379,13 @@ export default function InvoiceDetailPage() {
                 <div className="pt-4 border-t">
                   <div className="flex items-center gap-2 text-emerald-600">
                     <CheckCircle className="h-5 w-5" />
-                    <span className="font-medium">Paid on {new Date(invoice.paid_at).toLocaleDateString()}</span>
+                    <span className="font-medium">
+                      {t.invoiceDetail.paidOn.replace('{date}', formatDateOnly(new Date(invoice.paid_at), locale))}
+                    </span>
                   </div>
                   {invoice.payment_method && (
                     <p className="text-sm text-muted-foreground mt-1">
-                      via {PAYMENT_METHODS.find(p => p.value === invoice.payment_method)?.label}
+                      {t.invoiceDetail.via.replace('{method}', paymentMethodLabels[invoice.payment_method] || invoice.payment_method)}
                     </p>
                   )}
                 </div>
@@ -381,8 +393,8 @@ export default function InvoiceDetailPage() {
 
               {invoice.due_date && invoice.status !== 'paid' && (
                 <div className="pt-4 border-t">
-                  <p className="text-sm text-muted-foreground">Due Date</p>
-                  <p className="font-medium">{new Date(invoice.due_date).toLocaleDateString()}</p>
+                  <p className="text-sm text-muted-foreground">{t.invoiceDetail.dueDate}</p>
+                  <p className="font-medium">{formatDateOnly(new Date(invoice.due_date), locale)}</p>
                 </div>
               )}
             </CardContent>
