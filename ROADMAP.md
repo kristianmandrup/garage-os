@@ -23,12 +23,12 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] **Parts & Inventory** — Stock tracking, low stock alerts, supplier management
 - [x] **Invoice Generation** — Create invoices from job cards, payment tracking
 - [x] **RLS Policies** — Supabase Row Level Security for multi-tenant isolation
+- [x] **Customer Messaging** — Multi-channel (LINE, WhatsApp, SMS, In-App) with Thai templates
 
 ### In Progress
 - [ ] **Customer-facing reports** — Shareable inspection reports
 
 ### Todo
-- Customer messaging (LINE, WhatsApp, SMS)
 - Predictive maintenance & reminders
 - Analytics dashboard
 
@@ -92,11 +92,11 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 ## Phase 3: Customer Experience
 
 ### 3.1 Customer Messaging
-- [ ] Multi-channel support (LINE, WhatsApp, SMS)
-- [ ] Automated status updates
-- [ ] Repair approval requests
-- [ ] Payment reminders
-- [ ] Ready for pickup notifications
+- [x] Multi-channel support (LINE, WhatsApp, SMS)
+- [x] Automated status updates
+- [x] Repair approval requests
+- [x] Payment reminders
+- [x] Ready for pickup notifications
 
 ### 3.2 Customer Portal
 - [ ] Vehicle history view
@@ -105,10 +105,10 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [ ] Service reminders
 
 ### 3.3 Invoicing
-- [ ] Invoice generation from job cards
+- [x] Invoice generation from job cards
 - [ ] Tax calculation
 - [ ] Payment recording
-- [ ] Invoice status tracking
+- [x] Invoice status tracking
 
 ---
 
