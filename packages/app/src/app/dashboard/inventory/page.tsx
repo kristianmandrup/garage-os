@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Package, Plus, Search, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
@@ -74,10 +75,12 @@ export default function InventoryPage() {
             Manage your parts and supplies
           </p>
         </div>
-        <Button className="btn-gradient">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Part
-        </Button>
+        <Link href="/dashboard/inventory/new">
+          <Button className="btn-gradient">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Part
+          </Button>
+        </Link>
       </div>
 
       {/* Stats */}
@@ -168,7 +171,9 @@ export default function InventoryPage() {
             <p className="text-muted-foreground mb-4">
               {search ? 'Try adjusting your search' : 'Add your first part to get started'}
             </p>
-            <Button>Add Part</Button>
+            <Link href="/dashboard/inventory/new">
+              <Button>Add Part</Button>
+            </Link>
           </CardContent>
         </Card>
       ) : (
@@ -180,7 +185,7 @@ export default function InventoryPage() {
                 const stockPercent = part.min_quantity ? Math.min((part.quantity / part.min_quantity) * 100, 100) : 100;
 
                 return (
-                  <div key={part.id} className="p-4 hover:bg-accent/50 transition-colors">
+                  <Link key={part.id} href={`/dashboard/inventory/${part.id}`} className="block p-4 hover:bg-accent/50 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${part.quantity === 0 ? 'bg-red-100 dark:bg-red-900/30' : part.min_quantity && part.quantity <= part.min_quantity ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'}`}>
@@ -221,7 +226,7 @@ export default function InventoryPage() {
                         </Badge>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
