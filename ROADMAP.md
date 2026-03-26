@@ -25,9 +25,9 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [x] **RLS Policies** — Supabase Row Level Security for multi-tenant isolation
 - [x] **Customer Messaging** — Multi-channel (LINE, WhatsApp, SMS, In-App) with Thai templates
 - [x] **Customer-facing reports** — Shareable inspection reports with Thai language UI
+- [x] **Predictive maintenance & reminders** — Reminder system with due date and mileage tracking
 
 ### Todo
-- Predictive maintenance & reminders
 - Analytics dashboard
 
 ---
@@ -119,8 +119,8 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 - [ ] Urgency scoring
 
 ### 4.2 Predictive Maintenance
-- [ ] Mileage-based reminders
-- [ ] Time-based reminders
+- [x] Mileage-based reminders
+- [x] Time-based reminders
 - [ ] Service history analysis
 - [ ] Customer retention triggers
 
