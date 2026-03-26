@@ -1,0 +1,46 @@
+{
+  "name": "garage-os",
+  "private": true,
+  "packageManager": "npm@11.6.4",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev:app": "turbo run dev --filter=@garageos/app",
+    "dev:site": "turbo run dev --filter=@garageos/site",
+    "typecheck:app": "turbo run typecheck --filter=@garageos/app",
+    "typecheck:ui": "turbo run typecheck --filter=@garageos/ui",
+    "typecheck:shared": "turbo run typecheck --filter=@garageos/shared",
+    "lint:app": "turbo run lint --filter=@garageos/app",
+    "lint:site": "turbo run lint --filter=@garageos/site",
+    "db:generate": "npm run db:generate --workspace=@garageos/db",
+    "db:push": "npm run db:push --workspace=@garageos/db",
+    "db:migrate": "npm run db:migrate --workspace=@garageos/db",
+    "db:seed": "npm run db:seed --workspace=@garageos/db",
+    "db:studio": "npm run db:studio --workspace=@garageos/db",
+    "test:e2e": "npm run test:e2e --workspace=@garageos/app",
+    "test:e2e:ui": "npm run test:e2e:ui --workspace=@garageos/app"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "autoprefixer": "^10.4.27",
+    "playwright": "^1.58.2",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "turbo": "^2.8.12",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.58",
+    "@ai-sdk/google": "^3.0.43",
+    "@ai-sdk/openai": "^3.0.41",
+    "@supabase/supabase-js": "^2.47.0",
+    "ai": "^6.0.116",
+    "lucide-react": "^0.575.0",
+    "zod": "^3.24.0"
+  }
+}
