@@ -1,7 +1,12 @@
+'use client';
+
 import { loginWithGoogle } from '@/lib/supabase/auth';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Wrench, Shield, Zap, Users } from 'lucide-react';
+import { Wrench, Shield, Zap, Users, Sun, Moon, Globe } from 'lucide-react';
+import { useAppStore } from '@/stores/useAppStore';
+import { useLocale } from '@/i18n';
+import { useEffect, useState } from 'react';
 
 const features = [
   {
@@ -22,6 +27,22 @@ const features = [
 ];
 
 export default function LoginPage() {
+  const { isDark, setTheme } = useAppStore();
+  const { locale, setLocale, t } = useLocale();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(isDark ? 'light' : 'dark');
+  };
+
+  const toggleLocale = () => {
+    setLocale(locale === 'en' ? 'th' : 'en');
+  };
+
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Branding */}
@@ -35,12 +56,36 @@ export default function LoginPage() {
 
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <Wrench className="w-6 h-6 text-white" />
+          {/* Logo and Controls */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+                <Wrench className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold text-white">GarageOS</span>
             </div>
-            <span className="text-2xl font-bold text-white">GarageOS</span>
+            {mounted && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleLocale}
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  title="Toggle language"
+                >
+                  <Globe className="h-5 w-5 text-white" />
+                </button>
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  title="Toggle theme"
+                >
+                  {isDark ? (
+                    <Sun className="h-5 w-5 text-white" />
+                  ) : (
+                    <Moon className="h-5 w-5 text-white" />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Hero Content */}
@@ -79,28 +124,50 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+      <div className="flex-1 flex items-center justify-center p-8 bg-white dark:bg-gray-900">
         <div className="w-full max-w-md space-y-8">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
-              <Wrench className="w-6 h-6 text-white" />
+          {/* Mobile Logo and Controls */}
+          <div className="lg:hidden flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
+                <Wrench className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">GarageOS</span>
             </div>
-            <span className="text-2xl font-bold gradient-text">GarageOS</span>
+            {mounted && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleLocale}
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <Globe className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                </button>
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                >
+                  {isDark ? (
+                    <Sun className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  ) : (
+                    <Moon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Login Card */}
-          <Card className="border-0 shadow-xl">
+          <Card className="border-0 shadow-xl bg-white dark:bg-gray-800">
             <CardHeader className="text-center pb-2">
-              <CardTitle className="text-2xl">Welcome Back</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-2xl text-gray-900 dark:text-white">Welcome Back</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
                 Sign in to manage your auto repair shop
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 pt-4">
               {/* Google Sign In */}
               <form action={loginWithGoogle}>
-                <Button type="submit" className="w-full h-12 text-base btn-gradient" size="lg">
+                <Button type="submit" className="w-full h-12 text-base bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white" size="lg">
                   <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
@@ -125,22 +192,22 @@ export default function LoginPage() {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full border-t border-gray-200 dark:border-gray-700" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
+                  <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
                     for shop owners & mechanics
                   </span>
                 </div>
               </div>
 
-              <p className="text-center text-sm text-muted-foreground">
+              <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                 By signing in, you agree to our{' '}
-                <a href="/terms" className="underline underline-offset-4 hover:text-primary">
+                <a href="/terms" className="underline underline-offset-4 hover:text-blue-600 dark:hover:text-blue-400">
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
+                <a href="/privacy" className="underline underline-offset-4 hover:text-blue-600 dark:hover:text-blue-400">
                   Privacy Policy
                 </a>
               </p>
@@ -148,7 +215,7 @@ export default function LoginPage() {
           </Card>
 
           {/* Trust Badges */}
-          <div className="flex items-center justify-center gap-8 text-muted-foreground">
+          <div className="flex items-center justify-center gap-8 text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-2 text-sm">
               <Shield className="h-4 w-4" />
               <span>Secure</span>
