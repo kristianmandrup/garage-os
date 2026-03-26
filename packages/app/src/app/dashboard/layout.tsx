@@ -32,30 +32,15 @@ import { Button } from '@garageos/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
 import { signOut } from '@/lib/supabase/auth';
 import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
+import { LocaleSwitcher } from '@/components/locale/LocaleSwitcher';
+import { useLocale } from '@/i18n';
 
 type NavItem = {
-  name: string;
-  nameTh?: string;
+  nameKey: keyof ReturnType<typeof useLocale>['t']['nav'];
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   roles?: string[];
 };
-
-const navigation: NavItem[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
-  { name: 'Multi-Shop', href: '/dashboard/analytics/multi-shop', icon: Building2 },
-  { name: 'Job Cards', href: '/dashboard/job-cards', icon: Wrench },
-  { name: 'Vehicles', href: '/dashboard/vehicles', icon: Car },
-  { name: 'Customers', href: '/dashboard/customers', icon: Users },
-  { name: 'Inventory', href: '/dashboard/inventory', icon: Package },
-  { name: 'Invoices', href: '/dashboard/invoices', icon: FileText },
-  { name: 'Tasks', nameTh: 'งานที่ต้องทำ', href: '/dashboard/tasks', icon: CheckSquare, roles: ['owner', 'manager'] },
-  { name: 'AI Diagnostics', href: '/dashboard/diagnostics', icon: Search },
-  { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
-  { name: 'Reminders', href: '/dashboard/reminders', icon: Bell },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
-];
 
 export default function DashboardLayout({
   children,
@@ -69,13 +54,28 @@ export default function DashboardLayout({
   const [userName, setUserName] = useState<string>('Garage Owner');
   const [userEmail, setUserEmail] = useState<string>('owner@garage.com');
   const { isDark, setTheme } = useAppStore();
+  const { t } = useLocale();
+
+  const navigation: NavItem[] = [
+    { nameKey: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { nameKey: 'analytics', href: '/dashboard/analytics', icon: BarChart3 },
+    { nameKey: 'multiShop', href: '/dashboard/analytics/multi-shop', icon: Building2 },
+    { nameKey: 'jobCards', href: '/dashboard/job-cards', icon: Wrench },
+    { nameKey: 'vehicles', href: '/dashboard/vehicles', icon: Car },
+    { nameKey: 'customers', href: '/dashboard/customers', icon: Users },
+    { nameKey: 'inventory', href: '/dashboard/inventory', icon: Package },
+    { nameKey: 'invoices', href: '/dashboard/invoices', icon: FileText },
+    { nameKey: 'tasks', href: '/dashboard/tasks', icon: CheckSquare, roles: ['owner', 'manager'] },
+    { nameKey: 'aiDiagnostics', href: '/dashboard/diagnostics', icon: Search },
+    { nameKey: 'messages', href: '/dashboard/messages', icon: MessageSquare },
+    { nameKey: 'reminders', href: '/dashboard/reminders', icon: Bell },
+  ];
 
   useEffect(() => {
     const fetchUser = async () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        // Get user profile with role
         const { data: profile } = await supabase
           .from('users')
           .select('name, role')
@@ -106,11 +106,6 @@ export default function DashboardLayout({
     if (!item.roles) return true;
     return item.roles.includes(userRole || '');
   });
-
-  const getNavLabel = (item: NavItem) => {
-    // Use Thai label if locale is Thai and Thai label exists
-    return item.nameTh || item.name;
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -183,7 +178,7 @@ export default function DashboardLayout({
               const isActive = pathname === item.href;
               return (
                 <Link
-                  key={item.name}
+                  key={item.nameKey}
                   href={item.href}
                   onClick={() => setIsMobileOpen(false)}
                   className={cn(
@@ -195,7 +190,7 @@ export default function DashboardLayout({
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {!isCollapsed && (
-                    <span className="font-medium">{getNavLabel(item)}</span>
+                    <span className="font-medium">{t.nav[item.nameKey]}</span>
                   )}
                 </Link>
               );

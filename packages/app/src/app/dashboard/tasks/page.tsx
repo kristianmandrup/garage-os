@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from '@/i18n';
 import { CheckCircle, Circle, Clock, ExternalLink, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Button } from '@garageos/ui/button';
@@ -26,20 +27,20 @@ interface Task {
 }
 
 const statusConfig = {
-  todo: { label: 'รอดำเนินการ', labelEn: 'To Do', color: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300', icon: Circle },
-  in_progress: { label: 'กำลังดำเนินการ', labelEn: 'In Progress', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: Clock },
-  done: { label: 'เสร็จสิ้น', labelEn: 'Done', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
+  todo: { color: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300', icon: Circle },
+  in_progress: { color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: Clock },
+  done: { color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle },
 };
 
-const priorityConfig = {
-  0: { label: 'ฉุกเฉิน', labelEn: 'Urgent', color: 'text-red-600 dark:text-red-400' },
-  1: { label: 'สูง', labelEn: 'High', color: 'text-orange-600 dark:text-orange-400' },
-  2: { label: 'ปกติ', labelEn: 'Normal', color: 'text-blue-600 dark:text-blue-400' },
-  3: { label: 'ต่ำ', labelEn: 'Low', color: 'text-slate-600 dark:text-slate-400' },
-  4: { label: 'ต่ำสุด', labelEn: 'Lowest', color: 'text-slate-400' },
-};
+const priorityKeys = ['priorityUrgent', 'priorityHigh', 'priorityNormal', 'priorityLow', 'priorityLowest'] as const;
+type PriorityKey = typeof priorityKeys[number];
+
+function getPriorityLabel(priority: number): PriorityKey {
+  return priorityKeys[priority] || 'priorityNormal';
+}
 
 export default function TasksPage() {
+  const t = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -62,8 +63,8 @@ export default function TasksPage() {
     } catch (error) {
       console.error('Failed to fetch tasks:', error);
       addToast({
-        title: 'เกิดข้อผิดพลาด',
-        description: 'ไม่สามารถดึงข้อมูลงานได้',
+        title: t.errors.generic,
+        description: t.errors.networkError,
         variant: 'destructive',
       });
     } finally {
@@ -84,7 +85,7 @@ export default function TasksPage() {
           t.id === task.id ? { ...t, status: 'done' as const } : t
         ));
         addToast({
-          title: 'งานเสร็จสิ้น',
+          title: t.tasks.done,
           description: task.title,
           variant: 'success',
         });
@@ -92,8 +93,8 @@ export default function TasksPage() {
     } catch (error) {
       console.error('Failed to mark task as done:', error);
       addToast({
-        title: 'เกิดข้อผิดพลาด',
-        description: 'ไม่สามารถอัปเดตงานได้',
+        title: t.errors.generic,
+        description: t.errors.networkError,
         variant: 'destructive',
       });
     }
@@ -107,16 +108,35 @@ export default function TasksPage() {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 60) return `${diffMins} นาทีที่แล้ว`;
-    if (diffHours < 24) return `${diffHours} ชั่วโมงที่แล้ว`;
-    return `${diffDays} วันที่แล้ว`;
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${diffDays}d ago`;
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'todo': return t.tasks.todo;
+      case 'in_progress': return t.tasks.inProgress;
+      case 'done': return t.tasks.done;
+      default: return status;
+    }
+  };
+
+  const getLinkedEntityLabel = (type: string) => {
+    switch (type) {
+      case 'job_card': return t.jobCard.title;
+      case 'invoice': return t.invoice.title;
+      case 'reminder': return t.reminder.title;
+      case 'low_stock': return 'Low Stock';
+      default: return type;
+    }
   };
 
   const statusTabs = [
-    { value: 'all', label: 'ทั้งหมด' },
-    { value: 'todo', label: 'รอดำเนินการ' },
-    { value: 'in_progress', label: 'กำลังดำเนินการ' },
-    { value: 'done', label: 'เสร็จสิ้น' },
+    { value: 'all', label: t.tasks.all },
+    { value: 'todo', label: t.tasks.todo },
+    { value: 'in_progress', label: t.tasks.inProgress },
+    { value: 'done', label: t.tasks.done },
   ];
 
   return (
@@ -124,9 +144,9 @@ export default function TasksPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">งานที่ต้องทำ</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.tasks.title}</h1>
           <p className="text-muted-foreground">
-            งานที่ซิงค์จาก TaskMaster
+            {t.tasks.description}
           </p>
         </div>
       </div>
@@ -160,16 +180,16 @@ export default function TasksPage() {
         <Card>
           <CardContent className="py-12">
             <EmptyState
-              title="ไม่มีงาน"
-              description="ยังไม่มีงานที่ซิงค์จาก TaskMaster"
+              title={t.tasks.noTasks}
+              description={t.tasks.noTasksDescription}
             />
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-3">
           {tasks.map(task => {
-            const status = statusConfig[task.status] || statusConfig.todo;
-            const priority = priorityConfig[task.priority as keyof typeof priorityConfig] || priorityConfig[2];
+            const status = statusConfig[task.status as keyof typeof statusConfig] || statusConfig.todo;
+            const priorityKey = getPriorityLabel(task.priority);
             const StatusIcon = status.icon;
 
             return (
@@ -207,10 +227,14 @@ export default function TasksPage() {
                           {task.title}
                         </h3>
                         <Badge className={status.color} variant="secondary">
-                          {status.label}
+                          {getStatusLabel(task.status)}
                         </Badge>
-                        <span className={`text-xs ${priority.color}`}>
-                          {priority.label}
+                        <span className={`text-xs ${
+                          task.priority === 0 ? 'text-red-600 dark:text-red-400' :
+                          task.priority === 1 ? 'text-orange-600 dark:text-orange-400' :
+                          'text-slate-600 dark:text-slate-400'
+                        }`}>
+                          {t.tasks[priorityKey]}
                         </span>
                       </div>
 
@@ -222,10 +246,10 @@ export default function TasksPage() {
 
                       <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                         {task.assignee && (
-                          <span>ผู้รับผิดชอบ: {task.assignee.name}</span>
+                          <span>{t.tasks.assignee}: {task.assignee.name}</span>
                         )}
                         {task.due_date && (
-                          <span>กำหนด: {new Date(task.due_date).toLocaleDateString('th-TH')}</span>
+                          <span>{t.tasks.dueDate}: {new Date(task.due_date).toLocaleDateString()}</span>
                         )}
                         <span>{getTimeAgo(task.created_at)}</span>
                       </div>
@@ -246,11 +270,15 @@ export default function TasksPage() {
               <div className="space-y-1">
                 <CardTitle className="text-xl">{selectedTask.title}</CardTitle>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={statusConfig[selectedTask.status]?.color}>
-                    {statusConfig[selectedTask.status]?.label}
+                  <Badge className={statusConfig[selectedTask.status as keyof typeof statusConfig]?.color}>
+                    {getStatusLabel(selectedTask.status)}
                   </Badge>
-                  <span className={`text-sm ${priorityConfig[selectedTask.priority as keyof typeof priorityConfig]?.color}`}>
-                    {priorityConfig[selectedTask.priority as keyof typeof priorityConfig]?.label}
+                  <span className={`text-sm ${
+                    selectedTask.priority === 0 ? 'text-red-600 dark:text-red-400' :
+                    selectedTask.priority === 1 ? 'text-orange-600 dark:text-orange-400' :
+                    'text-slate-600 dark:text-slate-400'
+                  }`}>
+                    {t.tasks[getPriorityLabel(selectedTask.priority)]}
                   </span>
                 </div>
               </div>
@@ -265,38 +293,30 @@ export default function TasksPage() {
             <CardContent className="space-y-4">
               {selectedTask.description && (
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-1">รายละเอียด</h4>
+                  <h4 className="font-medium text-sm text-muted-foreground mb-1">{t.tasks.descriptionLabel}</h4>
                   <p className="text-sm whitespace-pre-wrap">{selectedTask.description}</p>
                 </div>
               )}
 
               {selectedTask.assignee && (
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-1">ผู้รับผิดชอบ</h4>
+                  <h4 className="font-medium text-sm text-muted-foreground mb-1">{t.tasks.assignee}</h4>
                   <p className="text-sm">{selectedTask.assignee.name}</p>
                 </div>
               )}
 
               {selectedTask.due_date && (
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-1">กำหนดส่ง</h4>
-                  <p className="text-sm">{new Date(selectedTask.due_date).toLocaleDateString('th-TH', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}</p>
+                  <h4 className="font-medium text-sm text-muted-foreground mb-1">{t.tasks.dueDate}</h4>
+                  <p className="text-sm">{new Date(selectedTask.due_date).toLocaleDateString()}</p>
                 </div>
               )}
 
               {selectedTask.linked_entity_type && (
                 <div>
-                  <h4 className="font-medium text-sm text-muted-foreground mb-1">ลิงก์กับ</h4>
+                  <h4 className="font-medium text-sm text-muted-foreground mb-1">{t.tasks.linkedTo}</h4>
                   <p className="text-sm capitalize">
-                    {selectedTask.linked_entity_type === 'job_card' ? 'ใบงาน' :
-                     selectedTask.linked_entity_type === 'invoice' ? 'ใบแจ้งหนี้' :
-                     selectedTask.linked_entity_type === 'reminder' ? 'การแจ้งเตือน' :
-                     selectedTask.linked_entity_type === 'low_stock' ? 'สินค้าใกล้หมด' :
-                     selectedTask.linked_entity_type}
+                    {getLinkedEntityLabel(selectedTask.linked_entity_type)}
                   </p>
                 </div>
               )}
@@ -308,7 +328,7 @@ export default function TasksPage() {
                     className="flex-1"
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />
-                    ทำเครื่องหมายเสร็จสิ้น
+                    {t.tasks.markDone}
                   </Button>
                 )}
                 {process.env.NEXT_PUBLIC_TASKMASTER_URL && (
@@ -317,7 +337,7 @@ export default function TasksPage() {
                     onClick={() => window.open(`${process.env.NEXT_PUBLIC_TASKMASTER_URL}/tasks/${selectedTask.taskmaster_id}`, '_blank')}
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    เปิดใน TaskMaster
+                    {t.tasks.openInTaskMaster}
                   </Button>
                 )}
               </div>
