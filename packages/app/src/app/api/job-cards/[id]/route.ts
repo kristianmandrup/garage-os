@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { createTaskForJobCard, isTaskMasterEnabled } from '@/lib/taskmaster/service';
 
 // GET /api/job-cards/[id] - Get single job card
 export async function GET(
@@ -57,6 +58,13 @@ export async function PATCH(
     const body = await request.json();
     const { title, description, status, assigned_to_id, estimated_cost, actual_cost, estimated_hours, actual_hours, scheduled_date, completed_at } = body;
 
+    // Get current job card state before update
+    const { data: currentJobCard } = await supabase
+      .from('job_cards')
+      .select('status')
+      .eq('id', id)
+      .single();
+
     const { data: jobCard, error } = await supabase
       .from('job_cards')
       .update({
@@ -77,6 +85,29 @@ export async function PATCH(
       .single();
 
     if (error) throw error;
+
+    // Create TaskMaster task on status change
+    if (isTaskMasterEnabled() && currentJobCard && status && status !== currentJobCard.status) {
+      const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('license_plate, brand, model')
+        .eq('id', jobCard.vehicle_id)
+        .single();
+
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('name')
+        .eq('id', jobCard.customer_id)
+        .single();
+
+      const event = status === 'completed' ? 'completed' : 'status_change';
+
+      createTaskForJobCard(
+        { ...jobCard, vehicle, customer },
+        event,
+        currentJobCard.status
+      ).catch(err => console.error('Failed to create TaskMaster task:', err));
+    }
 
     return NextResponse.json(jobCard);
   } catch (error) {

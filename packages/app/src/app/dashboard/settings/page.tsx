@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, MessageSquare, Bell, Shield, Users, Save, CheckCircle, Plus } from 'lucide-react';
+import { Settings, MessageSquare, Bell, Shield, Users, Save, CheckCircle, Plus, ListTodo } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
@@ -31,10 +31,14 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<Partial<ShopSettings>>({});
   const [messagingStatus, setMessagingStatus] = useState({ twilio: false, line: false });
   const [creatingRichMenu, setCreatingRichMenu] = useState(false);
+  const [taskmasterStatus, setTaskmasterStatus] = useState({ enabled: false, hasApiKey: false, hasProjectId: false, projects: [] as any[] });
+  const [taskmasterConfig, setTaskmasterConfig] = useState({ apiUrl: '', apiKey: '', projectId: '' });
+  const [testingConnection, setTestingConnection] = useState(false);
 
   useEffect(() => {
     fetchSettings();
     fetchMessagingStatus();
+    fetchTaskmasterStatus();
   }, []);
 
   const fetchSettings = async () => {
@@ -62,6 +66,47 @@ export default function SettingsPage() {
       }
     } catch (error) {
       console.error('Failed to fetch messaging status:', error);
+    }
+  };
+
+  const fetchTaskmasterStatus = async () => {
+    try {
+      const response = await fetch('/api/integrations/taskmaster');
+      if (response.ok) {
+        const data = await response.json();
+        setTaskmasterStatus(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch TaskMaster status:', error);
+    }
+  };
+
+  const handleTestTaskmaster = async () => {
+    setTestingConnection(true);
+    try {
+      const response = await fetch('/api/integrations/taskmaster/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(taskmasterConfig),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          alert('TaskMaster connection successful! Test task created and deleted.');
+          fetchTaskmasterStatus();
+        } else {
+          alert(`Connection failed: ${data.error}`);
+        }
+      } else {
+        const error = await response.json();
+        alert(`Connection failed: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Failed to test TaskMaster connection:', error);
+      alert('Failed to test TaskMaster connection');
+    } finally {
+      setTestingConnection(false);
     }
   };
 
@@ -163,6 +208,98 @@ export default function SettingsPage() {
                   {messagingStatus.line ? 'Configured' : 'Not configured'}
                 </p>
               </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* TaskMaster Status */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ListTodo className="h-5 w-5" />
+            TaskMaster Integration
+          </CardTitle>
+          <CardDescription>
+            Sync garage events to your TaskMaster project. Tasks are created automatically for new jobs, status changes, and more.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 p-3 rounded-lg border bg-muted">
+              <CheckCircle className={cn('h-5 w-5', taskmasterStatus.enabled ? 'text-emerald-600' : 'text-muted-foreground')} />
+              <div>
+                <p className="font-medium">TaskMaster</p>
+                <p className="text-sm text-muted-foreground">
+                  {taskmasterStatus.enabled ? 'Connected - Tasks will sync automatically' : 'Not configured'}
+                </p>
+              </div>
+            </div>
+
+            {taskmasterStatus.enabled && taskmasterStatus.projects.length > 0 && (
+              <div className="p-3 rounded-lg border bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800">
+                <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
+                  Default Project: {taskmasterStatus.projects.find((p: any) => p.id === taskmasterStatus.projects[0]?.id)?.name || 'Unknown'}
+                </p>
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
+                  {taskmasterStatus.projects.length} project(s) available
+                </p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="taskmaster_api_url">API URL</Label>
+                <Input
+                  id="taskmaster_api_url"
+                  placeholder="https://taskmaster.vercel.app"
+                  value={taskmasterConfig.apiUrl}
+                  onChange={(e) => setTaskmasterConfig({ ...taskmasterConfig, apiUrl: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="taskmaster_api_key">API Key</Label>
+                <Input
+                  id="taskmaster_api_key"
+                  type="password"
+                  placeholder="tm_xxxxxxxxxxxxx"
+                  value={taskmasterConfig.apiKey}
+                  onChange={(e) => setTaskmasterConfig({ ...taskmasterConfig, apiKey: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="taskmaster_project_id">Default Project ID</Label>
+                <Input
+                  id="taskmaster_project_id"
+                  placeholder="project_xxxxxxxx"
+                  value={taskmasterConfig.projectId}
+                  onChange={(e) => setTaskmasterConfig({ ...taskmasterConfig, projectId: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                onClick={handleTestTaskmaster}
+                disabled={testingConnection || !taskmasterConfig.apiUrl || !taskmasterConfig.apiKey || !taskmasterConfig.projectId}
+                className="flex items-center gap-2"
+              >
+                {testingConnection ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    Testing...
+                  </>
+                ) : (
+                  <>
+                    <ListTodo className="h-4 w-4" />
+                    Test Connection
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Set environment variables TASKMASTER_API_URL, TASKMASTER_API_KEY, and TASKMASTER_DEFAULT_PROJECT_ID to enable auto-sync.
+              </p>
             </div>
           </div>
         </CardContent>

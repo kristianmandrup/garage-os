@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { createTaskForJobCard, isTaskMasterEnabled } from '@/lib/taskmaster/service';
 
 // GET /api/job-cards - List job cards for current shop
 export async function GET(request: Request) {
@@ -103,6 +104,27 @@ export async function POST(request: Request) {
       .single();
 
     if (error) throw error;
+
+    // Create TaskMaster task if enabled
+    if (isTaskMasterEnabled() && jobCard) {
+      // Fetch vehicle and customer info for the task
+      const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('license_plate, brand, model')
+        .eq('id', vehicle_id)
+        .single();
+
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('name')
+        .eq('id', customer_id)
+        .single();
+
+      createTaskForJobCard(
+        { ...jobCard, vehicle, customer },
+        'created'
+      ).catch(err => console.error('Failed to create TaskMaster task:', err));
+    }
 
     return NextResponse.json(jobCard, { status: 201 });
   } catch (error) {

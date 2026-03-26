@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { createTaskForInvoice, isTaskMasterEnabled } from '@/lib/taskmaster/service';
 
 // GET /api/invoices/[id] - Get single invoice
 export async function GET(
@@ -58,6 +59,13 @@ export async function PATCH(
     const body = await request.json();
     const { status, payment_method, notes } = body;
 
+    // Get current invoice state before update
+    const { data: currentInvoice } = await supabase
+      .from('invoices')
+      .select('status')
+      .eq('id', id)
+      .single();
+
     const updates: Record<string, any> = {
       updated_at: new Date().toISOString(),
     };
@@ -85,6 +93,38 @@ export async function PATCH(
       .single();
 
     if (error) throw error;
+
+    // Create TaskMaster task on status change
+    if (isTaskMasterEnabled() && currentInvoice && status && status !== currentInvoice.status) {
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('name')
+        .eq('id', invoice.customer_id)
+        .single();
+
+      const { data: jobCard } = await supabase
+        .from('job_cards')
+        .select('vehicle:vehicles(license_plate)')
+        .eq('id', invoice.job_card_id)
+        .single();
+
+      let event: 'created' | 'sent' | 'overdue' = 'created';
+
+      if (status === 'sent') {
+        event = 'sent';
+      } else if (status === 'overdue') {
+        event = 'overdue';
+      }
+
+      createTaskForInvoice(
+        {
+          ...invoice,
+          customer,
+          vehicle: jobCard?.vehicle,
+        },
+        event
+      ).catch(err => console.error('Failed to create TaskMaster task:', err));
+    }
 
     return NextResponse.json(invoice);
   } catch (error) {
