@@ -17,6 +17,8 @@ import {
   Moon,
   Menu,
   X,
+  MessageSquare,
+  FileText,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
@@ -32,6 +34,8 @@ const navigation = [
   { name: 'Vehicles', href: '/dashboard/vehicles', icon: Car },
   { name: 'Customers', href: '/dashboard/customers', icon: Users },
   { name: 'Inventory', href: '/dashboard/inventory', icon: Package },
+  { name: 'Invoices', href: '/dashboard/invoices', icon: FileText },
+  { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Wrench, Camera, Edit2, Trash2, CheckCircle, Clock, AlertCircle, User, Car, FileText, Package } from 'lucide-react';
+import { ArrowLeft, Wrench, Camera, Edit2, Trash2, CheckCircle, Clock, AlertCircle, User, Car, FileText, Package, MessageSquare } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
@@ -525,6 +525,12 @@ export default function JobCardDetailPage() {
                 <Button variant="outline" className="w-full justify-start">
                   <Package className="h-4 w-4 mr-2" />
                   Add Parts
+                </Button>
+              </Link>
+              <Link href={`/dashboard/messages?customer_id=${jobCard.customer?.id}&job_card_id=${jobCard.id}`} className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Send Message
                 </Button>
               </Link>
               {jobCard.status === 'completed' && (
