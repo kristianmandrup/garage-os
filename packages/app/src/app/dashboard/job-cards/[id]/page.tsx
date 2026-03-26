@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Wrench, Camera, Edit2, Trash2, CheckCircle, Clock, AlertCircle, User, Car, FileText, Package, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Wrench, Camera, Edit2, Trash2, CheckCircle, Clock, AlertCircle, User, Car, FileText, Package, MessageSquare, Share2, Copy, Check } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
@@ -117,6 +117,53 @@ function CreateInvoiceButton({ jobCardId, customerId }: { jobCardId: string; cus
     >
       <FileText className="h-4 w-4 mr-2" />
       {creating ? 'Creating...' : 'Create Invoice'}
+    </Button>
+  );
+}
+
+// Share Report Button Component
+function ShareReportButton({ jobCardId }: { jobCardId: string }) {
+  const [sharing, setSharing] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleShareReport = async () => {
+    setSharing(true);
+    try {
+      const response = await fetch(`/api/job-cards/${jobCardId}/report`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const { report_url } = await response.json();
+        await navigator.clipboard.writeText(report_url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 3000);
+      }
+    } catch (error) {
+      console.error('Failed to share report:', error);
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  return (
+    <Button
+      variant="outline"
+      className="w-full justify-start"
+      onClick={handleShareReport}
+      disabled={sharing}
+    >
+      {copied ? (
+        <>
+          <Check className="h-4 w-4 mr-2 text-emerald-500" />
+          Link Copied!
+        </>
+      ) : (
+        <>
+          <Share2 className="h-4 w-4 mr-2" />
+          {sharing ? 'Generating...' : 'Share Report'}
+        </>
+      )}
     </Button>
   );
 }
@@ -536,6 +583,7 @@ export default function JobCardDetailPage() {
               {jobCard.status === 'completed' && (
                 <CreateInvoiceButton jobCardId={jobCard.id} customerId={jobCard.customer?.id} />
               )}
+              <ShareReportButton jobCardId={jobCard.id} />
             </CardContent>
           </Card>
         </div>
