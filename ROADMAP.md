@@ -136,8 +136,8 @@ GarageOS empowers auto repair shops in Thailand and Southeast Asia to digitize t
 ## Phase 5: Scale
 
 ### 5.1 Multi-Shop Management
-- [ ] Shop switching interface
-- [ ] Cross-shop reporting
+- [x] Shop switching interface
+- [x] Cross-shop reporting
 - [ ] Staff management per shop
 
 ### 5.2 Integrations
