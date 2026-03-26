@@ -9,7 +9,7 @@ export function LocaleSwitcher() {
   return (
     <button
       onClick={() => setLocale(locale === 'en' ? 'th' : 'en')}
-      className="p-2 rounded-lg hover:bg-accent transition-colors flex items-center gap-1 text-sm"
+      className="p-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-1 text-sm text-gray-600"
       aria-label="Toggle language"
     >
       <Globe className="h-4 w-4" />

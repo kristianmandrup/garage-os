@@ -81,9 +81,9 @@ export function LandingPageClient() {
             <span className="text-xl font-bold truncate">GarageOS</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground">{t('features')}</a>
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground">{t('pricing')}</a>
-            <a href="#contact" className="text-sm text-muted-foreground hover:text-foreground">{t('contact')}</a>
+            <a href="#features" className="text-sm text-gray-600 hover:text-gray-900">{t('features')}</a>
+            <a href="#pricing" className="text-sm text-gray-600 hover:text-gray-900">{t('pricing')}</a>
+            <a href="#contact" className="text-sm text-gray-600 hover:text-gray-900">{t('contact')}</a>
           </nav>
           <div className="flex items-center gap-2">
             <LocaleSwitcher />
@@ -103,7 +103,7 @@ export function LandingPageClient() {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 "Shopify for Auto Repair"
               </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 mb-8">
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 mb-8">
                 Mobile-first, AI-powered shop management for auto repair shops.
                 Digitize job cards, AI inspect vehicles, manage inventory, and delight customers.
               </p>
@@ -111,7 +111,7 @@ export function LandingPageClient() {
                 <button className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 inline-flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30">
                   Start Free Trial <ArrowRight className="h-5 w-5" />
                 </button>
-                <button className="border-2 border-input bg-background px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent hover:text-accent-foreground">
+                <button className="border-2 border-input bg-background px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 hover:text-accent-foreground">
                   Watch Demo
                 </button>
               </div>
@@ -129,7 +129,7 @@ export function LandingPageClient() {
                   </div>
                   <div>
                     <p className="font-semibold">500+ Shops</p>
-                    <p className="text-sm text-muted-foreground">Across Thailand</p>
+                    <p className="text-sm text-gray-600">Across Thailand</p>
                   </div>
                 </div>
               </div>
@@ -143,13 +143,13 @@ export function LandingPageClient() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything You Need to Run Your Garage</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
+            <p className="text-gray-600 max-w-xl mx-auto">
               From digital job cards to AI-powered inspection, GarageOS has all the tools modern auto repair shops need.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <div key={feature.title} className="p-6 rounded-lg border bg-card overflow-hidden">
+              <div key={feature.title} className="p-6 rounded-lg border bg-white overflow-hidden">
                 <img
                   src={[
                     "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400&q=80",
@@ -168,7 +168,7 @@ export function LandingPageClient() {
                   </div>
                   <h3 className="text-lg font-semibold">{feature.title}</h3>
                 </div>
-                <p className="text-muted-foreground text-sm">{feature.description}</p>
+                <p className="text-gray-600 text-sm">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -176,7 +176,7 @@ export function LandingPageClient() {
       </section>
 
       {/* Benefits */}
-      <section className="py-20 bg-zinc-50">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -192,20 +192,20 @@ export function LandingPageClient() {
             </div>
             <div className="bg-white rounded-xl p-8 shadow-lg">
               <h3 className="text-2xl font-bold mb-4">Ready in Minutes</h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-gray-600 mb-6">
                 No complicated setup. No expensive hardware. Just sign up, add your shop details, and start managing jobs digitally.
               </p>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-muted-foreground">Setup time</span>
+                  <span className="text-gray-600">Setup time</span>
                   <span className="font-medium">Less than 5 minutes</span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
-                  <span className="text-muted-foreground">Training needed</span>
+                  <span className="text-gray-600">Training needed</span>
                   <span className="font-medium">None</span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-muted-foreground">Monthly cost</span>
+                  <span className="text-gray-600">Monthly cost</span>
                   <span className="font-medium">From $20</span>
                 </div>
               </div>
@@ -219,15 +219,15 @@ export function LandingPageClient() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
+            <p className="text-gray-600 max-w-xl mx-auto">
               Start free, scale as you grow. No hidden fees, no long-term contracts.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {pricingPlans.map((plan) => (
-              <div key={plan.name} className="p-8 rounded-lg border bg-card">
+              <div key={plan.name} className="p-8 rounded-lg border bg-white">
                 <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
+                <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
                 <div className="text-3xl font-bold mb-6">{plan.price}</div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature) => (
@@ -237,7 +237,7 @@ export function LandingPageClient() {
                     </li>
                   ))}
                 </ul>
-                <button className="w-full py-2 rounded-md border border-input hover:bg-accent hover:text-accent-foreground font-medium">
+                <button className="w-full py-2 rounded-md border border-input hover:bg-gray-100 hover:text-accent-foreground font-medium">
                   Get Started
                 </button>
               </div>
@@ -273,13 +273,13 @@ export function LandingPageClient() {
                 <Wrench className="h-6 w-6 text-blue-600" />
                 <span className="text-lg font-bold">GarageOS</span>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-600">
                 Mobile-first shop management for auto repair shops.
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="#">Features</a></li>
                 <li><a href="#">Pricing</a></li>
                 <li><a href="#">Integrations</a></li>
@@ -287,7 +287,7 @@ export function LandingPageClient() {
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="#">About</a></li>
                 <li><a href="#">Blog</a></li>
                 <li><a href="#">Careers</a></li>
@@ -295,14 +295,14 @@ export function LandingPageClient() {
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm text-gray-600">
                 <li><a href="#">Privacy</a></li>
                 <li><a href="#">Terms</a></li>
                 <li><a href="#">Security</a></li>
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
+          <div className="mt-12 pt-8 border-t text-center text-sm text-gray-600">
             © 2026 GarageOS. All rights reserved.
           </div>
         </div>
