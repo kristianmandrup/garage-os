@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Car, Search, User } from 'lucide-react';
+import { ArrowLeft, Search, User } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
-import { cn } from '@garageos/ui/utils';
+import { useTranslation } from '@/i18n';
 
 interface Customer {
   id: string;
@@ -17,6 +17,7 @@ interface Customer {
 }
 
 export default function NewVehiclePage() {
+  const t = useTranslation();
   const router = useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(false);
@@ -104,8 +105,10 @@ export default function NewVehiclePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add Vehicle</h1>
-          <p className="text-muted-foreground">Register a new vehicle</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t.newVehicle.title}</h1>
+          <p className="text-muted-foreground">
+            {t.newVehicle.description}
+          </p>
         </div>
       </div>
 
@@ -113,16 +116,16 @@ export default function NewVehiclePage() {
       {!selectedCustomerId && (
         <Card>
           <CardHeader>
-            <CardTitle>Select Owner</CardTitle>
+            <CardTitle>{t.newVehicle.selectOwner}</CardTitle>
             <CardDescription>
-              Choose the customer who owns this vehicle
+              {t.newVehicle.selectOwnerDescription}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search customers..."
+                placeholder={t.newVehicle.searchCustomers}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -146,7 +149,7 @@ export default function NewVehiclePage() {
               ))}
               {filteredCustomers.length === 0 && (
                 <p className="text-center py-8 text-muted-foreground">
-                  No customers found
+                  {t.newVehicle.noCustomersFound}
                 </p>
               )}
             </div>
@@ -158,9 +161,9 @@ export default function NewVehiclePage() {
       {selectedCustomerId && (
         <Card>
           <CardHeader>
-            <CardTitle>Vehicle Details</CardTitle>
+            <CardTitle>{t.newVehicle.vehicleDetails}</CardTitle>
             <CardDescription>
-              Enter the vehicle information
+              {t.newVehicle.vehicleDetailsDescription}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -177,14 +180,14 @@ export default function NewVehiclePage() {
                   className="ml-auto"
                   onClick={() => setSelectedCustomerId('')}
                 >
-                  Change
+                  {t.newVehicle.change}
                 </Button>
               </div>
             )}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="license_plate">License Plate *</Label>
+                <Label htmlFor="license_plate">{t.newVehicle.licensePlate} *</Label>
                 <Input
                   id="license_plate"
                   value={formData.license_plate}
@@ -193,7 +196,7 @@ export default function NewVehiclePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="vin">VIN</Label>
+                <Label htmlFor="vin">{t.newVehicle.vin}</Label>
                 <Input
                   id="vin"
                   value={formData.vin}
@@ -205,7 +208,7 @@ export default function NewVehiclePage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="brand">Brand *</Label>
+                <Label htmlFor="brand">{t.newVehicle.brand} *</Label>
                 <Input
                   id="brand"
                   value={formData.brand}
@@ -214,7 +217,7 @@ export default function NewVehiclePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="model">Model *</Label>
+                <Label htmlFor="model">{t.newVehicle.model} *</Label>
                 <Input
                   id="model"
                   value={formData.model}
@@ -226,7 +229,7 @@ export default function NewVehiclePage() {
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="year">Year</Label>
+                <Label htmlFor="year">{t.newVehicle.year}</Label>
                 <Input
                   id="year"
                   type="number"
@@ -236,7 +239,7 @@ export default function NewVehiclePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="color">Color</Label>
+                <Label htmlFor="color">{t.newVehicle.color}</Label>
                 <Input
                   id="color"
                   value={formData.color}
@@ -245,7 +248,7 @@ export default function NewVehiclePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="mileage">Mileage (km)</Label>
+                <Label htmlFor="mileage">{t.newVehicle.mileage}</Label>
                 <Input
                   id="mileage"
                   type="number"
@@ -258,31 +261,31 @@ export default function NewVehiclePage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="fuel_type">Fuel Type</Label>
+                <Label htmlFor="fuel_type">{t.newVehicle.fuelType}</Label>
                 <select
                   id="fuel_type"
                   value={formData.fuel_type}
                   onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <option value="">Select fuel type</option>
-                  <option value="gasoline">Gasoline</option>
-                  <option value="diesel">Diesel</option>
-                  <option value="electric">Electric</option>
-                  <option value="hybrid">Hybrid</option>
+                  <option value="">{t.newVehicle.selectFuelType}</option>
+                  <option value="gasoline">{t.newVehicle.gasoline}</option>
+                  <option value="diesel">{t.newVehicle.diesel}</option>
+                  <option value="electric">{t.newVehicle.electric}</option>
+                  <option value="hybrid">{t.newVehicle.hybrid}</option>
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="transmission">Transmission</Label>
+                <Label htmlFor="transmission">{t.newVehicle.transmission}</Label>
                 <select
                   id="transmission"
                   value={formData.transmission}
                   onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <option value="">Select transmission</option>
-                  <option value="automatic">Automatic</option>
-                  <option value="manual">Manual</option>
+                  <option value="">{t.newVehicle.selectTransmission}</option>
+                  <option value="automatic">{t.newVehicle.automatic}</option>
+                  <option value="manual">{t.newVehicle.manual}</option>
                 </select>
               </div>
             </div>
@@ -293,14 +296,14 @@ export default function NewVehiclePage() {
                 onClick={() => setSelectedCustomerId('')}
                 disabled={saving}
               >
-                Back
+                {t.newVehicle.back}
               </Button>
               <Button
                 onClick={handleCreateVehicle}
                 disabled={saving || !formData.license_plate || !formData.brand || !formData.model}
                 className="flex-1 btn-gradient"
               >
-                {saving ? 'Creating...' : 'Add Vehicle'}
+                {saving ? t.newVehicle.creating : t.newVehicle.addVehicle}
               </Button>
             </div>
           </CardContent>

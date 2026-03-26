@@ -1,0 +1,15 @@
+export const nav = {
+  dashboard: 'Dashboard',
+  analytics: 'Analytics',
+  multiShop: 'Multi-Shop',
+  jobCards: 'Job Cards',
+  vehicles: 'Vehicles',
+  customers: 'Customers',
+  inventory: 'Inventory',
+  invoices: 'Invoices',
+  tasks: 'Tasks',
+  aiDiagnostics: 'AI Diagnostics',
+  messages: 'Messages',
+  reminders: 'Reminders',
+  settings: 'Settings',
+} as const;

@@ -1,0 +1,16 @@
+export const vehicle = {
+  title: 'ยานพาหนะ',
+  description: 'จัดการยานพาหนะของลูกค้า',
+  addVehicle: 'เพิ่มยานพาหนะ',
+  searchPlaceholder: 'ค้นหาด้วยป้ายทะเบียน, ยี่ห้อ, รุ่น หรือลูกค้า...',
+  noVehiclesFound: 'ไม่พบยานพาหนะ',
+  noVehiclesDescription: 'เพิ่มยานพาหนะคันแรกของคุณเพื่อเริ่มต้น',
+  tryAdjustingSearch: 'ลองปรับการค้นหา',
+  mileage: 'เลขไมล์',
+  fuelType: 'ประเภทน้ำมัน',
+  transmission: 'เกียร์',
+  year: 'ปี',
+  color: 'สี',
+  licensePlate: 'ป้ายทะเบียน',
+  owner: 'เจ้าของ',
+} as const;

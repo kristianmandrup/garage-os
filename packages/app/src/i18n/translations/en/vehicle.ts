@@ -1,0 +1,16 @@
+export const vehicle = {
+  title: 'Vehicles',
+  description: 'Manage your customer vehicles',
+  addVehicle: 'Add Vehicle',
+  searchPlaceholder: 'Search by plate, brand, model, or customer...',
+  noVehiclesFound: 'No vehicles found',
+  noVehiclesDescription: 'Add your first vehicle to get started',
+  tryAdjustingSearch: 'Try adjusting your search',
+  mileage: 'Mileage',
+  fuelType: 'Fuel Type',
+  transmission: 'Transmission',
+  year: 'Year',
+  color: 'Color',
+  licensePlate: 'License Plate',
+  owner: 'Owner',
+} as const;

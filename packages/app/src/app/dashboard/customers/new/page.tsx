@@ -3,14 +3,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, User } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { Textarea } from '@garageos/ui/textarea';
+import { useTranslation } from '@/i18n';
 
 export default function NewCustomerPage() {
+  const t = useTranslation();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -61,68 +63,70 @@ export default function NewCustomerPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add Customer</h1>
-          <p className="text-muted-foreground">Register a new customer</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t.newCustomer.title}</h1>
+          <p className="text-muted-foreground">
+            {t.newCustomer.description}
+          </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Customer Information</CardTitle>
+          <CardTitle>{t.newCustomer.customerInformation}</CardTitle>
           <CardDescription>
-            Enter the customer contact details
+            {t.newCustomer.customerInformationDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name *</Label>
+            <Label htmlFor="name">{t.newCustomer.name} *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Customer name"
+              placeholder={t.newCustomer.namePlaceholder}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone *</Label>
+            <Label htmlFor="phone">{t.newCustomer.phone} *</Label>
             <Input
               id="phone"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              placeholder="Phone number"
+              placeholder={t.newCustomer.phonePlaceholder}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t.newCustomer.email}</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="Email address (optional)"
+              placeholder={t.newCustomer.emailPlaceholder}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">{t.newCustomer.address}</Label>
             <Textarea
               id="address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder="Address (optional)"
+              placeholder={t.newCustomer.addressPlaceholder}
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">{t.newCustomer.notes}</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Additional notes (optional)"
+              placeholder={t.newCustomer.notesPlaceholder}
               rows={3}
             />
           </div>
@@ -130,7 +134,7 @@ export default function NewCustomerPage() {
           <div className="flex gap-3 pt-4">
             <Link href="/dashboard/customers" className="flex-1">
               <Button variant="outline" className="w-full">
-                Cancel
+                {t.newCustomer.cancel}
               </Button>
             </Link>
             <Button
@@ -138,7 +142,7 @@ export default function NewCustomerPage() {
               disabled={saving || !formData.name || !formData.phone}
               className="flex-1 btn-gradient"
             >
-              {saving ? 'Creating...' : 'Add Customer'}
+              {saving ? t.newCustomer.creating : t.newCustomer.addCustomer}
             </Button>
           </div>
         </CardContent>

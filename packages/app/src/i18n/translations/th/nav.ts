@@ -1,0 +1,15 @@
+export const nav = {
+  dashboard: 'แดชบอร์ด',
+  analytics: 'การวิเคราะห์',
+  multiShop: 'หลายร้าน',
+  jobCards: 'ใบงาน',
+  vehicles: 'ยานพาหนะ',
+  customers: 'ลูกค้า',
+  inventory: 'สินค้า',
+  invoices: 'ใบแจ้งหนี้',
+  tasks: 'งานที่ต้องทำ',
+  aiDiagnostics: 'วินิจฉัย AI',
+  messages: 'ข้อความ',
+  reminders: 'การแจ้งเตือน',
+  settings: 'การตั้งค่า',
+} as const;

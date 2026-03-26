@@ -1,0 +1,15 @@
+export const vehicleDetail = {
+  title: 'Vehicle',
+  vehicleNotFound: 'Vehicle not found',
+  backToVehicles: 'Back to vehicles',
+  editVehicle: 'Edit Vehicle',
+  deleteVehicle: 'Delete Vehicle',
+  vehicleDetails: 'Vehicle Details',
+  owner: 'Owner',
+  contact: 'Contact',
+  noDescription: 'No description provided',
+  saving: 'Saving...',
+  save: 'Save',
+  cancel: 'Cancel',
+  confirmDelete: 'Are you sure you want to delete this vehicle?',
+} as const;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Edit2, Trash2, Package, AlertTriangle, Plus } from 'lucide-react';
+import { ArrowLeft, Edit2, Trash2, Package, AlertTriangle } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
@@ -11,6 +11,7 @@ import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { Progress } from '@garageos/ui/progress';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
 
 interface Part {
   id: string;
@@ -28,10 +29,10 @@ interface Part {
 }
 
 const STATUS_CONFIG = {
-  in_stock: { label: 'In Stock', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' },
-  low_stock: { label: 'Low Stock', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
-  out_of_stock: { label: 'Out of Stock', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
-  discontinued: { label: 'Discontinued', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400' },
+  in_stock: { labelKey: 'inStock', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' },
+  low_stock: { labelKey: 'lowStock', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
+  out_of_stock: { labelKey: 'outOfStock', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
+  discontinued: { labelKey: 'discontinued', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400' },
 };
 
 const CATEGORIES = [
@@ -41,6 +42,8 @@ const CATEGORIES = [
 ];
 
 export default function PartDetailPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const params = useParams();
   const router = useRouter();
   const [part, setPart] = useState<Part | null>(null);
@@ -135,7 +138,7 @@ export default function PartDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this part?')) return;
+    if (!confirm(t.partDetail.confirmDelete)) return;
 
     try {
       const response = await fetch(`/api/parts/${params.id}`, {
@@ -161,15 +164,16 @@ export default function PartDetailPage() {
   if (!part) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold">Part not found</h2>
+        <h2 className="text-xl font-semibold">{t.partDetail.partNotFound}</h2>
         <Link href="/dashboard/inventory" className="text-primary hover:underline mt-4 inline-block">
-          Back to inventory
+          {t.partDetail.backToInventory}
         </Link>
       </div>
     );
   }
 
   const statusConfig = STATUS_CONFIG[part.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.in_stock;
+  const statusLabel = t.inventory[statusConfig.labelKey as keyof typeof t.inventory] || statusConfig.labelKey;
   const stockPercent = part.min_quantity ? Math.min((part.quantity / part.min_quantity) * 100, 100) : 100;
   const margin = part.cost_price > 0 ? ((part.sell_price - part.cost_price) / part.cost_price * 100).toFixed(0) : 0;
 
@@ -198,12 +202,12 @@ export default function PartDetailPage() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Badge className={statusConfig.color}>{statusConfig.label}</Badge>
+          <Badge className={statusConfig.color}>{statusLabel}</Badge>
           {!editing && (
             <>
               <Button variant="outline" onClick={() => setEditing(true)}>
                 <Edit2 className="h-4 w-4 mr-2" />
-                Edit
+                {t.partDetail.editPart}
               </Button>
               <Button variant="destructive" size="icon" onClick={handleDelete}>
                 <Trash2 className="h-4 w-4" />
@@ -217,21 +221,21 @@ export default function PartDetailPage() {
         {/* Details */}
         <Card>
           <CardHeader>
-            <CardTitle>Part Details</CardTitle>
+            <CardTitle>{t.partDetail.partDetails}</CardTitle>
           </CardHeader>
           <CardContent>
             {editing ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Name *</Label>
+                    <Label>{t.newPart.partName} *</Label>
                     <Input
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Part Number</Label>
+                    <Label>{t.newPart.partNumber}</Label>
                     <Input
                       value={formData.part_number}
                       onChange={(e) => setFormData({ ...formData, part_number: e.target.value })}
@@ -240,20 +244,20 @@ export default function PartDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Category *</Label>
+                    <Label>{t.newPart.category} *</Label>
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      <option value="">Select category</option>
+                      <option value="">{t.newPart.selectCategory}</option>
                       {CATEGORIES.map((cat) => (
                         <option key={cat} value={cat}>{cat}</option>
                       ))}
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Brand</Label>
+                    <Label>{t.newPart.brand}</Label>
                     <Input
                       value={formData.brand}
                       onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
@@ -261,13 +265,13 @@ export default function PartDetailPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Supplier</Label>
+                  <Label>{t.newPart.supplier}</Label>
                   <select
                     value={formData.supplier_id}
                     onChange={(e) => setFormData({ ...formData, supplier_id: e.target.value })}
                     className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <option value="">Select supplier</option>
+                    <option value="">{t.newPart.selectSupplier}</option>
                     {suppliers.map((sup) => (
                       <option key={sup.id} value={sup.id}>{sup.name}</option>
                     ))}
@@ -275,10 +279,10 @@ export default function PartDetailPage() {
                 </div>
                 <div className="flex gap-3 pt-4">
                   <Button onClick={handleSave} disabled={saving} className="flex-1">
-                    {saving ? 'Saving...' : 'Save'}
+                    {saving ? t.partDetail.saving : t.partDetail.save}
                   </Button>
                   <Button variant="outline" onClick={() => setEditing(false)}>
-                    Cancel
+                    {t.partDetail.cancel}
                   </Button>
                 </div>
               </div>
@@ -286,17 +290,17 @@ export default function PartDetailPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Brand</p>
-                    <p className="font-medium">{part.brand || 'Not specified'}</p>
+                    <p className="text-sm text-muted-foreground">{t.newPart.brand}</p>
+                    <p className="font-medium">{part.brand || t.partDetail.notSpecified}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Supplier</p>
-                    <p className="font-medium">{part.supplier?.name || 'Not specified'}</p>
+                    <p className="text-sm text-muted-foreground">{t.newPart.supplier}</p>
+                    <p className="font-medium">{part.supplier?.name || t.partDetail.notSpecified}</p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Added On</p>
-                  <p className="font-medium">{new Date(part.created_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-muted-foreground">{t.partDetail.addedOn}</p>
+                  <p className="font-medium">{formatDateOnly(new Date(part.created_at), locale)}</p>
                 </div>
               </div>
             )}
@@ -306,14 +310,14 @@ export default function PartDetailPage() {
         {/* Stock & Pricing */}
         <Card>
           <CardHeader>
-            <CardTitle>Stock & Pricing</CardTitle>
+            <CardTitle>{t.partDetail.stockAndPricing}</CardTitle>
           </CardHeader>
           <CardContent>
             {editing ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Cost Price (฿)</Label>
+                    <Label>{t.newPart.costPrice} (฿)</Label>
                     <Input
                       type="number"
                       value={formData.cost_price}
@@ -321,7 +325,7 @@ export default function PartDetailPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Sell Price (฿)</Label>
+                    <Label>{t.newPart.sellPrice} (฿)</Label>
                     <Input
                       type="number"
                       value={formData.sell_price}
@@ -331,7 +335,7 @@ export default function PartDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Current Stock</Label>
+                    <Label>{t.newPart.currentStock}</Label>
                     <Input
                       type="number"
                       value={formData.quantity}
@@ -339,7 +343,7 @@ export default function PartDetailPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Min Stock Alert</Label>
+                    <Label>{t.newPart.minStockAlert}</Label>
                     <Input
                       type="number"
                       value={formData.min_quantity}
@@ -349,10 +353,10 @@ export default function PartDetailPage() {
                 </div>
                 <div className="flex gap-3 pt-4">
                   <Button onClick={handleSave} disabled={saving} className="flex-1">
-                    {saving ? 'Saving...' : 'Save'}
+                    {saving ? t.partDetail.saving : t.partDetail.save}
                   </Button>
                   <Button variant="outline" onClick={() => setEditing(false)}>
-                    Cancel
+                    {t.partDetail.cancel}
                   </Button>
                 </div>
               </div>
@@ -361,7 +365,7 @@ export default function PartDetailPage() {
                 {/* Stock Level */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Stock Level</span>
+                    <span className="text-sm font-medium">{t.partDetail.stockLevel}</span>
                     <span className="text-sm text-muted-foreground">
                       {part.quantity} {part.min_quantity ? `/ ${part.min_quantity}` : ''}
                     </span>
@@ -377,7 +381,7 @@ export default function PartDetailPage() {
                   {part.status === 'low_stock' && (
                     <div className="flex items-center gap-2 mt-2 text-amber-600">
                       <AlertTriangle className="h-4 w-4" />
-                      <span className="text-sm">Stock is running low</span>
+                      <span className="text-sm">{t.partDetail.stockIsRunningLow}</span>
                     </div>
                   )}
                 </div>
@@ -385,15 +389,15 @@ export default function PartDetailPage() {
                 {/* Pricing */}
                 <div className="grid grid-cols-3 gap-4">
                   <div className="p-3 rounded-lg bg-muted/50">
-                    <p className="text-sm text-muted-foreground">Cost</p>
-                    <p className="text-lg font-bold">฿{part.cost_price.toLocaleString()}</p>
+                    <p className="text-sm text-muted-foreground">{t.partDetail.cost}</p>
+                    <p className="text-lg font-bold">{formatCurrency(part.cost_price, locale)}</p>
                   </div>
                   <div className="p-3 rounded-lg bg-muted/50">
-                    <p className="text-sm text-muted-foreground">Sell</p>
-                    <p className="text-lg font-bold">฿{part.sell_price.toLocaleString()}</p>
+                    <p className="text-sm text-muted-foreground">{t.partDetail.sell}</p>
+                    <p className="text-lg font-bold">{formatCurrency(part.sell_price, locale)}</p>
                   </div>
                   <div className="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-                    <p className="text-sm text-muted-foreground">Margin</p>
+                    <p className="text-sm text-muted-foreground">{t.partDetail.margin}</p>
                     <p className="text-lg font-bold text-emerald-600">{margin}%</p>
                   </div>
                 </div>
@@ -401,9 +405,9 @@ export default function PartDetailPage() {
                 {/* Total Value */}
                 <div className="p-4 rounded-lg bg-primary/10">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium">Total Stock Value</span>
+                    <span className="font-medium">{t.partDetail.totalStockValue}</span>
                     <span className="text-xl font-bold">
-                      ฿{(part.quantity * part.sell_price).toLocaleString()}
+                      {formatCurrency(part.quantity * part.sell_price, locale)}
                     </span>
                   </div>
                 </div>

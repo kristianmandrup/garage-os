@@ -3,15 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Truck, Star } from 'lucide-react';
+import { ArrowLeft, Star } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { Textarea } from '@garageos/ui/textarea';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation } from '@/i18n';
 
 export default function NewSupplierPage() {
+  const t = useTranslation();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [rating, setRating] = useState(0);
@@ -66,75 +68,77 @@ export default function NewSupplierPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Add Supplier</h1>
-          <p className="text-muted-foreground">Add a new parts supplier</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t.newSupplier.title}</h1>
+          <p className="text-muted-foreground">
+            {t.newSupplier.description}
+          </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Supplier Information</CardTitle>
+          <CardTitle>{t.newSupplier.supplierInformation}</CardTitle>
           <CardDescription>
-            Enter the supplier details below
+            {t.newSupplier.supplierInformationDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Company Name *</Label>
+            <Label htmlFor="name">{t.newSupplier.companyName} *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., AutoParts Thailand Co."
+              placeholder={t.newSupplier.companyNamePlaceholder}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contact_person">Contact Person</Label>
+            <Label htmlFor="contact_person">{t.newSupplier.contactPerson}</Label>
             <Input
               id="contact_person"
               value={formData.contact_person}
               onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
-              placeholder="e.g., Somchai Prasert"
+              placeholder={t.newSupplier.contactPersonPlaceholder}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">{t.newSupplier.phone}</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="e.g., 02-123-4567"
+                placeholder={t.newSupplier.phonePlaceholder}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.newSupplier.email}</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="e.g., order@autoparts.co.th"
+                placeholder={t.newSupplier.emailPlaceholder}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">{t.newSupplier.address}</Label>
             <Textarea
               id="address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder="Supplier address..."
+              placeholder={t.newSupplier.addressPlaceholder}
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Rating</Label>
+            <Label>{t.newSupplier.rating}</Label>
             <div className="flex items-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -152,18 +156,18 @@ export default function NewSupplierPage() {
                 </button>
               ))}
               <span className="text-sm text-muted-foreground ml-2">
-                {rating > 0 ? `${rating}/5` : 'Not rated'}
+                {rating > 0 ? `${rating}/5` : t.newSupplier.notRated}
               </span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">{t.newSupplier.notes}</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Additional notes about this supplier..."
+              placeholder={t.newSupplier.notesPlaceholder}
               rows={3}
             />
           </div>
@@ -171,7 +175,7 @@ export default function NewSupplierPage() {
           <div className="flex gap-3 pt-4">
             <Link href="/dashboard/suppliers" className="flex-1">
               <Button variant="outline" className="w-full">
-                Cancel
+                {t.newSupplier.cancel}
               </Button>
             </Link>
             <Button
@@ -179,7 +183,7 @@ export default function NewSupplierPage() {
               disabled={saving || !formData.name}
               className="flex-1 btn-gradient"
             >
-              {saving ? 'Creating...' : 'Add Supplier'}
+              {saving ? t.newSupplier.creating : t.newSupplier.addSupplier}
             </Button>
           </div>
         </CardContent>

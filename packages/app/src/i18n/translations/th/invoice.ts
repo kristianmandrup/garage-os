@@ -1,0 +1,22 @@
+export const invoice = {
+  title: 'ใบแจ้งหนี้',
+  description: 'จัดการใบแจ้งหนี้และติดตามการชำระเงิน',
+  invoiceNumber: 'เลขที่ใบแจ้งหนี้',
+  amount: 'จำนวนเงิน',
+  dueDate: 'กำหนดชำระ',
+  totalInvoices: 'ใบแจ้งหนี้ทั้งหมด',
+  outstanding: 'ค้างชำระ',
+  paid: 'ชำระแล้ว',
+  searchPlaceholder: 'ค้นหาใบแจ้งหนี้...',
+  allStatus: 'ทุกสถานะ',
+  noInvoicesFound: 'ไม่พบใบแจ้งหนี้',
+  noInvoicesDescription: 'สร้างใบแจ้งหนี้จากใบงานที่เสร็จสิ้น',
+  tryAdjustingSearch: 'ลองปรับการค้นหา',
+  statuses: {
+    draft: 'ฉบับร่าง',
+    sent: 'ส่งแล้ว',
+    paid: 'ชำระแล้ว',
+    overdue: 'เกินกำหนด',
+    cancelled: 'ยกเลิก',
+  },
+} as const;

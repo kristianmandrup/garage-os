@@ -10,6 +10,7 @@ import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { Textarea } from '@garageos/ui/textarea';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation, useLocale, formatDateOnly } from '@/i18n';
 
 interface Supplier {
   id: string;
@@ -24,6 +25,8 @@ interface Supplier {
 }
 
 export default function SupplierDetailPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const params = useParams();
   const router = useRouter();
   const [supplier, setSupplier] = useState<Supplier | null>(null);
@@ -98,7 +101,7 @@ export default function SupplierDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this supplier?')) return;
+    if (!confirm(t.supplier.confirmDelete)) return;
 
     try {
       const response = await fetch(`/api/suppliers/${params.id}`, {
@@ -140,9 +143,9 @@ export default function SupplierDetailPage() {
   if (!supplier) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold">Supplier not found</h2>
+        <h2 className="text-xl font-semibold">{t.supplier.supplierNotFound}</h2>
         <Link href="/dashboard/suppliers" className="text-primary hover:underline mt-4 inline-block">
-          Back to suppliers
+          {t.supplier.backToSuppliers}
         </Link>
       </div>
     );
@@ -175,7 +178,7 @@ export default function SupplierDetailPage() {
             <>
               <Button variant="outline" onClick={() => setEditing(true)}>
                 <Edit2 className="h-4 w-4 mr-2" />
-                Edit
+                {t.supplier.edit}
               </Button>
               <Button variant="destructive" size="icon" onClick={handleDelete}>
                 <Trash2 className="h-4 w-4" />
@@ -189,20 +192,20 @@ export default function SupplierDetailPage() {
         {/* Contact Info */}
         <Card>
           <CardHeader>
-            <CardTitle>Contact Information</CardTitle>
+            <CardTitle>{t.supplier.contactInformation}</CardTitle>
           </CardHeader>
           <CardContent>
             {editing ? (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Company Name *</Label>
+                  <Label>{t.supplier.companyName} *</Label>
                   <Input
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Contact Person</Label>
+                  <Label>{t.supplier.contactPerson}</Label>
                   <Input
                     value={formData.contact_person}
                     onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
@@ -210,14 +213,14 @@ export default function SupplierDetailPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Phone</Label>
+                    <Label>{t.supplier.phone}</Label>
                     <Input
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Email</Label>
+                    <Label>{t.supplier.email}</Label>
                     <Input
                       type="email"
                       value={formData.email}
@@ -226,7 +229,7 @@ export default function SupplierDetailPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Address</Label>
+                  <Label>{t.supplier.address}</Label>
                   <Textarea
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
@@ -234,7 +237,7 @@ export default function SupplierDetailPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Notes</Label>
+                  <Label>{t.supplier.notes}</Label>
                   <Textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
@@ -243,10 +246,10 @@ export default function SupplierDetailPage() {
                 </div>
                 <div className="flex gap-3 pt-4">
                   <Button onClick={handleSave} disabled={saving} className="flex-1">
-                    {saving ? 'Saving...' : 'Save'}
+                    {saving ? t.supplier.saving : t.supplier.save}
                   </Button>
                   <Button variant="outline" onClick={() => setEditing(false)}>
-                    Cancel
+                    {t.supplier.cancel}
                   </Button>
                 </div>
               </div>
@@ -256,7 +259,7 @@ export default function SupplierDetailPage() {
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="text-sm text-muted-foreground">{t.supplier.phone}</p>
                       <p className="font-medium">{supplier.phone}</p>
                     </div>
                   </div>
@@ -265,7 +268,7 @@ export default function SupplierDetailPage() {
                   <div className="flex items-center gap-3">
                     <Mail className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="text-sm text-muted-foreground">{t.supplier.email}</p>
                       <p className="font-medium">{supplier.email}</p>
                     </div>
                   </div>
@@ -274,24 +277,24 @@ export default function SupplierDetailPage() {
                   <div className="flex items-center gap-3">
                     <MapPin className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Address</p>
+                      <p className="text-sm text-muted-foreground">{t.supplier.address}</p>
                       <p className="font-medium">{supplier.address}</p>
                     </div>
                   </div>
                 )}
                 {supplier.notes && (
                   <div className="pt-4 border-t">
-                    <p className="text-sm text-muted-foreground mb-1">Notes</p>
+                    <p className="text-sm text-muted-foreground mb-1">{t.supplier.notes}</p>
                     <p className="font-medium">{supplier.notes}</p>
                   </div>
                 )}
                 <div className="pt-4 border-t">
-                  <p className="text-sm text-muted-foreground mb-2">Rating</p>
-                  {supplier.rating ? renderStars(supplier.rating) : <p className="text-muted-foreground">Not rated</p>}
+                  <p className="text-sm text-muted-foreground mb-2">{t.supplier.rating}</p>
+                  {supplier.rating ? renderStars(supplier.rating) : <p className="text-muted-foreground">{t.supplier.notRated}</p>}
                 </div>
                 <div className="pt-4 border-t">
-                  <p className="text-sm text-muted-foreground">Added On</p>
-                  <p className="font-medium">{new Date(supplier.created_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-muted-foreground">{t.supplier.addedOn}</p>
+                  <p className="font-medium">{formatDateOnly(new Date(supplier.created_at), locale)}</p>
                 </div>
               </div>
             )}
@@ -301,16 +304,16 @@ export default function SupplierDetailPage() {
         {/* Quick Stats */}
         <Card>
           <CardHeader>
-            <CardTitle>Supplier Stats</CardTitle>
+            <CardTitle>{t.supplier.supplierStats}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="p-4 rounded-lg bg-muted/50">
-                <p className="text-sm text-muted-foreground">Parts from this supplier</p>
+                <p className="text-sm text-muted-foreground">{t.supplier.partsFromSupplier}</p>
                 <p className="text-2xl font-bold">-</p>
               </div>
               <div className="p-4 rounded-lg bg-muted/50">
-                <p className="text-sm text-muted-foreground">Total orders</p>
+                <p className="text-sm text-muted-foreground">{t.supplier.totalOrders}</p>
                 <p className="text-2xl font-bold">-</p>
               </div>
             </div>
