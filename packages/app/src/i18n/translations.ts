@@ -39,6 +39,7 @@ export const translations = {
       aiDiagnostics: 'AI Diagnostics',
       messages: 'Messages',
       reminders: 'Reminders',
+      settings: 'Settings',
     },
     dashboard: {
       welcome: "Welcome back! Here's what's happening at your shop.",
@@ -178,6 +179,7 @@ export const translations = {
       aiDiagnostics: 'วินิจฉัย AI',
       messages: 'ข้อความ',
       reminders: 'การแจ้งเตือน',
+      settings: 'การตั้งค่า',
     },
     dashboard: {
       welcome: 'ยินดีต้อนรับกลับ! นี่คือสิ่งที่เกิดขึ้นที่ร้านของคุณ',

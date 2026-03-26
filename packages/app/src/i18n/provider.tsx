@@ -1,8 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { type Locale, locales, defaultLocale } from './config';
+import { type Locale, locales } from './config';
 import { translations, type TranslationKeys } from './translations';
+import { useAppStore } from '@/stores/useAppStore';
 
 interface I18nContextValue {
   locale: Locale;
@@ -15,7 +16,7 @@ const I18nContext = React.createContext<I18nContextValue | null>(null);
 export function useLocale() {
   const context = React.useContext(I18nContext);
   if (!context) {
-    return { locale: defaultLocale as Locale, setLocale: () => {}, t: translations.en as TranslationKeys };
+    return { locale: 'en' as Locale, setLocale: () => {}, t: translations.en as TranslationKeys };
   }
   return context;
 }
@@ -26,24 +27,20 @@ export function useTranslation() {
 }
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = React.useState<Locale>(defaultLocale);
+  const { locale: storeLocale, setLocale: storeSetLocale } = useAppStore();
+  const [locale, setLocaleState] = React.useState<Locale>(storeLocale || 'en');
 
   React.useEffect(() => {
-    // Read locale from cookie on mount
-    const cookieLocale = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('locale='))
-      ?.split('=')[1] as Locale;
-
-    if (cookieLocale && locales.includes(cookieLocale)) {
-      setLocaleState(cookieLocale);
+    // Sync from store on mount
+    if (storeLocale && locales.includes(storeLocale)) {
+      setLocaleState(storeLocale);
     }
-  }, []);
+  }, [storeLocale]);
 
   const setLocale = React.useCallback((newLocale: Locale) => {
     setLocaleState(newLocale);
-    document.cookie = `locale=${newLocale};path=/;max-age=31536000`;
-  }, []);
+    storeSetLocale(newLocale);
+  }, [storeSetLocale]);
 
   const t = translations[locale] as TranslationKeys;
 

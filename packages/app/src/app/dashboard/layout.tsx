@@ -69,6 +69,7 @@ export default function DashboardLayout({
     { nameKey: 'aiDiagnostics', href: '/dashboard/diagnostics', icon: Search },
     { nameKey: 'messages', href: '/dashboard/messages', icon: MessageSquare },
     { nameKey: 'reminders', href: '/dashboard/reminders', icon: Bell },
+    { nameKey: 'settings', href: '/dashboard/settings', icon: Settings },
   ];
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { Locale } from '@/i18n';
 
 interface AppState {
   // Theme
@@ -7,11 +8,14 @@ interface AppState {
   isDark: boolean;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   initTheme: () => void;
+  // Locale
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
 }
 
 export const useAppStore = create<AppState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       theme: 'system',
       isDark: false,
 
@@ -24,7 +28,6 @@ export const useAppStore = create<AppState>()(
         }
         set({ theme, isDark });
         document.documentElement.classList.toggle('dark', isDark);
-        localStorage.setItem('garageos-theme', theme);
       },
 
       initTheme: () => {
@@ -39,10 +42,17 @@ export const useAppStore = create<AppState>()(
         set({ theme, isDark });
         document.documentElement.classList.toggle('dark', isDark);
       },
+
+      locale: 'en',
+
+      setLocale: (locale) => {
+        set({ locale });
+        document.cookie = `locale=${locale};path=/;max-age=31536000`;
+      },
     }),
     {
       name: 'garageos-app-store',
-      partialize: (state) => ({ theme: state.theme }),
+      partialize: (state) => ({ theme: state.theme, locale: state.locale }),
     }
   )
 );
