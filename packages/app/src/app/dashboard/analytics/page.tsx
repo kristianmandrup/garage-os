@@ -19,6 +19,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation, useLocale, formatCurrency } from '@/i18n';
 
 interface Analytics {
   revenue: {
@@ -58,16 +59,6 @@ interface Analytics {
   period: number;
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  inspection: 'Inspection',
-  diagnosed: 'Diagnosed',
-  parts_ordered: 'Parts Ordered',
-  in_progress: 'In Progress',
-  pending_approval: 'Pending Approval',
-  completed: 'Completed',
-  cancelled: 'Cancelled',
-};
-
 const STATUS_COLORS: Record<string, string> = {
   inspection: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
   diagnosed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
@@ -79,6 +70,8 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function AnalyticsPage() {
+  const t = useTranslation();
+  const { locale } = useLocale();
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState('30');
@@ -99,10 +92,6 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(amount);
   };
 
   const getMaxRevenue = () => {
@@ -132,8 +121,8 @@ export default function AnalyticsPage() {
     return (
       <div className="text-center py-12">
         <AlertTriangle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-        <h3 className="text-lg font-semibold mb-2">Unable to load analytics</h3>
-        <p className="text-muted-foreground">Please try again later</p>
+        <h3 className="text-lg font-semibold mb-2">{t.analytics.unableToLoad}</h3>
+        <p className="text-muted-foreground">{t.analytics.tryAgainLater}</p>
       </div>
     );
   }
@@ -145,9 +134,9 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.nav.analytics}</h1>
           <p className="text-muted-foreground">
-            Insights for your shop performance
+            {t.analytics.description}
           </p>
         </div>
         <select
@@ -155,9 +144,9 @@ export default function AnalyticsPage() {
           onChange={(e) => setPeriod(e.target.value)}
           className="h-10 px-3 rounded-md border border-input bg-background text-sm"
         >
-          <option value="7">Last 7 days</option>
-          <option value="30">Last 30 days</option>
-          <option value="90">Last 90 days</option>
+          <option value="7">{t.analytics.last7Days}</option>
+          <option value="30">{t.analytics.last30Days}</option>
+          <option value="90">{t.analytics.last90Days}</option>
         </select>
       </div>
 
@@ -166,22 +155,22 @@ export default function AnalyticsPage() {
         <Card className="card-hover">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">Total Revenue</span>
+              <span className="text-sm font-medium text-muted-foreground">{t.analytics.totalRevenue}</span>
               <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                 <DollarSign className="h-5 w-5 text-emerald-600" />
               </div>
             </div>
-            <p className="text-3xl font-bold mt-2">{formatCurrency(analytics.revenue.total)}</p>
+            <p className="text-3xl font-bold mt-2">{formatCurrency(analytics.revenue.total, locale)}</p>
             <div className="flex items-center mt-2 text-sm">
               {analytics.revenue.paid >= analytics.revenue.pending ? (
                 <>
                   <ArrowUpRight className="h-4 w-4 text-emerald-500 mr-1" />
-                  <span className="text-emerald-600">{formatCurrency(analytics.revenue.paid)} collected</span>
+                  <span className="text-emerald-600">{formatCurrency(analytics.revenue.paid, locale)} {t.analytics.collected}</span>
                 </>
               ) : (
                 <>
                   <ArrowDownRight className="h-4 w-4 text-amber-500 mr-1" />
-                  <span className="text-amber-600">{formatCurrency(analytics.revenue.pending)} pending</span>
+                  <span className="text-amber-600">{formatCurrency(analytics.revenue.pending, locale)} {t.analytics.pending}</span>
                 </>
               )}
             </div>
@@ -191,14 +180,14 @@ export default function AnalyticsPage() {
         <Card className="card-hover">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">Completed Jobs</span>
+              <span className="text-sm font-medium text-muted-foreground">{t.analytics.completedJobs}</span>
               <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <CheckCircle className="h-5 w-5 text-blue-600" />
               </div>
             </div>
             <p className="text-3xl font-bold mt-2">{analytics.jobs.completed}</p>
             <p className="text-sm text-muted-foreground mt-2">
-              of {analytics.jobs.total} total ({analytics.jobs.completionRate}% rate)
+              {t.analytics.ofTotal.replace('{total}', analytics.jobs.total.toString()).replace('{rate}', analytics.jobs.completionRate.toString())}
             </p>
           </CardContent>
         </Card>
@@ -206,14 +195,14 @@ export default function AnalyticsPage() {
         <Card className="card-hover">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-muted-foreground">Avg. Job Time</span>
+              <span className="text-sm font-medium text-muted-foreground">{t.analytics.avgJobTime}</span>
               <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                 <Clock className="h-5 w-5 text-purple-600" />
               </div>
             </div>
             <p className="text-3xl font-bold mt-2">{analytics.jobs.avgJobHours}h</p>
             <p className="text-sm text-muted-foreground mt-2">
-              {analytics.jobs.inProgress} jobs in progress
+              {analytics.jobs.inProgress} {t.analytics.inProgress}
             </p>
           </CardContent>
         </Card>
@@ -222,13 +211,13 @@ export default function AnalyticsPage() {
       {/* Revenue Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Revenue Trend</CardTitle>
-          <CardDescription>Daily revenue over the last {analytics.period} days</CardDescription>
+          <CardTitle>{t.analytics.revenueTrend}</CardTitle>
+          <CardDescription>{t.analytics.dailyRevenue.replace('{days}', analytics.period.toString())}</CardDescription>
         </CardHeader>
         <CardContent>
           {Object.keys(analytics.revenue.byDay).length === 0 ? (
             <div className="h-48 flex items-center justify-center text-muted-foreground">
-              No revenue data for this period
+              {t.analytics.noRevenueData}
             </div>
           ) : (
             <div className="flex items-end gap-1 h-48">
@@ -241,10 +230,10 @@ export default function AnalyticsPage() {
                       <div
                         className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t transition-all hover:from-blue-500 hover:to-blue-300"
                         style={{ height: `${Math.max(height, 4)}%` }}
-                        title={formatCurrency(amount)}
+                        title={formatCurrency(amount, locale)}
                       />
                       <span className="text-xs text-muted-foreground">
-                        {new Date(day).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })}
+                        {new Date(day).toLocaleDateString(locale === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short' })}
                       </span>
                     </div>
                   );
@@ -259,18 +248,19 @@ export default function AnalyticsPage() {
         {/* Jobs by Status */}
         <Card>
           <CardHeader>
-            <CardTitle>Job Status Distribution</CardTitle>
-            <CardDescription>Current job breakdown by status</CardDescription>
+            <CardTitle>{t.analytics.jobStatusDistribution}</CardTitle>
+            <CardDescription>{t.analytics.currentJobBreakdown}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {Object.entries(analytics.jobs.byStatus).map(([status, count]) => {
                 const percentage = analytics.jobs.total > 0 ? (count / analytics.jobs.total) * 100 : 0;
+                const statusKey = status.replace('_', '') as keyof typeof t.jobCard.statuses;
                 return (
                   <div key={status} className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <Badge className={cn(STATUS_COLORS[status] || 'bg-slate-100')}>
-                        {STATUS_LABELS[status] || status}
+                        {t.jobCard.statuses[statusKey] || status}
                       </Badge>
                       <span className="font-medium">{count} ({percentage.toFixed(0)}%)</span>
                     </div>
@@ -290,20 +280,20 @@ export default function AnalyticsPage() {
         {/* Inventory Overview */}
         <Card>
           <CardHeader>
-            <CardTitle>Inventory Health</CardTitle>
-            <CardDescription>Parts usage and stock status</CardDescription>
+            <CardTitle>{t.analytics.inventoryHealth}</CardTitle>
+            <CardDescription>{t.analytics.partsUsageStock}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="p-4 rounded-xl bg-muted/50">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                  <Package className="h-4 w-4" /> Total Parts
+                  <Package className="h-4 w-4" /> {t.analytics.totalParts}
                 </div>
                 <p className="text-2xl font-bold">{analytics.inventory.totalParts}</p>
               </div>
               <div className="p-4 rounded-xl bg-muted/50">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                  <TrendingUp className="h-4 w-4" /> Parts Used
+                  <TrendingUp className="h-4 w-4" /> {t.analytics.partsUsed}
                 </div>
                 <p className="text-2xl font-bold">{analytics.inventory.partsUsed}</p>
               </div>
@@ -312,7 +302,7 @@ export default function AnalyticsPage() {
                 analytics.inventory.lowStock > 0 ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'
               )}>
                 <div className="flex items-center gap-2 text-sm mb-1">
-                  <AlertTriangle className="h-4 w-4" /> Low Stock
+                  <AlertTriangle className="h-4 w-4" /> {t.analytics.lowStock}
                 </div>
                 <p className={cn(
                   'text-2xl font-bold',
@@ -326,7 +316,7 @@ export default function AnalyticsPage() {
                 analytics.inventory.outOfStock > 0 ? 'bg-red-100 dark:bg-red-900/30' : 'bg-muted/50'
               )}>
                 <div className="flex items-center gap-2 text-sm mb-1">
-                  <AlertTriangle className="h-4 w-4" /> Out of Stock
+                  <AlertTriangle className="h-4 w-4" /> {t.analytics.outOfStock}
                 </div>
                 <p className={cn(
                   'text-2xl font-bold',
@@ -340,7 +330,7 @@ export default function AnalyticsPage() {
             {/* Top Parts */}
             {analytics.inventory.topParts.length > 0 && (
               <div>
-                <h4 className="text-sm font-medium mb-3">Most Used Parts</h4>
+                <h4 className="text-sm font-medium mb-3">{t.analytics.mostUsedParts}</h4>
                 <div className="space-y-2">
                   {analytics.inventory.topParts.map((part) => (
                     <div key={part.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
@@ -348,7 +338,7 @@ export default function AnalyticsPage() {
                         <p className="font-medium text-sm">{part.name}</p>
                         <p className="text-xs text-muted-foreground">{part.quantity} units</p>
                       </div>
-                      <p className="font-medium text-sm">{formatCurrency(part.value)}</p>
+                      <p className="font-medium text-sm">{formatCurrency(part.value, locale)}</p>
                     </div>
                   ))}
                 </div>
@@ -362,8 +352,8 @@ export default function AnalyticsPage() {
       {analytics.mechanics.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Mechanic Productivity</CardTitle>
-            <CardDescription>Jobs completed and hours logged by mechanic</CardDescription>
+            <CardTitle>{t.analytics.mechanicProductivity}</CardTitle>
+            <CardDescription>{t.analytics.jobsCompletedHours}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -376,24 +366,24 @@ export default function AnalyticsPage() {
                     <div>
                       <p className="font-medium">{mechanic.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {mechanic.inProgress} in progress
+                        {mechanic.inProgress} {t.analytics.inProgress}
                       </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
                       <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{mechanic.completed}</p>
-                      <p className="text-xs text-muted-foreground">Completed</p>
+                      <p className="text-xs text-muted-foreground">{t.analytics.completed}</p>
                     </div>
                     <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
                       <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{mechanic.totalHours.toFixed(0)}</p>
-                      <p className="text-xs text-muted-foreground">Hours</p>
+                      <p className="text-xs text-muted-foreground">{t.analytics.hours}</p>
                     </div>
                     <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
                       <p className="text-lg font-bold text-purple-600 dark:text-purple-400">
                         {mechanic.completed > 0 ? (mechanic.totalHours / mechanic.completed).toFixed(1) : 0}h
                       </p>
-                      <p className="text-xs text-muted-foreground">Avg/Job</p>
+                      <p className="text-xs text-muted-foreground">{t.analytics.avgPerJob}</p>
                     </div>
                   </div>
                 </div>
@@ -406,8 +396,8 @@ export default function AnalyticsPage() {
       {/* Customer Retention */}
       <Card>
         <CardHeader>
-          <CardTitle>Customer Retention</CardTitle>
-          <CardDescription>Returning customers analysis</CardDescription>
+          <CardTitle>{t.analytics.customerRetention}</CardTitle>
+          <CardDescription>{t.analytics.returningCustomers}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-6">
@@ -438,12 +428,12 @@ export default function AnalyticsPage() {
               </div>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Returning Customer Rate</p>
+              <p className="text-sm text-muted-foreground">{t.analytics.returningCustomerRate}</p>
               <p className="text-lg font-semibold mt-1">
-                {analytics.customerRetention.returning} returning out of {analytics.customerRetention.total} customers
+                {t.analytics.returningOutOf.replace('{returning}', analytics.customerRetention.returning.toString()).replace('{total}', analytics.customerRetention.total.toString())}
               </p>
               <p className="text-sm text-muted-foreground mt-2">
-                Customers with more than one job card
+                {t.analytics.customersWithMultipleJobs}
               </p>
             </div>
           </div>
