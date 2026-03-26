@@ -1,69 +1,169 @@
 import { loginWithGoogle } from '@/lib/supabase/auth';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Wrench } from 'lucide-react';
+import { Wrench, Shield, Zap, Users } from 'lucide-react';
+
+const features = [
+  {
+    icon: Zap,
+    title: 'AI-Powered Inspection',
+    description: 'Upload photos, get instant damage analysis',
+  },
+  {
+    icon: Users,
+    title: 'Customer Transparency',
+    description: 'Visual reports build trust and approvals',
+  },
+  {
+    icon: Shield,
+    title: 'Shop Management',
+    description: 'Track jobs, inventory, and revenue',
+  },
+];
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-4">
-            <Wrench className="w-8 h-8 text-blue-600" />
-          </div>
-          <CardTitle className="text-2xl">Welcome to GarageOS</CardTitle>
-          <CardDescription>
-            Sign in to manage your auto repair shop
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <form action={loginWithGoogle}>
-            <Button type="submit" className="w-full" size="lg">
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                />
-              </svg>
-              Continue with Google
-            </Button>
-          </form>
+    <div className="min-h-screen flex">
+      {/* Left Panel - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/3 translate-y-1/3" />
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
+        </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+              <Wrench className="w-6 h-6 text-white" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">
-                for auto repair shops
-              </span>
+            <span className="text-2xl font-bold text-white">GarageOS</span>
+          </div>
+
+          {/* Hero Content */}
+          <div className="space-y-8">
+            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
+              &quot;Shopify for<br />Auto Repair&quot;
+            </h1>
+            <p className="text-xl text-blue-100 max-w-md">
+              Mobile-first shop management for auto repair shops in Thailand and Southeast Asia.
+            </p>
+
+            {/* Feature List */}
+            <div className="space-y-4">
+              {features.map((feature) => (
+                <div key={feature.title} className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-white/10 backdrop-blur flex items-center justify-center">
+                    <feature.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-white">{feature.title}</p>
+                    <p className="text-sm text-blue-200">{feature.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <p className="text-center text-sm text-muted-foreground">
-            By signing in, you agree to our{' '}
-            <a href="/terms" className="underline underline-offset-4 hover:text-primary">
-              Terms of Service
-            </a>{' '}
-            and{' '}
-            <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
-              Privacy Policy
-            </a>
-          </p>
-        </CardContent>
-      </Card>
-    </main>
+          {/* Footer */}
+          <div className="text-sm text-blue-200">
+            Trusted by 500+ auto repair shops across Thailand
+          </div>
+        </div>
+
+        {/* Hero Image Overlay */}
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=1200&q=80')] bg-cover bg-center mix-blend-overlay opacity-20" />
+      </div>
+
+      {/* Right Panel - Login Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-md space-y-8">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
+              <Wrench className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-2xl font-bold gradient-text">GarageOS</span>
+          </div>
+
+          {/* Login Card */}
+          <Card className="border-0 shadow-xl">
+            <CardHeader className="text-center pb-2">
+              <CardTitle className="text-2xl">Welcome Back</CardTitle>
+              <CardDescription>
+                Sign in to manage your auto repair shop
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6 pt-4">
+              {/* Google Sign In */}
+              <form action={loginWithGoogle}>
+                <Button type="submit" className="w-full h-12 text-base btn-gradient" size="lg">
+                  <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
+                    <path
+                      fill="currentColor"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    />
+                  </svg>
+                  Continue with Google
+                </Button>
+              </form>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">
+                    for shop owners & mechanics
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-center text-sm text-muted-foreground">
+                By signing in, you agree to our{' '}
+                <a href="/terms" className="underline underline-offset-4 hover:text-primary">
+                  Terms of Service
+                </a>{' '}
+                and{' '}
+                <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
+                  Privacy Policy
+                </a>
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Trust Badges */}
+          <div className="flex items-center justify-center gap-8 text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm">
+              <Shield className="h-4 w-4" />
+              <span>Secure</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Zap className="h-4 w-4" />
+              <span>AI-Powered</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Users className="h-4 w-4" />
+              <span>500+ Shops</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
