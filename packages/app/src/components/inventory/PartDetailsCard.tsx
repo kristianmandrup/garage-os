@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
 import { Label } from '@garageos/ui/label';
 import { Button } from '@garageos/ui/button';
-import { useTranslation, useLocale, formatDateOnly } from '@/i18n';
+import { useLocale, formatDateOnly } from '@/i18n';
 
 const CATEGORIES = [
   'Engine', 'Brake', 'Suspension', 'Electrical', 'Transmission',
@@ -48,7 +48,6 @@ export function PartDetailsCard({
   onSave,
   onCancel,
 }: PartDetailsCardProps) {
-  const t = useTranslation();
   const { locale } = useLocale();
 
   return (

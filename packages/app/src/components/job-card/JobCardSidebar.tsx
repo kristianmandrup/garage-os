@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { User } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Input } from '@garageos/ui/input';

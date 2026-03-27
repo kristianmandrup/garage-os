@@ -15,10 +15,6 @@ interface DashboardStatsCardsProps {
   loading: boolean;
 }
 
-const iconMap = { Wrench, Car, Users, AlertCircle };
-const colorMap = ['blue', 'emerald', 'purple', 'amber'] as const;
-const keyMap = ['activeJobs', 'totalVehicles', 'totalCustomers', 'lowStockItems'] as const;
-
 export function DashboardStatsCards({ stats, loading }: DashboardStatsCardsProps) {
   const t = useTranslation();
 

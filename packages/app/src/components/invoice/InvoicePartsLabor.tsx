@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
-import { useTranslation, useLocale, formatCurrency } from '@/i18n';
+import { useLocale, formatCurrency } from '@/i18n';
 
 interface PartUsage {
   id: string;

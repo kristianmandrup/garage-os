@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
-import { useTranslation } from '@/i18n';
 
 interface Vehicle {
   license_plate: string;

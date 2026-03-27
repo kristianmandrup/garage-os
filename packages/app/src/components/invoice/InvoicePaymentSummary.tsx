@@ -2,7 +2,7 @@
 
 import { CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
-import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
+import { useLocale, formatCurrency, formatDateOnly } from '@/i18n';
 
 interface InvoicePaymentSummaryProps {
   invoice: {
@@ -20,8 +20,6 @@ interface InvoicePaymentSummaryProps {
 
 export function InvoicePaymentSummary({ invoice, paymentMethodLabels }: InvoicePaymentSummaryProps) {
   const { locale } = useLocale();
-  const t = require('@/i18n').useTranslation();
-
   return (
     <Card>
       <CardHeader>

@@ -8,7 +8,7 @@ import {
   DropdownContent,
   DropdownItem,
 } from '@garageos/ui/dropdown-menu';
-import { useLocale, localeNames, locales, type Locale } from '@/i18n';
+import { useLocale, localeNames, locales } from '@/i18n';
 
 export function LocaleSwitcher() {
   const { locale, setLocale } = useLocale();

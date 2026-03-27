@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileText, Plus, CheckCircle, Clock, AlertTriangle, XCircle } from 'lucide-react';
-import { Button } from '@garageos/ui/button';
+import { FileText, CheckCircle, Clock, AlertTriangle, XCircle } from 'lucide-react';
 import { Card, CardContent } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
 import { DataTable, type Column } from '@garageos/ui/data-table';
 import { Skeleton } from '@garageos/ui/skeleton';
-import { cn } from '@garageos/ui/utils';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@garageos/ui/breadcrumb';
 import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
 

@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Car, Plus, Search, User, Calendar, MapPin } from 'lucide-react';
+import { Car, Plus, Search, User, MapPin } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
+import { Card, CardContent } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@garageos/ui/breadcrumb';

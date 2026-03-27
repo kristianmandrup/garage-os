@@ -7,7 +7,7 @@ import { Label } from '@garageos/ui/label';
 import { Button } from '@garageos/ui/button';
 import { Progress } from '@garageos/ui/progress';
 import { cn } from '@garageos/ui/utils';
-import { useTranslation, useLocale, formatCurrency } from '@/i18n';
+import { useLocale, formatCurrency } from '@/i18n';
 
 interface StockPricingCardProps {
   part: {
@@ -43,7 +43,6 @@ export function StockPricingCard({
   onSave,
   onCancel,
 }: StockPricingCardProps) {
-  const t = useTranslation();
   const { locale } = useLocale();
 
   return (

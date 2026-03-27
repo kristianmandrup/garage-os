@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Camera, Package, MessageSquare, FileText, Share2, Check } from 'lucide-react';
+import { Camera, Package, MessageSquare } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
 import { useTranslation } from '@/i18n';

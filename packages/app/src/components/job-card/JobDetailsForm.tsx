@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Car } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';

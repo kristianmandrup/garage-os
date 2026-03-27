@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Truck, Plus, Search, Phone, Mail, Star } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Badge } from '@garageos/ui/badge';
 import { Input } from '@garageos/ui/input';
 import { cn } from '@garageos/ui/utils';
 import { useTranslation } from '@/i18n';

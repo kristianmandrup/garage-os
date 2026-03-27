@@ -1,8 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@garageos/ui/card';
-import { TrendingUp, Users } from 'lucide-react';
-import { useTranslation } from '@/i18n';
+import { Users } from 'lucide-react';
 
 interface CustomerGrowthCardProps {
   retention: {
@@ -13,7 +12,6 @@ interface CustomerGrowthCardProps {
 }
 
 export function CustomerGrowthCard({ retention }: CustomerGrowthCardProps) {
-  const t = useTranslation();
   const newCustomers = retention.total - retention.returning;
 
   const segments = [

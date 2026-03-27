@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Wrench, Camera, FileText, Users, Package, Bell } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@garageos/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription } from '@garageos/ui/card';
 import { Button } from '@garageos/ui/button';
 
 export const metadata: Metadata = {
