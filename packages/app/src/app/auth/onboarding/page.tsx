@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
-import { Label } from '@garageos/ui/label';
+import { FormField } from '@garageos/ui/form-field';
 import { Wrench, Building2, MapPin, Phone, Mail, Sun, Moon, Globe } from 'lucide-react';
 import { useAppStore } from '@/stores/useAppStore';
 import { useLocale } from '@/i18n';
@@ -143,8 +143,7 @@ export default function OnboardingPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="shopName" className="text-gray-700 dark:text-gray-300">Shop Name *</Label>
+            <FormField label="Shop Name" required htmlFor="shopName">
               <div className="relative">
                 <Wrench className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                 <Input
@@ -157,11 +156,10 @@ export default function OnboardingPage() {
                   required
                 />
               </div>
-            </div>
+            </FormField>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="shopPhone" className="text-gray-700 dark:text-gray-300">Phone</Label>
+              <FormField label="Phone" htmlFor="shopPhone">
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
@@ -173,10 +171,9 @@ export default function OnboardingPage() {
                     className="pl-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700"
                   />
                 </div>
-              </div>
+              </FormField>
 
-              <div className="space-y-2">
-                <Label htmlFor="shopEmail" className="text-gray-700 dark:text-gray-300">Email</Label>
+              <FormField label="Email" htmlFor="shopEmail">
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
@@ -189,11 +186,10 @@ export default function OnboardingPage() {
                     className="pl-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700"
                   />
                 </div>
-              </div>
+              </FormField>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="shopAddress" className="text-gray-700 dark:text-gray-300">Address</Label>
+            <FormField label="Address" htmlFor="shopAddress">
               <div className="relative">
                 <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
                 <Input
@@ -205,11 +201,10 @@ export default function OnboardingPage() {
                   className="pl-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700"
                 />
               </div>
-            </div>
+            </FormField>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="timezone" className="text-gray-700 dark:text-gray-300">Timezone</Label>
+              <FormField label="Timezone" htmlFor="timezone">
                 <select
                   id="timezone"
                   name="timezone"
@@ -221,10 +216,9 @@ export default function OnboardingPage() {
                   <option value="Asia/Jakarta">Jakarta (GMT+7)</option>
                   <option value="Asia/Singapore">Singapore (GMT+8)</option>
                 </select>
-              </div>
+              </FormField>
 
-              <div className="space-y-2">
-                <Label htmlFor="currency" className="text-gray-700 dark:text-gray-300">Currency</Label>
+              <FormField label="Currency" htmlFor="currency">
                 <select
                   id="currency"
                   name="currency"
@@ -237,7 +231,7 @@ export default function OnboardingPage() {
                   <option value="SGD">SGD - Singapore Dollar</option>
                   <option value="IDR">IDR - Indonesian Rupiah</option>
                 </select>
-              </div>
+              </FormField>
             </div>
 
             <Button

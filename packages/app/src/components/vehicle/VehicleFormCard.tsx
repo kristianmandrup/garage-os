@@ -3,7 +3,7 @@
 import { User } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Input } from '@garageos/ui/input';
-import { Label } from '@garageos/ui/label';
+import { FormField } from '@garageos/ui/form-field';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { useTranslation } from '@/i18n';
 
@@ -68,50 +68,45 @@ export function VehicleFormCard({
         )}
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="license_plate">{t.newVehicle.licensePlate} *</Label>
+          <FormField label={t.newVehicle.licensePlate} required htmlFor="license_plate">
             <Input
               id="license_plate"
               value={formData.license_plate}
               onChange={(e) => onFormChange('license_plate', e.target.value)}
               placeholder="e.g., กข 1234"
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="vin">{t.newVehicle.vin}</Label>
+          </FormField>
+          <FormField label={t.newVehicle.vin} htmlFor="vin">
             <Input
               id="vin"
               value={formData.vin}
               onChange={(e) => onFormChange('vin', e.target.value)}
               placeholder="Vehicle Identification Number"
             />
-          </div>
+          </FormField>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="brand">{t.newVehicle.brand} *</Label>
+          <FormField label={t.newVehicle.brand} required htmlFor="brand">
             <Input
               id="brand"
               value={formData.brand}
               onChange={(e) => onFormChange('brand', e.target.value)}
               placeholder="e.g., Toyota"
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="model">{t.newVehicle.model} *</Label>
+          </FormField>
+          <FormField label={t.newVehicle.model} required htmlFor="model">
             <Input
               id="model"
               value={formData.model}
               onChange={(e) => onFormChange('model', e.target.value)}
               placeholder="e.g., Camry"
             />
-          </div>
+          </FormField>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="year">{t.newVehicle.year}</Label>
+          <FormField label={t.newVehicle.year} htmlFor="year">
             <Input
               id="year"
               type="number"
@@ -119,18 +114,16 @@ export function VehicleFormCard({
               onChange={(e) => onFormChange('year', e.target.value)}
               placeholder="2020"
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="color">{t.newVehicle.color}</Label>
+          </FormField>
+          <FormField label={t.newVehicle.color} htmlFor="color">
             <Input
               id="color"
               value={formData.color}
               onChange={(e) => onFormChange('color', e.target.value)}
               placeholder="e.g., White"
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="mileage">{t.newVehicle.mileage}</Label>
+          </FormField>
+          <FormField label={t.newVehicle.mileage} htmlFor="mileage">
             <Input
               id="mileage"
               type="number"
@@ -138,12 +131,11 @@ export function VehicleFormCard({
               onChange={(e) => onFormChange('mileage', e.target.value)}
               placeholder="0"
             />
-          </div>
+          </FormField>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="fuel_type">{t.newVehicle.fuelType}</Label>
+          <FormField label={t.newVehicle.fuelType} htmlFor="fuel_type">
             <select
               id="fuel_type"
               value={formData.fuel_type}
@@ -156,9 +148,8 @@ export function VehicleFormCard({
               <option value="electric">{t.newVehicle.electric}</option>
               <option value="hybrid">{t.newVehicle.hybrid}</option>
             </select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="transmission">{t.newVehicle.transmission}</Label>
+          </FormField>
+          <FormField label={t.newVehicle.transmission} htmlFor="transmission">
             <select
               id="transmission"
               value={formData.transmission}
@@ -169,7 +160,7 @@ export function VehicleFormCard({
               <option value="automatic">{t.newVehicle.automatic}</option>
               <option value="manual">{t.newVehicle.manual}</option>
             </select>
-          </div>
+          </FormField>
         </div>
 
         <div className="flex gap-3 pt-4">

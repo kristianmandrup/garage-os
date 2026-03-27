@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { ArrowUpDown, ArrowUp, ArrowDown, Search } from 'lucide-react';
 import { cn } from '../utils';
+import { Pagination } from './pagination';
 
 interface Column<T> {
   key: string;
@@ -21,6 +22,7 @@ interface DataTableProps<T> {
   emptyMessage?: string;
   className?: string;
   getRowKey: (item: T) => string;
+  pageSize?: number;
 }
 
 type SortDir = 'asc' | 'desc' | null;
@@ -34,10 +36,12 @@ function DataTable<T extends Record<string, any>>({
   emptyMessage = 'No data found',
   className,
   getRowKey,
+  pageSize = 10,
 }: DataTableProps<T>) {
   const [search, setSearch] = React.useState('');
   const [sortKey, setSortKey] = React.useState<string | null>(null);
   const [sortDir, setSortDir] = React.useState<SortDir>(null);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   const handleSort = (key: string) => {
     if (sortKey === key) {
@@ -70,6 +74,16 @@ function DataTable<T extends Record<string, any>>({
     }
     return result;
   }, [data, search, sortKey, sortDir, columns]);
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [search, sortKey, sortDir]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const startItem = filtered.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const endItem = Math.min(currentPage * pageSize, filtered.length);
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -114,14 +128,14 @@ function DataTable<T extends Record<string, any>>({
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {paginated.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="h-24 text-center text-muted-foreground">
                   {emptyMessage}
                 </td>
               </tr>
             ) : (
-              filtered.map((item) => (
+              paginated.map((item) => (
                 <tr
                   key={getRowKey(item)}
                   className={cn(
@@ -141,6 +155,20 @@ function DataTable<T extends Record<string, any>>({
           </tbody>
         </table>
       </div>
+      {filtered.length > 0 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            Showing {startItem}-{endItem} of {filtered.length} results
+          </p>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

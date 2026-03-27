@@ -27,6 +27,7 @@ import {
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
 import { cn } from '@garageos/ui/utils';
+import { Tooltip } from '@garageos/ui/tooltip';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@garageos/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
@@ -213,7 +214,7 @@ export default function DashboardLayout({
                   )}
                   {groupItems.map((item) => {
                     const isActive = pathname === item.href;
-                    return (
+                    const link = (
                       <Link
                         key={item.nameKey}
                         href={item.href}
@@ -231,6 +232,11 @@ export default function DashboardLayout({
                         )}
                       </Link>
                     );
+                    return isCollapsed ? (
+                      <Tooltip key={item.nameKey} content={t.nav[item.nameKey]} side="right">
+                        {link}
+                      </Tooltip>
+                    ) : link;
                   })}
                 </div>
               );
