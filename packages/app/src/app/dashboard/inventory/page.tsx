@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Package, Plus, Search, AlertTriangle, CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Package, Plus, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
+import { Card, CardContent } from '@garageos/ui/card';
 import { Badge } from '@garageos/ui/badge';
-import { Input } from '@garageos/ui/input';
 import { Progress } from '@garageos/ui/progress';
+import { DataTable, type Column } from '@garageos/ui/data-table';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@garageos/ui/breadcrumb';
 import { useTranslation, useLocale, formatCurrency } from '@/i18n';
 
 interface Part {
@@ -27,9 +29,9 @@ interface Part {
 export default function InventoryPage() {
   const t = useTranslation();
   const { locale } = useLocale();
+  const router = useRouter();
   const [parts, setParts] = useState<Part[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
   const [lowStockOnly, setLowStockOnly] = useState(false);
 
   useEffect(() => {
@@ -53,12 +55,6 @@ export default function InventoryPage() {
     }
   };
 
-  const filteredParts = parts.filter(part =>
-    part.name.toLowerCase().includes(search.toLowerCase()) ||
-    part.part_number?.toLowerCase().includes(search.toLowerCase()) ||
-    part.category.toLowerCase().includes(search.toLowerCase())
-  );
-
   const lowStockCount = parts.filter(p => p.quantity <= (p.min_quantity || 0)).length;
   const totalValue = parts.reduce((sum, p) => sum + (p.quantity * p.sell_price), 0);
 
@@ -68,8 +64,80 @@ export default function InventoryPage() {
     return { labelKey: 'inStock' as const, color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' };
   };
 
+  const columns: Column<Part>[] = [
+    {
+      key: 'name',
+      header: 'Name',
+      sortable: true,
+      render: (part) => (
+        <div className="flex items-center gap-3">
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${part.quantity === 0 ? 'bg-red-100 dark:bg-red-900/30' : part.min_quantity && part.quantity <= part.min_quantity ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'}`}>
+            <Package className={`h-4 w-4 ${part.quantity === 0 ? 'text-red-600 dark:text-red-400' : part.min_quantity && part.quantity <= part.min_quantity ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`} />
+          </div>
+          <div>
+            <p className="font-medium">{part.name}</p>
+            <p className="text-xs text-muted-foreground">{part.category}{part.brand ? ` • ${part.brand}` : ''}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'part_number',
+      header: t.inventory.partNumber ?? 'Part #',
+      render: (part) => part.part_number ? <span className="text-muted-foreground">#{part.part_number}</span> : <span className="text-muted-foreground">—</span>,
+    },
+    {
+      key: 'quantity',
+      header: t.inventory.quantity ?? 'Stock',
+      sortable: true,
+      render: (part) => {
+        const stockPercent = part.min_quantity ? Math.min((part.quantity / part.min_quantity) * 100, 100) : 100;
+        return (
+          <div className="min-w-[120px]">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">{part.quantity}</span>
+              {part.min_quantity != null && (
+                <span className="text-xs text-muted-foreground">/ {part.min_quantity}</span>
+              )}
+            </div>
+            <Progress
+              value={stockPercent}
+              className={`h-1.5 mt-1 ${part.quantity === 0 ? '[&>div]:bg-red-500' : stockPercent < 50 ? '[&>div]:bg-amber-500' : '[&>div]:bg-emerald-500'}`}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      key: 'sell_price',
+      header: t.inventory.sellPrice ?? 'Price',
+      sortable: true,
+      render: (part) => <span className="font-medium">{formatCurrency(part.sell_price, locale)}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (part) => {
+        const status = getStockStatus(part);
+        return <Badge className={status.color}>{t.inventory[status.labelKey]}</Badge>;
+      },
+    },
+  ];
+
   return (
     <div className="space-y-6">
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Inventory</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -135,17 +203,8 @@ export default function InventoryPage() {
         </Card>
       </div>
 
-      {/* Search & Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={t.inventory.searchPlaceholder}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+      {/* Low Stock Filter */}
+      <div className="flex items-center gap-4">
         <Button
           variant={lowStockOnly ? 'default' : 'outline'}
           onClick={() => setLowStockOnly(!lowStockOnly)}
@@ -166,75 +225,16 @@ export default function InventoryPage() {
             </div>
           </CardContent>
         </Card>
-      ) : filteredParts.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t.inventory.noPartsFound}</h3>
-            <p className="text-muted-foreground mb-4">
-              {search ? t.invoice.tryAdjustingSearch : t.inventory.noPartsDescription}
-            </p>
-            <Link href="/dashboard/inventory/new">
-              <Button>{t.inventory.addPart}</Button>
-            </Link>
-          </CardContent>
-        </Card>
       ) : (
-        <Card>
-          <CardContent className="p-0">
-            <div className="divide-y">
-              {filteredParts.map((part) => {
-                const status = getStockStatus(part);
-                const stockPercent = part.min_quantity ? Math.min((part.quantity / part.min_quantity) * 100, 100) : 100;
-
-                return (
-                  <Link key={part.id} href={`/dashboard/inventory/${part.id}`} className="block p-4 hover:bg-accent/50 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${part.quantity === 0 ? 'bg-red-100 dark:bg-red-900/30' : part.min_quantity && part.quantity <= part.min_quantity ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'}`}>
-                          <Package className={`h-5 w-5 ${part.quantity === 0 ? 'text-red-600 dark:text-red-400' : part.min_quantity && part.quantity <= part.min_quantity ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`} />
-                        </div>
-                        <div>
-                          <h4 className="font-medium">{part.name}</h4>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            {part.part_number && <span>#{part.part_number}</span>}
-                            <span>•</span>
-                            <span>{part.category}</span>
-                            {part.brand && <><span>•</span><span>{part.brand}</span></>}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-6">
-                        <div className="text-right min-w-[120px]">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{part.quantity}</span>
-                            {part.min_quantity && (
-                              <span className="text-xs text-muted-foreground">/ {part.min_quantity}</span>
-                            )}
-                          </div>
-                          <Progress
-                            value={stockPercent}
-                            className={`h-1.5 mt-1 ${part.quantity === 0 ? '[&>div]:bg-red-500' : stockPercent < 50 ? '[&>div]:bg-amber-500' : '[&>div]:bg-emerald-500'}`}
-                          />
-                        </div>
-
-                        <div className="text-right min-w-[80px]">
-                          <p className="font-medium">{formatCurrency(part.sell_price, locale)}</p>
-                          <p className="text-xs text-muted-foreground">{t.inventory.sellPrice}</p>
-                        </div>
-
-                        <Badge className={status.color}>
-                          {t.inventory[status.labelKey]}
-                        </Badge>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        <DataTable<Part>
+          data={parts}
+          columns={columns}
+          searchable
+          searchPlaceholder={t.inventory.searchPlaceholder}
+          emptyMessage={t.inventory.noPartsFound}
+          getRowKey={(part) => part.id}
+          onRowClick={(part) => router.push(`/dashboard/inventory/${part.id}`)}
+        />
       )}
     </div>
   );

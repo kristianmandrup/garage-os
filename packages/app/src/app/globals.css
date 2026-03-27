@@ -75,7 +75,7 @@
   }
 
   .dark {
-    --background: oklch(0.12 0.02 240);
+    --background: oklch(0.10 0.02 240);
     --foreground: oklch(0.98 0 0);
     --card: oklch(0.16 0.02 240);
     --card-foreground: oklch(0.98 0 0);
@@ -90,14 +90,14 @@
     --accent: oklch(0.22 0.02 240);
     --accent-foreground: oklch(0.92 0 0);
     --destructive: oklch(0.65 0.2 25);
-    --border: oklch(0.28 0.02 240);
-    --input: oklch(0.28 0.02 240);
+    --border: oklch(0.22 0.02 240);
+    --input: oklch(0.22 0.02 240);
     --ring: oklch(0.65 0.17 240);
 
     /* Gradient backgrounds for dark mode */
     --gradient-primary: linear-gradient(135deg, oklch(0.65 0.17 240) 0%, oklch(0.55 0.17 240) 50%, oklch(0.75 0.17 240) 100%);
     --gradient-accent: linear-gradient(135deg, oklch(0.75 0.15 70) 0%, oklch(0.65 0.15 70) 100%);
-    --gradient-surface: linear-gradient(180deg, oklch(0.12 0.02 240) 0%, oklch(0.16 0.02 240) 100%);
+    --gradient-surface: linear-gradient(180deg, oklch(0.10 0.02 240) 0%, oklch(0.16 0.02 240) 100%);
   }
 }
 
@@ -200,4 +200,51 @@
 
 .status-critical {
   color: oklch(0.6 0.2 25);
+}
+
+/* Focus ring utility */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--muted) 25%, oklch(0.92 0 0) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, var(--muted) 25%, oklch(0.28 0.02 240) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Safe area for bottom tab bar */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }

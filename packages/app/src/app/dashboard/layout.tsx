@@ -31,16 +31,12 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@garageos/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
 import { signOut } from '@/lib/supabase/auth';
+import { PageTransition } from '@/components/PageTransition';
+import { BottomTabBar } from '@/components/BottomTabBar';
+import { CommandPalette } from '@/components/CommandPalette';
 import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
 import { LocaleSwitcher } from '@/components/locale/LocaleSwitcher';
 import { useLocale } from '@/i18n';
-
-type NavItem = {
-  nameKey: keyof ReturnType<typeof useLocale>['t']['nav'];
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  roles?: string[];
-};
 
 export default function DashboardLayout({
   children,
@@ -56,20 +52,45 @@ export default function DashboardLayout({
   const { isDark, setTheme } = useAppStore();
   const { t } = useLocale();
 
-  const navigation: NavItem[] = [
-    { nameKey: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { nameKey: 'analytics', href: '/dashboard/analytics', icon: BarChart3 },
-    { nameKey: 'multiShop', href: '/dashboard/analytics/multi-shop', icon: Building2 },
-    { nameKey: 'jobCards', href: '/dashboard/job-cards', icon: Wrench },
-    { nameKey: 'vehicles', href: '/dashboard/vehicles', icon: Car },
-    { nameKey: 'customers', href: '/dashboard/customers', icon: Users },
-    { nameKey: 'inventory', href: '/dashboard/inventory', icon: Package },
-    { nameKey: 'invoices', href: '/dashboard/invoices', icon: FileText },
-    { nameKey: 'tasks', href: '/dashboard/tasks', icon: CheckSquare, roles: ['owner', 'manager'] },
-    { nameKey: 'aiDiagnostics', href: '/dashboard/diagnostics', icon: Search },
-    { nameKey: 'messages', href: '/dashboard/messages', icon: MessageSquare },
-    { nameKey: 'reminders', href: '/dashboard/reminders', icon: Bell },
-    { nameKey: 'settings', href: '/dashboard/settings', icon: Settings },
+  const navGroups = [
+    {
+      label: null,
+      items: [
+        { nameKey: 'dashboard' as const, href: '/dashboard', icon: LayoutDashboard },
+      ],
+    },
+    {
+      label: 'Operations',
+      items: [
+        { nameKey: 'jobCards' as const, href: '/dashboard/job-cards', icon: Wrench },
+        { nameKey: 'vehicles' as const, href: '/dashboard/vehicles', icon: Car },
+        { nameKey: 'customers' as const, href: '/dashboard/customers', icon: Users },
+        { nameKey: 'inventory' as const, href: '/dashboard/inventory', icon: Package },
+        { nameKey: 'invoices' as const, href: '/dashboard/invoices', icon: FileText },
+      ],
+    },
+    {
+      label: 'Intelligence',
+      items: [
+        { nameKey: 'analytics' as const, href: '/dashboard/analytics', icon: BarChart3 },
+        { nameKey: 'multiShop' as const, href: '/dashboard/analytics/multi-shop', icon: Building2 },
+        { nameKey: 'aiDiagnostics' as const, href: '/dashboard/diagnostics', icon: Search },
+      ],
+    },
+    {
+      label: 'Communication',
+      items: [
+        { nameKey: 'messages' as const, href: '/dashboard/messages', icon: MessageSquare },
+        { nameKey: 'reminders' as const, href: '/dashboard/reminders', icon: Bell },
+        { nameKey: 'tasks' as const, href: '/dashboard/tasks', icon: CheckSquare, roles: ['owner', 'manager'] as string[] },
+      ],
+    },
+    {
+      label: null,
+      items: [
+        { nameKey: 'settings' as const, href: '/dashboard/settings', icon: Settings },
+      ],
+    },
   ];
 
   useEffect(() => {
@@ -103,18 +124,16 @@ export default function DashboardLayout({
     await signOut();
   };
 
-  const filteredNavigation = navigation.filter(item => {
-    if (!item.roles) return true;
-    return item.roles.includes(userRole || '');
-  });
 
   return (
     <div className="min-h-screen bg-background">
+      <CommandPalette />
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-card border-b flex items-center justify-between px-4">
         <button
           onClick={() => setIsMobileOpen(true)}
           className="p-2 hover:bg-accent rounded-lg"
+          aria-label="Open navigation menu"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -124,7 +143,7 @@ export default function DashboardLayout({
           </div>
           <span className="font-bold gradient-text">GarageOS</span>
         </Link>
-        <Button variant="ghost" size="sm" onClick={toggleTheme}>
+        <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
           {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </Button>
       </header>
@@ -161,6 +180,7 @@ export default function DashboardLayout({
             <button
               onClick={() => setIsMobileOpen(false)}
               className="lg:hidden p-2 hover:bg-accent rounded-lg"
+              aria-label="Close navigation menu"
             >
               <X className="h-5 w-5" />
             </button>
@@ -174,32 +194,54 @@ export default function DashboardLayout({
           )}
 
           {/* Navigation */}
-          <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-            {filteredNavigation.map((item) => {
-              const isActive = pathname === item.href;
+          <nav className="flex-1 py-2 px-3 space-y-4 overflow-y-auto">
+            {navGroups.map((group, gi) => {
+              const groupItems = group.items.filter(item => {
+                if (!('roles' in item) || !item.roles) return true;
+                return item.roles.includes(userRole || '');
+              });
+              if (groupItems.length === 0) return null;
               return (
-                <Link
-                  key={item.nameKey}
-                  href={item.href}
-                  onClick={() => setIsMobileOpen(false)}
-                  className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
-                    isActive
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                <div key={gi} className="space-y-1">
+                  {group.label && !isCollapsed && (
+                    <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {group.label}
+                    </p>
                   )}
-                >
-                  <item.icon className="h-5 w-5 shrink-0" />
-                  {!isCollapsed && (
-                    <span className="font-medium">{t.nav[item.nameKey]}</span>
+                  {group.label && isCollapsed && (
+                    <div className="mx-auto w-6 border-t border-border" />
                   )}
-                </Link>
+                  {groupItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.nameKey}
+                        href={item.href}
+                        onClick={() => setIsMobileOpen(false)}
+                        className={cn(
+                          'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200',
+                          isActive
+                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                            : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                        )}
+                      >
+                        <item.icon className="h-5 w-5 shrink-0" />
+                        {!isCollapsed && (
+                          <span className="font-medium">{t.nav[item.nameKey]}</span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
               );
             })}
           </nav>
 
           {/* Bottom Section */}
           <div className="p-3 border-t space-y-2">
+            {/* Locale */}
+            {!isCollapsed && <LocaleSwitcher />}
+
             {/* Theme Toggle */}
             <Button
               variant="ghost"
@@ -208,6 +250,7 @@ export default function DashboardLayout({
                 isCollapsed && 'justify-center px-2'
               )}
               onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {isDark ? (
                 <Sun className="h-5 w-5" />
@@ -222,6 +265,7 @@ export default function DashboardLayout({
               variant="ghost"
               className="hidden lg:flex w-full justify-start gap-3"
               onClick={() => setIsCollapsed(!isCollapsed)}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
               {isCollapsed ? (
                 <ChevronRight className="h-5 w-5" />
@@ -265,13 +309,17 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <main
+        id="main-content"
         className={cn(
-          'min-h-screen pt-16 lg:pt-0 transition-all duration-300',
+          'min-h-screen pt-16 pb-20 lg:pt-0 lg:pb-0 transition-all duration-300',
           isCollapsed ? 'lg:pl-20' : 'lg:pl-64'
         )}
       >
-        <div className="p-4 lg:p-6">{children}</div>
+        <div className="p-4 lg:p-6">
+          <PageTransition>{children}</PageTransition>
+        </div>
       </main>
+      <BottomTabBar onMenuPress={() => setIsMobileOpen(true)} />
     </div>
   );
 }

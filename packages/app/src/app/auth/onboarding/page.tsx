@@ -95,10 +95,15 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-4 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgb(148,163,184,0.1)_1px,transparent_0)] [background-size:24px_24px] dark:bg-[radial-gradient(circle_at_1px_1px,rgb(148,163,184,0.05)_1px,transparent_0)]" />
+
       {/* Theme and Locale Controls */}
       {mounted && (
-        <div className="fixed top-4 right-4 flex items-center gap-2">
+        <div className="fixed top-4 right-4 flex items-center gap-2 z-10">
           <button
             onClick={toggleLocale}
             className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -118,8 +123,12 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      <Card className="w-full max-w-lg bg-white dark:bg-gray-800">
+      <Card className="w-full max-w-lg border border-gray-100 dark:border-gray-700/50 shadow-2xl backdrop-blur-sm bg-white/80 dark:bg-gray-800/80">
         <CardHeader className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <Wrench className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <span className="text-lg font-bold text-gray-900 dark:text-white">GarageOS</span>
+          </div>
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25">
             <Building2 className="w-8 h-8 text-white" />
           </div>
@@ -127,6 +136,10 @@ export default function OnboardingPage() {
           <CardDescription className="text-gray-600 dark:text-gray-400">
             Tell us about your auto repair shop to get started
           </CardDescription>
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <div className="h-1.5 w-8 rounded-full bg-blue-600" />
+            <div className="h-1.5 w-8 rounded-full bg-gray-200 dark:bg-gray-700" />
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -229,7 +242,7 @@ export default function OnboardingPage() {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
+              className="w-full h-12 text-base bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-blue-700 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-600/25"
               size="lg"
               disabled={loading}
             >

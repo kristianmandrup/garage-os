@@ -1,7 +1,9 @@
 'use client';
 
 import { CheckCircle } from 'lucide-react';
+import { Button } from '@garageos/ui/button';
 import { useLocale } from './LocaleProvider';
+import { AnimateIn } from './AnimateIn';
 
 const pricingPlans = [
   {
@@ -29,24 +31,26 @@ export function PricingSection() {
   const { t } = useLocale();
 
   return (
-    <section id="pricing" className="py-20 bg-white dark:bg-gray-900">
+    <section id="pricing" className="py-20 bg-white dark:bg-gray-950">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('pricingTitle')}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-            {t('pricingSubtitle')}
-          </p>
-        </div>
+        <AnimateIn>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {t('pricingTitle')}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+              {t('pricingSubtitle')}
+            </p>
+          </div>
+        </AnimateIn>
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {pricingPlans.map((plan) => (
+          {pricingPlans.map((plan, index) => (
+            <AnimateIn key={plan.nameKey} delay={index * 150}>
             <div
-              key={plan.nameKey}
-              className={`p-8 rounded-2xl border ${
+              className={`p-8 rounded-2xl border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
                 plan.popular
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg shadow-blue-500/10'
-                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                  ? 'relative ring-2 ring-blue-500/50 border-transparent bg-blue-50 dark:bg-blue-900/20 shadow-xl shadow-blue-500/10'
+                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-200 dark:hover:border-blue-800'
               }`}
             >
               {plan.popular && (
@@ -56,7 +60,8 @@ export function PricingSection() {
               )}
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t(plan.nameKey)}</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{t(plan.descKey)}</p>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{plan.price}</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{plan.price}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mb-6">{t('perMonth')}</div>
               <ul className="space-y-3 mb-8">
                 {plan.featureKeys.map((key) => (
                   <li key={key} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -65,16 +70,18 @@ export function PricingSection() {
                   </li>
                 ))}
               </ul>
-              <button
+              <Button
+                variant={plan.popular ? 'default' : 'outline'}
                 className={`w-full py-3 rounded-lg font-semibold transition-colors ${
                   plan.popular
-                    ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-600/25'
                     : 'border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
                 {t('getStartedBtn')}
-              </button>
+              </Button>
             </div>
+            </AnimateIn>
           ))}
         </div>
       </div>
