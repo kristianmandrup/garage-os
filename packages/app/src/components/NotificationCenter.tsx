@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Bell, Check, Wrench, Users, Package, FileText, X } from 'lucide-react';
 import { cn } from '@garageos/ui/utils';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@garageos/ui/button';
 
 interface Notification {
@@ -54,6 +55,52 @@ export function NotificationCenter() {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [open]);
+
+  // Subscribe to Supabase realtime changes
+  useEffect(() => {
+    let channel: any;
+    try {
+      const supabase = createClient();
+      channel = supabase
+        .channel('notifications')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'job_cards' }, (payload: any) => {
+          setNotifications(prev => [{
+            id: Math.random().toString(36).slice(2),
+            type: 'job' as const,
+            title: 'New Job Card',
+            message: payload.new?.title || 'A new job card was created',
+            time: 'Just now',
+            read: false,
+          }, ...prev]);
+        })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'customers' }, (payload: any) => {
+          setNotifications(prev => [{
+            id: Math.random().toString(36).slice(2),
+            type: 'customer' as const,
+            title: 'New Customer',
+            message: payload.new?.name || 'A new customer was added',
+            time: 'Just now',
+            read: false,
+          }, ...prev]);
+        })
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'parts' }, (payload: any) => {
+          if (payload.new?.quantity <= (payload.new?.min_quantity || 0)) {
+            setNotifications(prev => [{
+              id: Math.random().toString(36).slice(2),
+              type: 'inventory' as const,
+              title: 'Low Stock Alert',
+              message: `${payload.new?.name || 'A part'} is running low`,
+              time: 'Just now',
+              read: false,
+            }, ...prev]);
+          }
+        })
+        .subscribe();
+    } catch {
+      // Supabase not configured - use demo data only
+    }
+    return () => { channel?.unsubscribe(); };
+  }, []);
 
   return (
     <div ref={ref} className="relative">

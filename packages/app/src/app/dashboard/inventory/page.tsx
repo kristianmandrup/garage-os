@@ -234,6 +234,8 @@ export default function InventoryPage() {
           emptyMessage={t.inventory.noPartsFound}
           getRowKey={(part) => part.id}
           onRowClick={(part) => router.push(`/dashboard/inventory/${part.id}`)}
+          exportable
+          exportFilename="inventory"
         />
       )}
     </div>

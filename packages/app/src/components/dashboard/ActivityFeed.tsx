@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Wrench, Car, Users, FileText, Clock } from 'lucide-react';
+import { useTranslation } from '@/i18n';
 
 interface Activity {
   id: string;
@@ -24,17 +25,18 @@ interface ActivityFeedProps {
 }
 
 export function ActivityFeed({ activities }: ActivityFeedProps) {
+  const t = useTranslation();
   return (
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Clock className="h-4 w-4 text-muted-foreground" />
-          Recent Activity
+          {t.dashboard.recentActivity}
         </CardTitle>
       </CardHeader>
       <CardContent>
         {activities.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">No recent activity</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{t.dashboard.noRecentActivity}</p>
         ) : (
           <div className="space-y-1">
             {activities.map((activity, i) => {

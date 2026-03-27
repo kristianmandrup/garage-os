@@ -1,6 +1,7 @@
 'use client';
 
 import { Clock, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
+import { useTranslation } from '@/i18n';
 
 interface TodayOverviewProps {
   activeJobs: number;
@@ -9,17 +10,18 @@ interface TodayOverviewProps {
 }
 
 export function TodayOverview({ activeJobs, completedToday, pendingApprovals }: TodayOverviewProps) {
+  const t = useTranslation();
   const items = [
-    { icon: Clock, label: 'In Progress', value: activeJobs, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30' },
-    { icon: CheckCircle, label: 'Completed Today', value: completedToday, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
-    { icon: AlertCircle, label: 'Needs Approval', value: pendingApprovals, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30' },
+    { icon: Clock, label: t.dashboard.inProgressLabel, value: activeJobs, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30' },
+    { icon: CheckCircle, label: t.dashboard.completedToday, value: completedToday, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
+    { icon: AlertCircle, label: t.dashboard.needsApproval, value: pendingApprovals, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30' },
   ];
 
   return (
     <div className="flex items-center gap-6 p-4 rounded-xl bg-card border border-border overflow-x-auto">
       <div className="flex items-center gap-2 shrink-0">
         <TrendingUp className="h-5 w-5 text-muted-foreground" />
-        <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Today</span>
+        <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{t.dashboard.today}</span>
       </div>
       <div className="h-8 w-px bg-border shrink-0" />
       {items.map((item) => (

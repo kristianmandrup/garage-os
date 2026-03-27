@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@garageos/ui/card';
+import { Skeleton } from '@garageos/ui/skeleton';
 import {
   PortalHeader,
   CustomerInfoCard,
@@ -142,25 +143,33 @@ export default function CustomerPortalPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">กำลังโหลด...</p>
+      <div className="min-h-screen bg-background p-4 space-y-6 max-w-4xl mx-auto">
+        <div className="flex items-center gap-3">
+          <Skeleton className="w-10 h-10 rounded-xl" />
+          <Skeleton className="h-6 w-48" />
         </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Skeleton className="h-48 rounded-xl" />
+          <Skeleton className="h-48 rounded-xl" />
+        </div>
+        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-48 rounded-xl" />
       </div>
     );
   }
 
   if (error || !portalData) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="max-w-md w-full">
-          <CardContent className="pt-6 text-center">
-            <AlertCircle className="h-16 w-16 mx-auto text-destructive mb-4" />
-            <h1 className="text-2xl font-bold mb-2">เกิดข้อผิดพลาด</h1>
-            <p className="text-muted-foreground">{error || 'ไม่สามารถโหลดข้อมูลได้'}</p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="text-center space-y-4">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+          </div>
+          <h1 className="text-xl font-bold">Portal Unavailable</h1>
+          <p className="text-muted-foreground max-w-sm">
+            Unable to load your portal. Please check the link or contact the shop.
+          </p>
+        </div>
       </div>
     );
   }
@@ -171,14 +180,14 @@ export default function CustomerPortalPage() {
   const overdueReminders = reminders.filter(r => new Date(r.due_date) < new Date());
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 to-background dark:from-gray-950 dark:to-background">
       <PortalHeader
         shopName={customer.shop.name}
         shopLogoUrl={customer.shop.logo_url}
         customerName={customer.name}
       />
 
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
         <CustomerInfoCard
           name={customer.name}
           phone={customer.phone}

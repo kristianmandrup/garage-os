@@ -28,4 +28,35 @@ export const dashboard = {
     completed: 'Completed',
     cancelled: 'Cancelled',
   },
+  // TodayOverview
+  today: 'Today',
+  inProgressLabel: 'In Progress',
+  completedToday: 'Completed Today',
+  needsApproval: 'Needs Approval',
+  // ActivityFeed
+  recentActivity: 'Recent Activity',
+  noRecentActivity: 'No recent activity',
+  jobCompleted: 'Job completed',
+  newJob: 'New job',
+  // NotificationCenter
+  notifications: 'Notifications',
+  markAllRead: 'Mark all read',
+  noNotifications: 'No notifications',
+  // CommandPalette
+  typeCommand: 'Type a command or search...',
+  noResults: 'No results found.',
+  navigate: 'Navigate',
+  select: 'Select',
+  closeLabel: 'Close',
+  navigation: 'Navigation',
+  actions: 'Actions',
+  goTo: 'Go to',
+  createNew: 'Create New',
+  addNew: 'Add New',
+  // BottomTabBar
+  home: 'Home',
+  jobs: 'Jobs',
+  vehicles: 'Vehicles',
+  customers: 'Customers',
+  more: 'More',
 } as const;

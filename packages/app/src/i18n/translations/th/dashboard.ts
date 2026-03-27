@@ -28,4 +28,35 @@ export const dashboard = {
     completed: 'เสร็จสิ้น',
     cancelled: 'ยกเลิก',
   },
+  // TodayOverview
+  today: 'วันนี้',
+  inProgressLabel: 'กำลังดำเนินการ',
+  completedToday: 'เสร็จวันนี้',
+  needsApproval: 'รออนุมัติ',
+  // ActivityFeed
+  recentActivity: 'กิจกรรมล่าสุด',
+  noRecentActivity: 'ไม่มีกิจกรรมล่าสุด',
+  jobCompleted: 'งานเสร็จสิ้น',
+  newJob: 'งานใหม่',
+  // NotificationCenter
+  notifications: 'การแจ้งเตือน',
+  markAllRead: 'อ่านทั้งหมด',
+  noNotifications: 'ไม่มีการแจ้งเตือน',
+  // CommandPalette
+  typeCommand: 'พิมพ์คำสั่งหรือค้นหา...',
+  noResults: 'ไม่พบผลลัพธ์',
+  navigate: 'นำทาง',
+  select: 'เลือก',
+  closeLabel: 'ปิด',
+  navigation: 'นำทาง',
+  actions: 'การดำเนินการ',
+  goTo: 'ไปที่',
+  createNew: 'สร้างใหม่',
+  addNew: 'เพิ่มใหม่',
+  // BottomTabBar
+  home: 'หน้าหลัก',
+  jobs: 'งาน',
+  vehicles: 'ยานพาหนะ',
+  customers: 'ลูกค้า',
+  more: 'เพิ่มเติม',
 } as const;

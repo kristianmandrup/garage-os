@@ -220,6 +220,8 @@ export default function InvoicesPage() {
           getRowKey={(inv) => inv.id}
           onRowClick={(inv) => router.push(`/dashboard/invoices/${inv.id}`)}
           emptyMessage={t.invoice.noInvoicesFound}
+          exportable
+          exportFilename="invoices"
         />
       )}
     </div>

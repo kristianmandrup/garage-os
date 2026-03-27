@@ -132,6 +132,8 @@ export default function CustomersPage() {
           getRowKey={(c) => c.id}
           onRowClick={(c) => router.push(`/dashboard/customers/${c.id}`)}
           emptyMessage={t.customer.noCustomersFound}
+          exportable
+          exportFilename="customers"
         />
       )}
     </div>

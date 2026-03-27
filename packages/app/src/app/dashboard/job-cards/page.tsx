@@ -188,6 +188,8 @@ export default function JobCardsPage() {
           getRowKey={(c) => c.id}
           onRowClick={(c) => router.push(`/dashboard/job-cards/${c.id}`)}
           emptyMessage={t.jobCards.noJobCardsFound}
+          exportable
+          exportFilename="job-cards"
         />
       )}
     </div>

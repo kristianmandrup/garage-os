@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowUpDown, ArrowUp, ArrowDown, Search } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown, Search, Download } from 'lucide-react';
 import { cn } from '../utils';
 import { Pagination } from './pagination';
 
@@ -23,6 +23,8 @@ interface DataTableProps<T> {
   className?: string;
   getRowKey: (item: T) => string;
   pageSize?: number;
+  exportable?: boolean;
+  exportFilename?: string;
 }
 
 type SortDir = 'asc' | 'desc' | null;
@@ -37,6 +39,8 @@ function DataTable<T extends Record<string, any>>({
   className,
   getRowKey,
   pageSize = 10,
+  exportable = false,
+  exportFilename = 'export',
 }: DataTableProps<T>) {
   const [search, setSearch] = React.useState('');
   const [sortKey, setSortKey] = React.useState<string | null>(null);
@@ -85,18 +89,51 @@ function DataTable<T extends Record<string, any>>({
   const startItem = filtered.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, filtered.length);
 
+  const exportCSV = () => {
+    const headers = columns.map(c => c.header).join(',');
+    const rows = filtered.map(item =>
+      columns.map(col => {
+        const val = item[col.key];
+        const str = val == null ? '' : String(val);
+        return str.includes(',') || str.includes('"') ? `"${str.replace(/"/g, '""')}"` : str;
+      }).join(',')
+    );
+    const csv = [headers, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${exportFilename}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className={cn('space-y-4', className)}>
-      {searchable && (
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder={searchPlaceholder}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex h-10 w-full max-w-sm rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          />
+      {(searchable || exportable) && (
+        <div className="flex items-center gap-2">
+          {searchable && (
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder={searchPlaceholder}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex h-10 w-full max-w-sm rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            </div>
+          )}
+          {exportable && (
+            <button
+              onClick={exportCSV}
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent hover:text-accent-foreground transition-colors shrink-0"
+              title="Export CSV"
+            >
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline">Export</span>
+            </button>
+          )}
         </div>
       )}
       <div className="rounded-lg border border-border overflow-hidden">
