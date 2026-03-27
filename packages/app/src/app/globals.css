@@ -243,3 +243,8 @@
 .btn-press:active {
   transform: scale(0.97);
 }
+
+/* Safe area for bottom tab bar */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

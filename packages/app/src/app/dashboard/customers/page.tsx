@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Users, Plus, Search, Phone, Mail, MapPin, Car } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Users, Plus } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Badge } from '@garageos/ui/badge';
-import { Input } from '@garageos/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
+import { Card, CardContent } from '@garageos/ui/card';
+import { Avatar, AvatarFallback } from '@garageos/ui/avatar';
+import { DataTable, type Column } from '@garageos/ui/data-table';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@garageos/ui/breadcrumb';
+import { Skeleton } from '@garageos/ui/skeleton';
 import { useTranslation } from '@/i18n';
 
 interface Customer {
@@ -21,9 +23,9 @@ interface Customer {
 
 export default function CustomersPage() {
   const t = useTranslation();
+  const router = useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchCustomers();
@@ -43,23 +45,39 @@ export default function CustomersPage() {
     }
   };
 
-  const filteredCustomers = customers.filter(customer =>
-    customer.name.toLowerCase().includes(search.toLowerCase()) ||
-    customer.phone?.includes(search) ||
-    customer.email?.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
+  const columns: Column<Customer>[] = [
+    {
+      key: 'name',
+      header: 'Name',
+      sortable: true,
+      render: (customer) => (
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>{customer.name?.charAt(0) || '?'}</AvatarFallback>
+          </Avatar>
+          <span className="font-medium">{customer.name}</span>
+        </div>
+      ),
+    },
+    { key: 'phone', header: 'Phone', sortable: true },
+    { key: 'email', header: 'Email', sortable: true },
+  ];
 
   return (
     <div className="space-y-6">
+      {/* Breadcrumb */}
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Customers</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -74,17 +92,6 @@ export default function CustomersPage() {
             {t.customer.addCustomer}
           </Button>
         </Link>
-      </div>
-
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder={t.customer.searchPlaceholder}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-10"
-        />
       </div>
 
       {/* Stats */}
@@ -104,76 +111,28 @@ export default function CustomersPage() {
         </Card>
       </div>
 
-      {/* Customers Grid */}
+      {/* Customers Table */}
       {loading ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <Card key={i} className="animate-pulse">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-muted rounded-full" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-muted rounded w-1/2" />
-                    <div className="h-3 bg-muted rounded w-3/4" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="space-y-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center gap-4 p-4">
+              <Skeleton className="h-8 w-8 rounded-full" />
+              <Skeleton className="h-4 w-[200px]" />
+              <Skeleton className="h-4 w-[150px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
           ))}
         </div>
-      ) : filteredCustomers.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t.customer.noCustomersFound}</h3>
-            <p className="text-muted-foreground mb-4">
-              {search ? t.customer.tryAdjustingSearch : t.customer.noCustomersDescription}
-            </p>
-            <Link href="/dashboard/customers/new">
-              <Button>{t.customer.addCustomer}</Button>
-            </Link>
-          </CardContent>
-        </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCustomers.map((customer) => (
-            <Link key={customer.id} href={`/dashboard/customers/${customer.id}`}>
-              <Card className="card-hover h-full">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <Avatar className="h-14 w-14">
-                      <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${customer.name}`} />
-                      <AvatarFallback>{getInitials(customer.name)}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-lg truncate">{customer.name}</h3>
-                      <div className="mt-2 space-y-1">
-                        {customer.phone && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Phone className="h-3 w-3" />
-                            <span>{customer.phone}</span>
-                          </div>
-                        )}
-                        {customer.email && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Mail className="h-3 w-3" />
-                            <span className="truncate">{customer.email}</span>
-                          </div>
-                        )}
-                        {customer.address && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <MapPin className="h-3 w-3" />
-                            <span className="truncate">{customer.address}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
+        <DataTable
+          data={customers}
+          columns={columns}
+          searchable
+          searchPlaceholder={t.customer.searchPlaceholder}
+          getRowKey={(c) => c.id}
+          onRowClick={(c) => router.push(`/dashboard/customers/${c.id}`)}
+          emptyMessage={t.customer.noCustomersFound}
+        />
       )}
     </div>
   );

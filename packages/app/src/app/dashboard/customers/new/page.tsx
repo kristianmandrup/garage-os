@@ -7,8 +7,9 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
 import { Input } from '@garageos/ui/input';
-import { Label } from '@garageos/ui/label';
 import { Textarea } from '@garageos/ui/textarea';
+import { FormField } from '@garageos/ui/form-field';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@garageos/ui/breadcrumb';
 import { useTranslation } from '@/i18n';
 
 export default function NewCustomerPage() {
@@ -55,6 +56,22 @@ export default function NewCustomerPage() {
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard/customers">Customers</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>New Customer</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link href="/dashboard/customers">
@@ -78,28 +95,25 @@ export default function NewCustomerPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{t.newCustomer.name} *</Label>
+          <FormField label={t.newCustomer.name} required htmlFor="name">
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder={t.newCustomer.namePlaceholder}
             />
-          </div>
+          </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="phone">{t.newCustomer.phone} *</Label>
+          <FormField label={t.newCustomer.phone} required htmlFor="phone">
             <Input
               id="phone"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               placeholder={t.newCustomer.phonePlaceholder}
             />
-          </div>
+          </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">{t.newCustomer.email}</Label>
+          <FormField label={t.newCustomer.email} htmlFor="email">
             <Input
               id="email"
               type="email"
@@ -107,10 +121,9 @@ export default function NewCustomerPage() {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder={t.newCustomer.emailPlaceholder}
             />
-          </div>
+          </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="address">{t.newCustomer.address}</Label>
+          <FormField label={t.newCustomer.address} htmlFor="address">
             <Textarea
               id="address"
               value={formData.address}
@@ -118,10 +131,9 @@ export default function NewCustomerPage() {
               placeholder={t.newCustomer.addressPlaceholder}
               rows={3}
             />
-          </div>
+          </FormField>
 
-          <div className="space-y-2">
-            <Label htmlFor="notes">{t.newCustomer.notes}</Label>
+          <FormField label={t.newCustomer.notes} htmlFor="notes">
             <Textarea
               id="notes"
               value={formData.notes}
@@ -129,7 +141,7 @@ export default function NewCustomerPage() {
               placeholder={t.newCustomer.notesPlaceholder}
               rows={3}
             />
-          </div>
+          </FormField>
 
           <div className="flex gap-3 pt-4">
             <Link href="/dashboard/customers" className="flex-1">

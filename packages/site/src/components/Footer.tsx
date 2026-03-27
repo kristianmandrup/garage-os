@@ -20,7 +20,7 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t('product')}</h4>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">{t('product')}</h3>
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li><a href="#features" className="hover:text-blue-600 dark:hover:text-blue-400">{t('features')}</a></li>
               <li><a href="#pricing" className="hover:text-blue-600 dark:hover:text-blue-400">{t('pricing')}</a></li>
@@ -28,7 +28,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t('company')}</h4>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">{t('company')}</h3>
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">{t('about')}</a></li>
               <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">{t('blog')}</a></li>
@@ -36,7 +36,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t('legal')}</h4>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">{t('legal')}</h3>
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">{t('privacy')}</a></li>
               <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">{t('terms')}</a></li>

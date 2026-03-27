@@ -32,6 +32,7 @@ import { Button } from '@garageos/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
 import { signOut } from '@/lib/supabase/auth';
 import { PageTransition } from '@/components/PageTransition';
+import { BottomTabBar } from '@/components/BottomTabBar';
 import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
 import { LocaleSwitcher } from '@/components/locale/LocaleSwitcher';
 import { useLocale } from '@/i18n';
@@ -308,7 +309,7 @@ export default function DashboardLayout({
       <main
         id="main-content"
         className={cn(
-          'min-h-screen pt-16 lg:pt-0 transition-all duration-300',
+          'min-h-screen pt-16 pb-20 lg:pt-0 lg:pb-0 transition-all duration-300',
           isCollapsed ? 'lg:pl-20' : 'lg:pl-64'
         )}
       >
@@ -316,6 +317,7 @@ export default function DashboardLayout({
           <PageTransition>{children}</PageTransition>
         </div>
       </main>
+      <BottomTabBar onMenuPress={() => setIsMobileOpen(true)} />
     </div>
   );
 }

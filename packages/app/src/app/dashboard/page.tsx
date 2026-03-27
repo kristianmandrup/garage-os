@@ -7,6 +7,8 @@ import {
   QuickActionsGrid,
   RecentJobCardsList,
   InventoryAlertsCard,
+  TodayOverview,
+  ActivityFeed,
 } from '@/components/dashboard';
 
 interface JobCard {
@@ -29,6 +31,8 @@ interface Stats {
   totalVehicles: number;
   totalCustomers: number;
   lowStockCount: number;
+  completedToday: number;
+  pendingApprovals: number;
 }
 
 export default function DashboardPage() {
@@ -38,6 +42,8 @@ export default function DashboardPage() {
     totalVehicles: 0,
     totalCustomers: 0,
     lowStockCount: 0,
+    completedToday: 0,
+    pendingApprovals: 0,
   });
   const [recentJobs, setRecentJobs] = useState<JobCard[]>([]);
   const [lowStockParts, setLowStockParts] = useState<Part[]>([]);
@@ -90,13 +96,20 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <DashboardHeader />
 
+      <TodayOverview activeJobs={stats.activeJobs} completedToday={stats.completedToday} pendingApprovals={stats.pendingApprovals} />
+
       <DashboardStatsCards stats={stats} loading={loading} />
 
       <QuickActionsGrid />
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <RecentJobCardsList recentJobs={recentJobs} loading={loading} />
-        <InventoryAlertsCard lowStockParts={lowStockParts} loading={loading} />
+        <div className="lg:col-span-2">
+          <RecentJobCardsList recentJobs={recentJobs} loading={loading} />
+        </div>
+        <div className="space-y-6">
+          <InventoryAlertsCard lowStockParts={lowStockParts} loading={loading} />
+          <ActivityFeed activities={[]} />
+        </div>
       </div>
     </div>
   );
