@@ -2,16 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, Edit2, Trash2, Package, AlertTriangle } from 'lucide-react';
-import { Button } from '@garageos/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Badge } from '@garageos/ui/badge';
-import { Input } from '@garageos/ui/input';
-import { Label } from '@garageos/ui/label';
-import { Progress } from '@garageos/ui/progress';
-import { cn } from '@garageos/ui/utils';
-import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
+import {
+  PartDetailHeader,
+  PartDetailsCard,
+  StockPricingCard,
+  PartLoadingState,
+  PartNotFoundState,
+} from '@/components/inventory';
+import { useTranslation } from '@/i18n';
 
 interface Part {
   id: string;
@@ -35,15 +33,8 @@ const STATUS_CONFIG = {
   discontinued: { labelKey: 'discontinued', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400' },
 };
 
-const CATEGORIES = [
-  'Engine', 'Brake', 'Suspension', 'Electrical', 'Transmission',
-  'Body', 'Exhaust', 'Cooling', 'Filters', 'Wheels & Tires',
-  'Interior', 'Exterior', 'Fluids', 'Other',
-];
-
 export default function PartDetailPage() {
   const t = useTranslation();
-  const { locale } = useLocale();
   const params = useParams();
   const router = useRouter();
   const [part, setPart] = useState<Part | null>(null);
@@ -153,268 +144,57 @@ export default function PartDetailPage() {
     }
   };
 
+  const handleFormChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
+    return <PartLoadingState />;
   }
 
   if (!part) {
-    return (
-      <div className="text-center py-12">
-        <h2 className="text-xl font-semibold">{t.partDetail.partNotFound}</h2>
-        <Link href="/dashboard/inventory" className="text-primary hover:underline mt-4 inline-block">
-          {t.partDetail.backToInventory}
-        </Link>
-      </div>
-    );
+    return <PartNotFoundState />;
   }
 
   const statusConfig = STATUS_CONFIG[part.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.in_stock;
   const statusLabel = t.inventory[statusConfig.labelKey as keyof typeof t.inventory] || statusConfig.labelKey;
   const stockPercent = part.min_quantity ? Math.min((part.quantity / part.min_quantity) * 100, 100) : 100;
-  const margin = part.cost_price > 0 ? ((part.sell_price - part.cost_price) / part.cost_price * 100).toFixed(0) : 0;
+  const margin = part.cost_price > 0 ? ((part.sell_price - part.cost_price) / part.cost_price * 100).toFixed(0) : '0';
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/inventory">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${part.quantity === 0 ? 'bg-red-100 dark:bg-red-900/30' : part.status === 'low_stock' ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'}`}>
-              <Package className={`h-6 w-6 ${part.quantity === 0 ? 'text-red-600 dark:text-red-400' : part.status === 'low_stock' ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`} />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">{part.name}</h1>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                {part.part_number && <span>#{part.part_number}</span>}
-                <span>•</span>
-                <span>{part.category}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Badge className={statusConfig.color}>{statusLabel}</Badge>
-          {!editing && (
-            <>
-              <Button variant="outline" onClick={() => setEditing(true)}>
-                <Edit2 className="h-4 w-4 mr-2" />
-                {t.partDetail.editPart}
-              </Button>
-              <Button variant="destructive" size="icon" onClick={handleDelete}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
+      <PartDetailHeader
+        part={part}
+        statusConfig={statusConfig}
+        statusLabel={statusLabel}
+        editing={editing}
+        onEdit={() => setEditing(true)}
+        onDelete={handleDelete}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Details */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.partDetail.partDetails}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {editing ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t.newPart.partName} *</Label>
-                    <Input
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{t.newPart.partNumber}</Label>
-                    <Input
-                      value={formData.part_number}
-                      onChange={(e) => setFormData({ ...formData, part_number: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t.newPart.category} *</Label>
-                    <select
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">{t.newPart.selectCategory}</option>
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{t.newPart.brand}</Label>
-                    <Input
-                      value={formData.brand}
-                      onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>{t.newPart.supplier}</Label>
-                  <select
-                    value={formData.supplier_id}
-                    onChange={(e) => setFormData({ ...formData, supplier_id: e.target.value })}
-                    className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="">{t.newPart.selectSupplier}</option>
-                    {suppliers.map((sup) => (
-                      <option key={sup.id} value={sup.id}>{sup.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex gap-3 pt-4">
-                  <Button onClick={handleSave} disabled={saving} className="flex-1">
-                    {saving ? t.partDetail.saving : t.partDetail.save}
-                  </Button>
-                  <Button variant="outline" onClick={() => setEditing(false)}>
-                    {t.partDetail.cancel}
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{t.newPart.brand}</p>
-                    <p className="font-medium">{part.brand || t.partDetail.notSpecified}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{t.newPart.supplier}</p>
-                    <p className="font-medium">{part.supplier?.name || t.partDetail.notSpecified}</p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{t.partDetail.addedOn}</p>
-                  <p className="font-medium">{formatDateOnly(new Date(part.created_at), locale)}</p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <PartDetailsCard
+          part={part}
+          editing={editing}
+          formData={formData}
+          suppliers={suppliers}
+          saving={saving}
+          onFormChange={handleFormChange}
+          onSave={handleSave}
+          onCancel={() => setEditing(false)}
+        />
 
-        {/* Stock & Pricing */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.partDetail.stockAndPricing}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {editing ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t.newPart.costPrice} (฿)</Label>
-                    <Input
-                      type="number"
-                      value={formData.cost_price}
-                      onChange={(e) => setFormData({ ...formData, cost_price: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{t.newPart.sellPrice} (฿)</Label>
-                    <Input
-                      type="number"
-                      value={formData.sell_price}
-                      onChange={(e) => setFormData({ ...formData, sell_price: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t.newPart.currentStock}</Label>
-                    <Input
-                      type="number"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{t.newPart.minStockAlert}</Label>
-                    <Input
-                      type="number"
-                      value={formData.min_quantity}
-                      onChange={(e) => setFormData({ ...formData, min_quantity: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-3 pt-4">
-                  <Button onClick={handleSave} disabled={saving} className="flex-1">
-                    {saving ? t.partDetail.saving : t.partDetail.save}
-                  </Button>
-                  <Button variant="outline" onClick={() => setEditing(false)}>
-                    {t.partDetail.cancel}
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {/* Stock Level */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">{t.partDetail.stockLevel}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {part.quantity} {part.min_quantity ? `/ ${part.min_quantity}` : ''}
-                    </span>
-                  </div>
-                  <Progress
-                    value={stockPercent}
-                    className={cn(
-                      'h-3',
-                      part.quantity === 0 ? '[&>div]:bg-red-500' :
-                      stockPercent < 50 ? '[&>div]:bg-amber-500' : '[&>div]:bg-emerald-500'
-                    )}
-                  />
-                  {part.status === 'low_stock' && (
-                    <div className="flex items-center gap-2 mt-2 text-amber-600">
-                      <AlertTriangle className="h-4 w-4" />
-                      <span className="text-sm">{t.partDetail.stockIsRunningLow}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Pricing */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-3 rounded-lg bg-muted/50">
-                    <p className="text-sm text-muted-foreground">{t.partDetail.cost}</p>
-                    <p className="text-lg font-bold">{formatCurrency(part.cost_price, locale)}</p>
-                  </div>
-                  <div className="p-3 rounded-lg bg-muted/50">
-                    <p className="text-sm text-muted-foreground">{t.partDetail.sell}</p>
-                    <p className="text-lg font-bold">{formatCurrency(part.sell_price, locale)}</p>
-                  </div>
-                  <div className="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-                    <p className="text-sm text-muted-foreground">{t.partDetail.margin}</p>
-                    <p className="text-lg font-bold text-emerald-600">{margin}%</p>
-                  </div>
-                </div>
-
-                {/* Total Value */}
-                <div className="p-4 rounded-lg bg-primary/10">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{t.partDetail.totalStockValue}</span>
-                    <span className="text-xl font-bold">
-                      {formatCurrency(part.quantity * part.sell_price, locale)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <StockPricingCard
+          part={part}
+          stockPercent={stockPercent}
+          margin={margin}
+          editing={editing}
+          formData={formData}
+          saving={saving}
+          onFormChange={handleFormChange}
+          onSave={handleSave}
+          onCancel={() => setEditing(false)}
+        />
       </div>
     </div>
   );

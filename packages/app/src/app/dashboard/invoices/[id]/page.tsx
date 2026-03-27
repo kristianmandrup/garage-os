@@ -1,17 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, FileText, CheckCircle, Clock, AlertTriangle, Printer, Send, Trash2 } from 'lucide-react';
-import { Button } from '@garageos/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Badge } from '@garageos/ui/badge';
-import { Input } from '@garageos/ui/input';
-import { Label } from '@garageos/ui/label';
-import { Textarea } from '@garageos/ui/textarea';
-import { cn } from '@garageos/ui/utils';
-import { useTranslation, useLocale, formatCurrency, formatDateOnly } from '@/i18n';
+import { useParams } from 'next/navigation';
+import {
+  InvoiceDetailHeader,
+  InvoiceJobCardInfo,
+  InvoicePartsLabor,
+  InvoiceNotes,
+  InvoiceCustomer,
+  InvoicePaymentSummary,
+  InvoiceLoadingState,
+  InvoiceNotFoundState,
+} from '@/components/invoice';
+import { useTranslation } from '@/i18n';
 
 interface Invoice {
   id: string;
@@ -54,7 +55,7 @@ interface Invoice {
         part_number: string | null;
       };
     }>;
-  };
+  } | null;
   shop: {
     name: string;
     address: string | null;
@@ -71,18 +72,9 @@ const STATUS_CONFIG = {
   cancelled: { label: 'Cancelled', color: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400' },
 };
 
-const PAYMENT_METHODS = [
-  { value: 'cash', label: 'Cash' },
-  { value: 'transfer', label: 'Bank Transfer' },
-  { value: 'card', label: 'Credit/Debit Card' },
-  { value: 'qr', label: 'QR Payment' },
-];
-
 export default function InvoiceDetailPage() {
   const t = useTranslation();
-  const { locale } = useLocale();
   const params = useParams();
-  const router = useRouter();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -165,240 +157,66 @@ export default function InvoiceDetailPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
+    return <InvoiceLoadingState />;
   }
 
   if (!invoice) {
-    return (
-      <div className="text-center py-12">
-        <h2 className="text-xl font-semibold">{t.invoiceDetail.invoiceNotFound}</h2>
-        <Link href="/dashboard/invoices" className="text-primary hover:underline mt-4 inline-block">
-          {t.invoiceDetail.backToInvoices}
-        </Link>
-      </div>
-    );
+    return <InvoiceNotFoundState />;
   }
 
   const statusConfig = STATUS_CONFIG[invoice.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.draft;
-  const partsTotal = invoice.job_card?.part_usages?.reduce(
-    (sum, pu) => sum + (pu.quantity * pu.unit_price),
-    0
-  ) || 0;
-  const laborCost = invoice.job_card?.actual_cost || 0;
+  const statusLabel = t.invoice.statuses[invoice.status as keyof typeof t.invoice.statuses] || invoice.status;
 
   const paymentMethodLabels: Record<string, string> = {
-    cash: t.invoiceDetail.cash,
-    transfer: t.invoiceDetail.bankTransfer,
-    card: t.invoiceDetail.creditDebitCard,
-    qr: t.invoiceDetail.qrPayment,
+    cash: t.invoiceDetail?.cash || 'Cash',
+    transfer: t.invoiceDetail?.bankTransfer || 'Bank Transfer',
+    card: t.invoiceDetail?.creditDebitCard || 'Credit/Debit Card',
+    qr: t.invoiceDetail?.qrPayment || 'QR Payment',
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/invoices">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">{invoice.invoice_number}</h1>
-            <p className="text-muted-foreground">
-              {t.invoiceDetail.title} {formatDateOnly(new Date(invoice.created_at), locale)}
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Badge className={cn('text-sm px-3 py-1', statusConfig.color)}>
-            {t.invoice.statuses[invoice.status as keyof typeof t.invoice.statuses] || invoice.status}
-          </Badge>
-          {invoice.status === 'draft' && (
-            <>
-              <Button variant="outline" onClick={() => updateStatus('sent')} disabled={updating}>
-                <Send className="h-4 w-4 mr-2" />
-                {t.invoiceDetail.markAsSent}
-              </Button>
-            </>
-          )}
-          {['draft', 'sent', 'overdue'].includes(invoice.status) && (
-            <div className="flex gap-2">
-              <select
-                onChange={(e) => e.target.value && markAsPaid(e.target.value)}
-                className="h-10 px-3 rounded-md border border-input bg-background text-sm"
-                disabled={updating}
-              >
-                <option value="">{t.invoiceDetail.markAsPaid}</option>
-                {Object.entries(paymentMethodLabels).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            </div>
-          )}
-        </div>
-      </div>
+      <InvoiceDetailHeader
+        invoiceNumber={invoice.invoice_number}
+        status={invoice.status}
+        statusConfig={statusConfig}
+        statusLabel={statusLabel}
+        updating={updating}
+        onMarkAsSent={() => updateStatus('sent')}
+        paymentMethodLabels={paymentMethodLabels}
+        onMarkAsPaid={markAsPaid}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Invoice Details */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Job Card Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t.invoiceDetail.serviceDetails}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <p className="font-medium text-lg">{invoice.job_card?.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {invoice.job_card?.vehicle?.brand} {invoice.job_card?.vehicle?.model} ({invoice.job_card?.vehicle?.year})
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {t.invoiceDetail.license}: {invoice.job_card?.vehicle?.license_plate}
-                  </p>
-                </div>
-                {invoice.job_card?.description && (
-                  <p className="text-sm text-muted-foreground">{invoice.job_card.description}</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <InvoiceJobCardInfo
+            jobCard={invoice.job_card}
+            licenseLabel={t.invoiceDetail?.license || 'License'}
+          />
 
-          {/* Parts & Labor */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t.invoiceDetail.items}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Parts */}
-                {invoice.job_card?.part_usages && invoice.job_card.part_usages.length > 0 && (
-                  <div>
-                    <h4 className="font-medium mb-2">{t.invoiceDetail.parts}</h4>
-                    <div className="space-y-2">
-                      {invoice.job_card.part_usages.map((pu) => (
-                        <div key={pu.id} className="flex justify-between text-sm">
-                          <span>{pu.part.name} x {pu.quantity}</span>
-                          <span className="font-medium">{formatCurrency(pu.quantity * pu.unit_price, locale)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+          <InvoicePartsLabor
+            partUsages={invoice.job_card?.part_usages}
+            actualHours={invoice.job_card?.actual_hours}
+            actualCost={invoice.job_card?.actual_cost ?? null}
+            laborLabel={t.invoiceDetail?.labor || 'Labor'}
+            partsLabel={t.invoiceDetail?.parts || 'Parts'}
+            partsTotalLabel={t.invoiceDetail?.partsTotal || 'Parts Total'}
+          />
 
-                {/* Labor */}
-                <div className="flex justify-between text-sm pt-4 border-t">
-                  <span>{t.invoiceDetail.labor.replace('{hours}', String(invoice.job_card?.actual_hours || 0))}</span>
-                  <span className="font-medium">{formatCurrency(laborCost, locale)}</span>
-                </div>
-
-                <div className="flex justify-between text-sm pt-4 border-t">
-                  <span>{t.invoiceDetail.partsTotal}</span>
-                  <span className="font-medium">{formatCurrency(partsTotal, locale)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Notes */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t.invoiceDetail.notes}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder={t.invoiceDetail.addNotesPlaceholder}
-                rows={3}
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-2"
-                onClick={saveNotes}
-                disabled={updating}
-              >
-                {updating ? t.invoiceDetail.saving : t.invoiceDetail.saveNotes}
-              </Button>
-            </CardContent>
-          </Card>
+          <InvoiceNotes
+            notes={notes}
+            updating={updating}
+            placeholder={t.invoiceDetail?.addNotesPlaceholder || 'Add notes...'}
+            savingLabel={t.invoiceDetail?.saving || 'Saving...'}
+            saveLabel={t.invoiceDetail?.saveNotes || 'Save Notes'}
+            onNotesChange={setNotes}
+            onSave={saveNotes}
+          />
         </div>
 
-        {/* Summary */}
         <div className="space-y-6">
-          {/* Customer */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t.invoiceDetail.customer}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="font-medium">{invoice.customer?.name}</p>
-                <p className="text-sm text-muted-foreground">{invoice.customer?.phone}</p>
-                {invoice.customer?.email && (
-                  <p className="text-sm text-muted-foreground">{invoice.customer.email}</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Payment Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t.invoiceDetail.paymentSummary}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">{t.invoiceDetail.subtotal}</span>
-                  <span>{formatCurrency(invoice.subtotal, locale)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">{t.invoiceDetail.tax}</span>
-                  <span>{formatCurrency(invoice.tax, locale)}</span>
-                </div>
-                {invoice.discount > 0 && (
-                  <div className="flex justify-between text-sm text-emerald-600">
-                    <span>{t.invoiceDetail.discount}</span>
-                    <span>-{formatCurrency(invoice.discount, locale)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between font-bold text-lg pt-4 border-t">
-                  <span>{t.invoiceDetail.total}</span>
-                  <span>{formatCurrency(invoice.total, locale)}</span>
-                </div>
-              </div>
-
-              {invoice.status === 'paid' && invoice.paid_at && (
-                <div className="pt-4 border-t">
-                  <div className="flex items-center gap-2 text-emerald-600">
-                    <CheckCircle className="h-5 w-5" />
-                    <span className="font-medium">
-                      {t.invoiceDetail.paidOn.replace('{date}', formatDateOnly(new Date(invoice.paid_at), locale))}
-                    </span>
-                  </div>
-                  {invoice.payment_method && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t.invoiceDetail.via.replace('{method}', paymentMethodLabels[invoice.payment_method] || invoice.payment_method)}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {invoice.due_date && invoice.status !== 'paid' && (
-                <div className="pt-4 border-t">
-                  <p className="text-sm text-muted-foreground">{t.invoiceDetail.dueDate}</p>
-                  <p className="font-medium">{formatDateOnly(new Date(invoice.due_date), locale)}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <InvoiceCustomer customer={invoice.customer} />
+          <InvoicePaymentSummary invoice={invoice} paymentMethodLabels={paymentMethodLabels} />
         </div>
       </div>
     </div>

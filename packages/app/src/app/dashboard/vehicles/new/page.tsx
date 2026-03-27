@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft, Search, User } from 'lucide-react';
-import { Button } from '@garageos/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Input } from '@garageos/ui/input';
-import { Label } from '@garageos/ui/label';
-import { useTranslation } from '@/i18n';
+import {
+  NewVehicleHeader,
+  CustomerSelectorCard,
+  VehicleFormCard,
+} from '@/components/vehicle';
 
 interface Customer {
   id: string;
@@ -17,10 +15,8 @@ interface Customer {
 }
 
 export default function NewVehiclePage() {
-  const t = useTranslation();
   const router = useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
@@ -51,12 +47,6 @@ export default function NewVehiclePage() {
       console.error('Failed to fetch customers:', error);
     }
   };
-
-  const filteredCustomers = customers.filter(
-    (c) =>
-      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.phone.includes(searchQuery)
-  );
 
   const selectedCustomer = customers.find((c) => c.id === selectedCustomerId);
 
@@ -97,217 +87,27 @@ export default function NewVehiclePage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link href="/dashboard/vehicles">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t.newVehicle.title}</h1>
-          <p className="text-muted-foreground">
-            {t.newVehicle.description}
-          </p>
-        </div>
-      </div>
+      <NewVehicleHeader />
 
-      {/* Select Owner */}
       {!selectedCustomerId && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.newVehicle.selectOwner}</CardTitle>
-            <CardDescription>
-              {t.newVehicle.selectOwnerDescription}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t.newVehicle.searchCustomers}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {filteredCustomers.map((customer) => (
-                <button
-                  key={customer.id}
-                  onClick={() => setSelectedCustomerId(customer.id)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors hover:bg-muted"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <User className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{customer.name}</p>
-                    <p className="text-sm text-muted-foreground">{customer.phone}</p>
-                  </div>
-                </button>
-              ))}
-              {filteredCustomers.length === 0 && (
-                <p className="text-center py-8 text-muted-foreground">
-                  {t.newVehicle.noCustomersFound}
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <CustomerSelectorCard
+          customers={customers}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onCustomerSelect={setSelectedCustomerId}
+        />
       )}
 
-      {/* Vehicle Details Form */}
       {selectedCustomerId && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.newVehicle.vehicleDetails}</CardTitle>
-            <CardDescription>
-              {t.newVehicle.vehicleDetailsDescription}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {selectedCustomer && (
-              <div className="p-3 rounded-lg bg-muted/50 flex items-center gap-3">
-                <User className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">{selectedCustomer.name}</p>
-                  <p className="text-sm text-muted-foreground">{selectedCustomer.phone}</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-auto"
-                  onClick={() => setSelectedCustomerId('')}
-                >
-                  {t.newVehicle.change}
-                </Button>
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="license_plate">{t.newVehicle.licensePlate} *</Label>
-                <Input
-                  id="license_plate"
-                  value={formData.license_plate}
-                  onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
-                  placeholder="e.g., กข 1234"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="vin">{t.newVehicle.vin}</Label>
-                <Input
-                  id="vin"
-                  value={formData.vin}
-                  onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
-                  placeholder="Vehicle Identification Number"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="brand">{t.newVehicle.brand} *</Label>
-                <Input
-                  id="brand"
-                  value={formData.brand}
-                  onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                  placeholder="e.g., Toyota"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="model">{t.newVehicle.model} *</Label>
-                <Input
-                  id="model"
-                  value={formData.model}
-                  onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                  placeholder="e.g., Camry"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="year">{t.newVehicle.year}</Label>
-                <Input
-                  id="year"
-                  type="number"
-                  value={formData.year}
-                  onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                  placeholder="2020"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="color">{t.newVehicle.color}</Label>
-                <Input
-                  id="color"
-                  value={formData.color}
-                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                  placeholder="e.g., White"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="mileage">{t.newVehicle.mileage}</Label>
-                <Input
-                  id="mileage"
-                  type="number"
-                  value={formData.mileage}
-                  onChange={(e) => setFormData({ ...formData, mileage: e.target.value })}
-                  placeholder="0"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="fuel_type">{t.newVehicle.fuelType}</Label>
-                <select
-                  id="fuel_type"
-                  value={formData.fuel_type}
-                  onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
-                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="">{t.newVehicle.selectFuelType}</option>
-                  <option value="gasoline">{t.newVehicle.gasoline}</option>
-                  <option value="diesel">{t.newVehicle.diesel}</option>
-                  <option value="electric">{t.newVehicle.electric}</option>
-                  <option value="hybrid">{t.newVehicle.hybrid}</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="transmission">{t.newVehicle.transmission}</Label>
-                <select
-                  id="transmission"
-                  value={formData.transmission}
-                  onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
-                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="">{t.newVehicle.selectTransmission}</option>
-                  <option value="automatic">{t.newVehicle.automatic}</option>
-                  <option value="manual">{t.newVehicle.manual}</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setSelectedCustomerId('')}
-                disabled={saving}
-              >
-                {t.newVehicle.back}
-              </Button>
-              <Button
-                onClick={handleCreateVehicle}
-                disabled={saving || !formData.license_plate || !formData.brand || !formData.model}
-                className="flex-1 btn-gradient"
-              >
-                {saving ? t.newVehicle.creating : t.newVehicle.addVehicle}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <VehicleFormCard
+          selectedCustomer={selectedCustomer}
+          formData={formData}
+          saving={saving}
+          onFormChange={(field, value) => setFormData({ ...formData, [field]: value })}
+          onCustomerChange={() => setSelectedCustomerId('')}
+          onSubmit={handleCreateVehicle}
+          onBack={() => setSelectedCustomerId('')}
+        />
       )}
     </div>
   );

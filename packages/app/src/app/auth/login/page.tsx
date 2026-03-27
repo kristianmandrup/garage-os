@@ -47,6 +47,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 relative overflow-hidden">
+        {/* Hero Image */}
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=1200&q=80')] bg-cover bg-center opacity-30" />
+
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
