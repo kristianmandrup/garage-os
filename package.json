@@ -23,11 +23,19 @@
     "db:seed": "npm run db:seed --workspace=@garageos/db",
     "db:studio": "npm run db:studio --workspace=@garageos/db",
     "test:e2e": "npm run test:e2e --workspace=@garageos/app",
-    "test:e2e:ui": "npm run test:e2e:ui --workspace=@garageos/app"
+    "test:e2e:ui": "npm run test:e2e:ui --workspace=@garageos/app",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "packages/ui/src/**/*.{ts,tsx}": "bash -c 'npx tsc --noEmit -p packages/ui/tsconfig.json'",
+    "packages/app/src/**/*.{ts,tsx}": "bash -c 'npx tsc --noEmit -p packages/app/tsconfig.json'",
+    "packages/site/src/**/*.{ts,tsx}": "bash -c 'npx tsc --noEmit -p packages/site/tsconfig.json'"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "autoprefixer": "^10.4.27",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "playwright": "^1.58.2",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.2",

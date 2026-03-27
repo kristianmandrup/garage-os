@@ -1,8 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { checkRateLimit } from '@/lib/api-utils';
 
 // GET /api/parts - List parts for current shop
 export async function GET(request: Request) {
+  const rateLimited = checkRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   try {
     const supabase = await createClient();
 

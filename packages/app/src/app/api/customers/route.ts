@@ -1,8 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { checkRateLimit } from '@/lib/api-utils';
 
 // GET /api/customers - List customers for current shop
 export async function GET(request: Request) {
+  const rateLimited = checkRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   try {
     const supabase = await createClient();
 
@@ -48,6 +52,9 @@ export async function GET(request: Request) {
 
 // POST /api/customers - Create new customer
 export async function POST(request: Request) {
+  const rateLimited = checkRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   try {
     const supabase = await createClient();
 

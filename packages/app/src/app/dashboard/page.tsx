@@ -10,6 +10,7 @@ import {
   TodayOverview,
   ActivityFeed,
 } from '@/components/dashboard';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 interface JobCard {
   id: string;
@@ -120,19 +121,25 @@ export default function DashboardPage() {
 
       <TodayOverview activeJobs={stats.activeJobs} completedToday={stats.completedToday} pendingApprovals={stats.pendingApprovals} />
 
-      <DashboardStatsCards stats={stats} loading={loading} />
+      <ErrorBoundary>
+        <DashboardStatsCards stats={stats} loading={loading} />
+      </ErrorBoundary>
 
-      <QuickActionsGrid />
+      <ErrorBoundary>
+        <QuickActionsGrid />
+      </ErrorBoundary>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <RecentJobCardsList recentJobs={recentJobs} loading={loading} />
+      <ErrorBoundary>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <RecentJobCardsList recentJobs={recentJobs} loading={loading} />
+          </div>
+          <div className="space-y-6">
+            <InventoryAlertsCard lowStockParts={lowStockParts} loading={loading} />
+            <ActivityFeed activities={activities} />
+          </div>
         </div>
-        <div className="space-y-6">
-          <InventoryAlertsCard lowStockParts={lowStockParts} loading={loading} />
-          <ActivityFeed activities={activities} />
-        </div>
-      </div>
+      </ErrorBoundary>
     </div>
   );
 }

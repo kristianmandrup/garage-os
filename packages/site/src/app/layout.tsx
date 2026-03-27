@@ -19,6 +19,16 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: 'GarageOS - Smart Garage Management for Auto Repair Shops',
   description: 'Mobile-first shop management OS for auto repair shops. AI-powered inspection, digital job cards, inventory management, and customer communication.',
+  openGraph: {
+    title: 'GarageOS - Smart Garage Management for Auto Repair Shops',
+    description: 'Mobile-first shop management OS for auto repair shops. AI-powered inspection, digital job cards, inventory management.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GarageOS - Smart Garage Management',
+    description: 'Mobile-first, AI-powered shop management for auto repair shops.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

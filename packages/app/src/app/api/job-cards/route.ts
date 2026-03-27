@@ -1,9 +1,13 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { createTaskForJobCard, isTaskMasterEnabled } from '@/lib/taskmaster/service';
+import { checkRateLimit } from '@/lib/api-utils';
 
 // GET /api/job-cards - List job cards for current shop
 export async function GET(request: Request) {
+  const rateLimited = checkRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   try {
     const supabase = await createClient();
 
@@ -64,6 +68,9 @@ export async function GET(request: Request) {
 
 // POST /api/job-cards - Create new job card
 export async function POST(request: Request) {
+  const rateLimited = checkRateLimit(request);
+  if (rateLimited) return rateLimited;
+
   try {
     const supabase = await createClient();
 
