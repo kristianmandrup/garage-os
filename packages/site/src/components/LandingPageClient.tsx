@@ -16,7 +16,7 @@ export function LandingPageClient() {
   const { locale } = useLocale();
 
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen">
       <SiteHeader onContact={() => setIsContactOpen(true)} />
       <HeroSection onContact={() => setIsContactOpen(true)} />
       <FeaturesSection />

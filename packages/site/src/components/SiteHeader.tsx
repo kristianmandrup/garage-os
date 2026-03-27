@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Wrench, Menu, X } from 'lucide-react';
+import { Button } from '@garageos/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { useLocale } from './LocaleProvider';
@@ -47,12 +48,12 @@ export function SiteHeader({ onContact }: SiteHeaderProps) {
           <div className="hidden md:flex items-center gap-3">
             <LocaleSwitcher />
             <ThemeToggle />
-            <button
+            <Button
               onClick={onContact}
-              className="bg-blue-600 dark:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/25 dark:shadow-blue-500/25 transition-all"
+              className="bg-blue-600 dark:bg-blue-500 text-white px-5 py-2.5 font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/25 dark:shadow-blue-500/25"
             >
               {t('getStarted')}
-            </button>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,12 +88,12 @@ export function SiteHeader({ onContact }: SiteHeaderProps) {
             <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <LocaleSwitcher />
               <ThemeToggle />
-              <button
+              <Button
                 onClick={onContact}
-                className="flex-1 bg-blue-600 dark:bg-blue-500 text-white px-5 py-3 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600"
+                className="flex-1 bg-blue-600 dark:bg-blue-500 text-white px-5 py-3 font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 h-auto"
               >
                 {t('getStarted')}
-              </button>
+              </Button>
             </div>
           </div>
         )}

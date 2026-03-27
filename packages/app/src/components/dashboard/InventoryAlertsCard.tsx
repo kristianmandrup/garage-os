@@ -5,6 +5,7 @@ import { CheckCircle } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Progress } from '@garageos/ui/progress';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
+import { Skeleton } from '@garageos/ui/skeleton';
 import { useTranslation } from '@/i18n';
 
 interface InventoryAlertsCardProps {
@@ -29,8 +30,14 @@ export function InventoryAlertsCard({ lowStockParts, loading }: InventoryAlertsC
       <CardContent>
         {loading ? (
           <div className="space-y-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-12 bg-muted rounded animate-pulse" />
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-2">
+                <div className="flex justify-between">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-12" />
+                </div>
+                <Skeleton className="h-2 w-full rounded-full" />
+              </div>
             ))}
           </div>
         ) : lowStockParts.length === 0 ? (

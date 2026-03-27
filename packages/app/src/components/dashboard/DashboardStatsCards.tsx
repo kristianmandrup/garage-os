@@ -2,6 +2,7 @@
 
 import { Wrench, Car, Users, AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@garageos/ui/card';
+import { Skeleton } from '@garageos/ui/skeleton';
 import { useTranslation } from '@/i18n';
 
 interface DashboardStatsCardsProps {
@@ -51,7 +52,7 @@ export function DashboardStatsCards({ stats, loading }: DashboardStatsCardsProps
               </div>
             </div>
             <div className="mt-4">
-              <p className="text-2xl font-bold">{loading ? '-' : stat.value}</p>
+              {loading ? <Skeleton className="h-8 w-16 mt-1" /> : <p className="text-2xl font-bold">{stat.value}</p>}
               <p className="text-sm text-muted-foreground">{t.dashboard[stat.key]}</p>
             </div>
           </CardContent>

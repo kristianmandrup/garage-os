@@ -2,6 +2,7 @@
 
 import { CheckCircle } from 'lucide-react';
 import { useLocale } from './LocaleProvider';
+import { AnimateIn } from './AnimateIn';
 
 const benefitKeys = [
   'benefit1',
@@ -20,18 +21,25 @@ export function BenefitsSection() {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-              {t('benefitsTitle')}
-            </h2>
+            <AnimateIn>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                {t('benefitsTitle')}
+              </h2>
+            </AnimateIn>
             <ul className="space-y-4">
-              {benefitKeys.map((key) => (
-                <li key={key} className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-300">{t(key)}</span>
+              {benefitKeys.map((key, index) => (
+                <li key={key}>
+                  <AnimateIn delay={index * 80}>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
+                      <span className="text-gray-700 dark:text-gray-300">{t(key)}</span>
+                    </div>
+                  </AnimateIn>
                 </li>
               ))}
             </ul>
           </div>
+          <AnimateIn direction="right">
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t('readyInMinutes')}</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -52,6 +60,7 @@ export function BenefitsSection() {
               </div>
             </div>
           </div>
+          </AnimateIn>
         </div>
       </div>
     </section>

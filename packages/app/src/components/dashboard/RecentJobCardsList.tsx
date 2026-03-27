@@ -5,6 +5,7 @@ import { ArrowRight, Wrench } from 'lucide-react';
 import { Button } from '@garageos/ui/button';
 import { Badge } from '@garageos/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
+import { Skeleton } from '@garageos/ui/skeleton';
 import { useTranslation, useLocale } from '@/i18n';
 import { formatRelativeTime } from '@/i18n';
 
@@ -55,8 +56,15 @@ export function RecentJobCardsList({ recentJobs, loading }: RecentJobCardsListPr
       <CardContent>
         {loading ? (
           <div className="space-y-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center gap-4 p-3">
+                <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
             ))}
           </div>
         ) : recentJobs.length === 0 ? (

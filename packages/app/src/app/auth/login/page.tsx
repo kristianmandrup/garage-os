@@ -127,10 +127,13 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-white dark:bg-gray-900">
-        <div className="w-full max-w-md space-y-8">
+      <div className="flex-1 flex flex-col items-center pt-12 pb-8 px-8 lg:justify-center lg:pt-8 bg-gradient-to-b from-blue-50 via-white to-white dark:from-gray-900 dark:via-gray-950 dark:to-gray-950 lg:bg-white lg:dark:bg-gray-900 lg:from-transparent lg:via-transparent lg:to-transparent relative overflow-hidden">
+        {/* Mobile decorative elements */}
+        <div className="lg:hidden absolute top-0 right-0 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="lg:hidden absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        <div className="w-full max-w-md space-y-6 relative z-10">
           {/* Mobile Logo and Controls */}
-          <div className="lg:hidden flex items-center justify-between mb-8">
+          <div className="lg:hidden flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
                 <Wrench className="w-6 h-6 text-white" />
@@ -160,7 +163,7 @@ export default function LoginPage() {
           </div>
 
           {/* Login Card */}
-          <Card className="border-0 shadow-xl bg-white dark:bg-gray-800">
+          <Card className="shadow-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
             <CardHeader className="text-center pb-2">
               <CardTitle className="text-2xl text-gray-900 dark:text-white">Welcome Back</CardTitle>
               <CardDescription className="text-gray-600 dark:text-gray-400">
@@ -170,7 +173,7 @@ export default function LoginPage() {
             <CardContent className="space-y-6 pt-4">
               {/* Google Sign In */}
               <form action={loginWithGoogle}>
-                <Button type="submit" className="w-full h-12 text-base bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white" size="lg">
+                <Button type="submit" className="w-full h-12 text-base bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-blue-700 hover:via-blue-700 hover:to-indigo-700 text-white" size="lg">
                   <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"

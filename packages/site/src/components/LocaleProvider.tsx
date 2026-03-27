@@ -68,6 +68,7 @@ const translations: Record<Locale, Record<string, string>> = {
     enterprise: 'Enterprise',
     enterpriseDesc: 'For shop chains',
     getStartedBtn: 'Get Started',
+    perMonth: 'per month',
     // Pricing features - Small Garage
     smallGarageFeature1: 'Up to 50 job cards/month',
     smallGarageFeature2: 'Digital job cards',
@@ -158,6 +159,7 @@ const translations: Record<Locale, Record<string, string>> = {
     enterprise: 'เอนเตอร์ไพรส์',
     enterpriseDesc: 'สำหรับเครือร้านซ่อม',
     getStartedBtn: 'เริ่มต้น',
+    perMonth: 'ต่อเดือน',
     // Pricing features - Small Garage
     smallGarageFeature1: 'ใบงาน 50 ใบ/เดือน',
     smallGarageFeature2: 'ใบงานดิจิทัล',
