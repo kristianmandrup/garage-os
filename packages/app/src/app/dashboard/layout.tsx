@@ -35,6 +35,7 @@ import { signOut } from '@/lib/supabase/auth';
 import { PageTransition } from '@/components/PageTransition';
 import { BottomTabBar } from '@/components/BottomTabBar';
 import { CommandPalette } from '@/components/CommandPalette';
+import { KeyboardShortcutsHelp } from '@/components/KeyboardShortcutsHelp';
 import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
 import { LocaleSwitcher } from '@/components/locale/LocaleSwitcher';
 import { NotificationCenter } from '@/components/NotificationCenter';
@@ -130,6 +131,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-background">
       <CommandPalette />
+      <KeyboardShortcutsHelp />
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-card border-b flex items-center justify-between px-4">
         <button

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { cookies } from 'next/headers';
 import { Providers } from './providers';
 import { ThemeInit } from './components/ThemeInit';
 import './globals.css';
@@ -50,13 +51,17 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const themeCookie = cookieStore.get('theme')?.value;
+  const isDark = themeCookie === 'dark';
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={isDark ? 'dark' : ''}>
       <body className={`${inter.variable} ${plusJakarta.variable} font-sans antialiased`}>
         <a
           href="#main-content"

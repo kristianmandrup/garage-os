@@ -17,6 +17,7 @@ import {
   Bell,
 } from 'lucide-react';
 import { cn } from '@garageos/ui/utils';
+import { useTranslation } from '@/i18n';
 
 interface CommandItem {
   id: string;
@@ -34,24 +35,23 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const t = useTranslation();
 
   const commands: CommandItem[] = [
-    // Navigation
-    { id: 'dashboard', label: 'Go to Dashboard', icon: LayoutDashboard, href: '/dashboard', group: 'Navigation' },
-    { id: 'job-cards', label: 'Go to Job Cards', icon: Wrench, href: '/dashboard/job-cards', group: 'Navigation' },
-    { id: 'vehicles', label: 'Go to Vehicles', icon: Car, href: '/dashboard/vehicles', group: 'Navigation' },
-    { id: 'customers', label: 'Go to Customers', icon: Users, href: '/dashboard/customers', group: 'Navigation' },
-    { id: 'inventory', label: 'Go to Inventory', icon: Package, href: '/dashboard/inventory', group: 'Navigation' },
-    { id: 'invoices', label: 'Go to Invoices', icon: FileText, href: '/dashboard/invoices', group: 'Navigation' },
-    { id: 'analytics', label: 'Go to Analytics', icon: BarChart3, href: '/dashboard/analytics', group: 'Navigation' },
-    { id: 'messages', label: 'Go to Messages', icon: MessageSquare, href: '/dashboard/messages', group: 'Navigation' },
-    { id: 'reminders', label: 'Go to Reminders', icon: Bell, href: '/dashboard/reminders', group: 'Navigation' },
-    { id: 'settings', label: 'Go to Settings', icon: Settings, href: '/dashboard/settings', group: 'Navigation' },
-    // Actions
-    { id: 'new-job', label: 'Create New Job Card', icon: Plus, href: '/dashboard/job-cards/new', group: 'Actions', keywords: ['add', 'create', 'job'] },
-    { id: 'new-vehicle', label: 'Add New Vehicle', icon: Plus, href: '/dashboard/vehicles/new', group: 'Actions', keywords: ['add', 'create', 'vehicle', 'car'] },
-    { id: 'new-customer', label: 'Add New Customer', icon: Plus, href: '/dashboard/customers/new', group: 'Actions', keywords: ['add', 'create', 'customer'] },
-    { id: 'new-part', label: 'Add New Part', icon: Plus, href: '/dashboard/inventory/new', group: 'Actions', keywords: ['add', 'create', 'part', 'inventory'] },
+    { id: 'dashboard', label: `${t.dashboard.goTo} ${t.nav.dashboard}`, icon: LayoutDashboard, href: '/dashboard', group: t.dashboard.navigation },
+    { id: 'job-cards', label: `${t.dashboard.goTo} ${t.nav.jobCards}`, icon: Wrench, href: '/dashboard/job-cards', group: t.dashboard.navigation },
+    { id: 'vehicles', label: `${t.dashboard.goTo} ${t.nav.vehicles}`, icon: Car, href: '/dashboard/vehicles', group: t.dashboard.navigation },
+    { id: 'customers', label: `${t.dashboard.goTo} ${t.nav.customers}`, icon: Users, href: '/dashboard/customers', group: t.dashboard.navigation },
+    { id: 'inventory', label: `${t.dashboard.goTo} ${t.nav.inventory}`, icon: Package, href: '/dashboard/inventory', group: t.dashboard.navigation },
+    { id: 'invoices', label: `${t.dashboard.goTo} ${t.nav.invoices}`, icon: FileText, href: '/dashboard/invoices', group: t.dashboard.navigation },
+    { id: 'analytics', label: `${t.dashboard.goTo} ${t.nav.analytics}`, icon: BarChart3, href: '/dashboard/analytics', group: t.dashboard.navigation },
+    { id: 'messages', label: `${t.dashboard.goTo} ${t.nav.messages}`, icon: MessageSquare, href: '/dashboard/messages', group: t.dashboard.navigation },
+    { id: 'reminders', label: `${t.dashboard.goTo} ${t.nav.reminders}`, icon: Bell, href: '/dashboard/reminders', group: t.dashboard.navigation },
+    { id: 'settings', label: `${t.dashboard.goTo} ${t.nav.settings}`, icon: Settings, href: '/dashboard/settings', group: t.dashboard.navigation },
+    { id: 'new-job', label: `${t.dashboard.createNew} ${t.nav.jobCards}`, icon: Plus, href: '/dashboard/job-cards/new', group: t.dashboard.actions, keywords: ['add', 'create', 'job'] },
+    { id: 'new-vehicle', label: `${t.dashboard.addNew} ${t.nav.vehicles}`, icon: Plus, href: '/dashboard/vehicles/new', group: t.dashboard.actions, keywords: ['add', 'create', 'vehicle'] },
+    { id: 'new-customer', label: `${t.dashboard.addNew} ${t.nav.customers}`, icon: Plus, href: '/dashboard/customers/new', group: t.dashboard.actions, keywords: ['add', 'create', 'customer'] },
+    { id: 'new-part', label: `${t.dashboard.addNew} ${t.nav.inventory}`, icon: Plus, href: '/dashboard/inventory/new', group: t.dashboard.actions, keywords: ['add', 'create', 'part'] },
   ];
 
   const filtered = query
@@ -129,7 +129,7 @@ export function CommandPalette() {
               ref={inputRef}
               value={query}
               onChange={(e) => { setQuery(e.target.value); setSelectedIndex(0); }}
-              placeholder="Type a command or search..."
+              placeholder={t.dashboard.typeCommand}
               className="flex-1 h-12 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
             <kbd className="hidden sm:inline-flex h-5 items-center rounded border border-border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
@@ -140,7 +140,7 @@ export function CommandPalette() {
           {/* Results */}
           <div className="max-h-80 overflow-y-auto p-2">
             {filtered.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">No results found.</p>
+              <p className="py-6 text-center text-sm text-muted-foreground">{t.dashboard.noResults}</p>
             ) : (
               groups.map(group => (
                 <div key={group}>
@@ -175,13 +175,13 @@ export function CommandPalette() {
           {/* Footer */}
           <div className="border-t border-border px-4 py-2 flex items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
-              <kbd className="rounded border border-border bg-muted px-1">↑↓</kbd> Navigate
+              <kbd className="rounded border border-border bg-muted px-1">↑↓</kbd> {t.dashboard.navigate}
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="rounded border border-border bg-muted px-1">↵</kbd> Select
+              <kbd className="rounded border border-border bg-muted px-1">↵</kbd> {t.dashboard.select}
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="rounded border border-border bg-muted px-1">esc</kbd> Close
+              <kbd className="rounded border border-border bg-muted px-1">esc</kbd> {t.dashboard.closeLabel}
             </span>
           </div>
         </div>

@@ -1,5 +1,7 @@
 {
   "framework": "nextjs",
   "projectId": "prj_WAVF31kUVp2nGOQFXbnR3zUUylVP",
-  "orgId": "team_nvfyjCSjY85KjcFla1NFF15Y"
+  "orgId": "team_nvfyjCSjY85KjcFla1NFF15Y",
+  "installCommand": "npm install",
+  "buildCommand": "npx turbo run build --filter=@garageos/app"
 }

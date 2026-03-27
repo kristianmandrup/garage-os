@@ -28,6 +28,7 @@ export const useAppStore = create<AppState>()(
         }
         set({ theme, isDark });
         document.documentElement.classList.toggle('dark', isDark);
+        document.cookie = `theme=${theme};path=/;max-age=31536000;SameSite=Lax`;
       },
 
       initTheme: () => {

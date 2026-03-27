@@ -5,6 +5,7 @@ import { Bell, Check, Wrench, Users, Package, FileText, X } from 'lucide-react';
 import { cn } from '@garageos/ui/utils';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@garageos/ui/button';
+import { useTranslation } from '@/i18n';
 
 interface Notification {
   id: string;
@@ -24,6 +25,7 @@ const iconMap = {
 };
 
 export function NotificationCenter() {
+  const t = useTranslation();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([
     { id: '1', type: 'job', title: 'Job Card Updated', message: 'Oil change for Honda Civic marked as completed', time: '5m ago', read: false },
@@ -121,13 +123,13 @@ export function NotificationCenter() {
         <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-xl border border-border bg-card shadow-2xl z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-            <h3 className="font-semibold text-sm">Notifications</h3>
+            <h3 className="font-semibold text-sm">{t.dashboard.notifications}</h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
                 className="text-xs text-primary hover:underline flex items-center gap-1"
               >
-                <Check className="h-3 w-3" /> Mark all read
+                <Check className="h-3 w-3" /> {t.dashboard.markAllRead}
               </button>
             )}
           </div>
@@ -136,7 +138,7 @@ export function NotificationCenter() {
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
-                No notifications
+                {t.dashboard.noNotifications}
               </div>
             ) : (
               notifications.map(notification => {

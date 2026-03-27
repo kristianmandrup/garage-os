@@ -2,6 +2,6 @@
   "framework": "nextjs",
   "projectId": "prj_N8D5Av91sgG7Zoc71TLeYW5EEnDu",
   "orgId": "team_nvfyjCSjY85KjcFla1NFF15Y",
-  "installCommand": "pnpm install",
-  "buildCommand": "pnpm --filter @garageos/site build"
+  "installCommand": "npm install",
+  "buildCommand": "npx turbo run build --filter=@garageos/site"
 }
