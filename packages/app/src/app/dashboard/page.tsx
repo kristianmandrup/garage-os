@@ -47,6 +47,13 @@ export default function DashboardPage() {
   });
   const [recentJobs, setRecentJobs] = useState<JobCard[]>([]);
   const [lowStockParts, setLowStockParts] = useState<Part[]>([]);
+  const [activities, setActivities] = useState<Array<{
+    id: string;
+    type: 'job_created' | 'job_completed' | 'vehicle_added' | 'customer_added' | 'invoice_sent';
+    title: string;
+    description: string;
+    time: string;
+  }>>([]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -62,6 +69,21 @@ export default function DashboardPage() {
         const activeJobs = jobs.filter((j: JobCard) => activeStatuses.includes(j.status)).length;
         setStats(prev => ({ ...prev, activeJobs }));
         setRecentJobs(jobs.slice(0, 5));
+
+        // Derive activities from recent jobs
+        const recentActivities = jobs.slice(0, 8).map((job: any) => {
+          const isCompleted = job.status === 'completed';
+          const hoursAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / 3600000);
+          const timeLabel = hoursAgo < 1 ? 'Just now' : hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.floor(hoursAgo / 24)}d ago`;
+          return {
+            id: job.id,
+            type: isCompleted ? 'job_completed' as const : 'job_created' as const,
+            title: isCompleted ? `Job completed: ${job.title}` : `New job: ${job.title}`,
+            description: `${job.vehicle?.brand || ''} ${job.vehicle?.model || ''} - ${job.vehicle?.license_plate || ''}`.trim(),
+            time: timeLabel,
+          };
+        });
+        setActivities(recentActivities);
       }
 
       // Fetch vehicles
@@ -108,7 +130,7 @@ export default function DashboardPage() {
         </div>
         <div className="space-y-6">
           <InventoryAlertsCard lowStockParts={lowStockParts} loading={loading} />
-          <ActivityFeed activities={[]} />
+          <ActivityFeed activities={activities} />
         </div>
       </div>
     </div>

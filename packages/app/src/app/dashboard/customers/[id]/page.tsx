@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@garageos/ui/breadcrumb';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@garageos/ui/dialog';
+import { Button } from '@garageos/ui/button';
 import {
   CustomerHeader,
   CustomerContactCard,
@@ -35,6 +37,7 @@ export default function CustomerDetailPage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -96,9 +99,12 @@ export default function CustomerDetailPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this customer?')) return;
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
 
+  const handleDelete = async () => {
+    setDeleteDialogOpen(false);
     try {
       const response = await fetch(`/api/customers/${params.id}`, {
         method: 'DELETE',
@@ -135,7 +141,7 @@ export default function CustomerDetailPage() {
         customer={customer}
         editing={editing}
         onEdit={() => setEditing(true)}
-        onDelete={handleDelete}
+        onDelete={handleDeleteClick}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -154,6 +160,21 @@ export default function CustomerDetailPage() {
           vehicles={customer.vehicles || []}
         />
       </div>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Customer</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this customer? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
