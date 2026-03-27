@@ -37,6 +37,7 @@ import { BottomTabBar } from '@/components/BottomTabBar';
 import { CommandPalette } from '@/components/CommandPalette';
 import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
 import { LocaleSwitcher } from '@/components/locale/LocaleSwitcher';
+import { NotificationCenter } from '@/components/NotificationCenter';
 import { useLocale } from '@/i18n';
 
 export default function DashboardLayout({
@@ -144,9 +145,12 @@ export default function DashboardLayout({
           </div>
           <span className="font-bold gradient-text">GarageOS</span>
         </Link>
-        <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
-          {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </Button>
+        <div className="flex items-center gap-1">
+          <NotificationCenter />
+          <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
+        </div>
       </header>
 
       {/* Mobile Sidebar Overlay */}
@@ -247,6 +251,9 @@ export default function DashboardLayout({
           <div className="p-3 border-t space-y-2">
             {/* Locale */}
             {!isCollapsed && <LocaleSwitcher />}
+
+            {/* Notifications */}
+            {!isCollapsed && <NotificationCenter />}
 
             {/* Theme Toggle */}
             <Button

@@ -9,6 +9,7 @@ import {
   InventoryOverviewCard,
   MechanicProductivityCard,
   CustomerRetentionCard,
+  CustomerGrowthCard,
   AnalyticsLoadingState,
   AnalyticsErrorState,
 } from '@/components/analytics';
@@ -97,7 +98,10 @@ export default function AnalyticsPage() {
 
       <MechanicProductivityCard mechanics={analytics.mechanics} />
 
-      <CustomerRetentionCard retention={analytics.customerRetention} />
+      <div className="grid gap-6 lg:grid-cols-2">
+        <CustomerRetentionCard retention={analytics.customerRetention} />
+        <CustomerGrowthCard retention={analytics.customerRetention} />
+      </div>
     </div>
   );
 }

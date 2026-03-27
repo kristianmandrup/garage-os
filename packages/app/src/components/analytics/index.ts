@@ -10,3 +10,4 @@ export { AnalyticsErrorState } from './AnalyticsErrorState';
 export { MultiShopHeader } from './MultiShopHeader';
 export { AggregateStatsCards } from './AggregateStatsCards';
 export { ShopPerformanceCard } from './ShopPerformanceCard';
+export { CustomerGrowthCard } from './CustomerGrowthCard';
