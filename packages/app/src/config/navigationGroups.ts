@@ -12,6 +12,10 @@ import {
   Bell,
   CheckSquare,
   Settings,
+  TrendingUp,
+  DollarSign,
+  UsersRound,
+  ClipboardList,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { nav } from '@/i18n/translations/en/nav';
@@ -53,6 +57,8 @@ export const navGroups: NavGroup[] = [
       { nameKey: 'analytics', href: '/dashboard/analytics', icon: BarChart3 },
       { nameKey: 'multiShop', href: '/dashboard/analytics/multi-shop', icon: Building2 },
       { nameKey: 'aiDiagnostics', href: '/dashboard/diagnostics', icon: Search },
+      { nameKey: 'growth', href: '/dashboard/analytics/growth', icon: TrendingUp, roles: ['owner', 'manager'] },
+      { nameKey: 'financials', href: '/dashboard/analytics/financials', icon: DollarSign, roles: ['owner', 'manager'] },
     ],
   },
   {
@@ -61,6 +67,13 @@ export const navGroups: NavGroup[] = [
       { nameKey: 'messages', href: '/dashboard/messages', icon: MessageSquare },
       { nameKey: 'reminders', href: '/dashboard/reminders', icon: Bell },
       { nameKey: 'tasks', href: '/dashboard/tasks', icon: CheckSquare, roles: ['owner', 'manager'] },
+    ],
+  },
+  {
+    label: 'Admin',
+    items: [
+      { nameKey: 'team', href: '/dashboard/team', icon: UsersRound, roles: ['owner'] },
+      { nameKey: 'auditLog', href: '/dashboard/audit-log', icon: ClipboardList, roles: ['owner', 'manager'] },
     ],
   },
   {

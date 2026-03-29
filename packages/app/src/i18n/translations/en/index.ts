@@ -14,6 +14,10 @@ import { settings } from './settings';
 import { dateTime } from './dateTime';
 import { inspection } from './inspection';
 import { suppliers } from './suppliers';
+import { team } from './team';
+import { growth } from './growth';
+import { financials } from './financials';
+import { auditLog } from './auditLog';
 
 export const en = {
   common,
@@ -32,6 +36,10 @@ export const en = {
   dateTime,
   inspection,
   suppliers,
+  team,
+  growth,
+  financials,
+  auditLog,
 } as const;
 
 export type EnTranslationKeys = typeof en;

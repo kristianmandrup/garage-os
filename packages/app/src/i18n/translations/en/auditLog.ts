@@ -1,0 +1,23 @@
+export const auditLog = {
+  title: 'Audit Log',
+  description: 'Track all activity in your shop',
+  filterByType: 'Filter by type',
+  filterByUser: 'Filter by user',
+  allTypes: 'All Types',
+  allUsers: 'All Users',
+  from: 'From',
+  to: 'To',
+  noActivity: 'No activity found',
+  noActivityDescription: 'Activity will appear here as your team works',
+  actions: {
+    job_card_created: 'created a job card',
+    job_card_completed: 'completed a job card',
+    photo_uploaded: 'uploaded a photo',
+    inspection_complete: 'completed an inspection',
+    invoice_sent: 'sent an invoice',
+    invoice_paid: 'recorded a payment',
+    message_sent: 'sent a message',
+    vehicle_added: 'added a vehicle',
+    part_used: 'used a part',
+  },
+} as const;

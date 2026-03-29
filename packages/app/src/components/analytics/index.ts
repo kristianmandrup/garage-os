@@ -11,3 +11,8 @@ export { MultiShopHeader } from './MultiShopHeader';
 export { AggregateStatsCards } from './AggregateStatsCards';
 export { ShopPerformanceCard } from './ShopPerformanceCard';
 export { CustomerGrowthCard } from './CustomerGrowthCard';
+export { GrowthCharts } from './GrowthCharts';
+export { ProfitLossCard } from './ProfitLossCard';
+export { PaymentAgingCard } from './PaymentAgingCard';
+export { TaxSummaryCard } from './TaxSummaryCard';
+export { RevenueByServiceCard } from './RevenueByServiceCard';

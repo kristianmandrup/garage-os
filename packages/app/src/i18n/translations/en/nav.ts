@@ -12,4 +12,8 @@ export const nav = {
   messages: 'Messages',
   reminders: 'Reminders',
   settings: 'Settings',
+  team: 'Team',
+  growth: 'Growth',
+  financials: 'Financials',
+  auditLog: 'Audit Log',
 } as const;

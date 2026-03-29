@@ -12,4 +12,8 @@ export const nav = {
   messages: 'ข้อความ',
   reminders: 'การแจ้งเตือน',
   settings: 'การตั้งค่า',
+  team: 'ทีมงาน',
+  growth: 'การเติบโต',
+  financials: 'การเงิน',
+  auditLog: 'บันทึกกิจกรรม',
 } as const;

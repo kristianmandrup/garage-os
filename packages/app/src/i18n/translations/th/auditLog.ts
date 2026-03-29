@@ -1,0 +1,23 @@
+export const auditLog = {
+  title: 'บันทึกกิจกรรม',
+  description: 'ติดตามกิจกรรมทั้งหมดในร้านของคุณ',
+  filterByType: 'กรองตามประเภท',
+  filterByUser: 'กรองตามผู้ใช้',
+  allTypes: 'ทุกประเภท',
+  allUsers: 'ผู้ใช้ทั้งหมด',
+  from: 'จาก',
+  to: 'ถึง',
+  noActivity: 'ไม่พบกิจกรรม',
+  noActivityDescription: 'กิจกรรมจะปรากฏที่นี่เมื่อทีมของคุณทำงาน',
+  actions: {
+    job_card_created: 'สร้างใบงาน',
+    job_card_completed: 'ทำใบงานเสร็จ',
+    photo_uploaded: 'อัปโหลดรูปภาพ',
+    inspection_complete: 'ตรวจสอบเสร็จสิ้น',
+    invoice_sent: 'ส่งใบแจ้งหนี้',
+    invoice_paid: 'บันทึกการชำระเงิน',
+    message_sent: 'ส่งข้อความ',
+    vehicle_added: 'เพิ่มยานพาหนะ',
+    part_used: 'ใช้อะไหล่',
+  },
+} as const;
