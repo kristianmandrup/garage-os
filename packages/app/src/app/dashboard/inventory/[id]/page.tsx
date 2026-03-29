@@ -129,7 +129,7 @@ export default function PartDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm(t.partDetail.confirmDelete)) return;
+    if (!confirm(t.inventory.detail.confirmDelete)) return;
 
     try {
       const response = await fetch(`/api/parts/${params.id}`, {
@@ -157,7 +157,8 @@ export default function PartDetailPage() {
   }
 
   const statusConfig = STATUS_CONFIG[part.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.in_stock;
-  const statusLabel = t.inventory[statusConfig.labelKey as keyof typeof t.inventory] || statusConfig.labelKey;
+  const topLevel = t.inventory as Record<string, unknown>;
+  const statusLabel = (typeof topLevel[statusConfig.labelKey] === 'string' ? topLevel[statusConfig.labelKey] : statusConfig.labelKey) as string;
   const stockPercent = part.min_quantity ? Math.min((part.quantity / part.min_quantity) * 100, 100) : 100;
   const margin = part.cost_price > 0 ? ((part.sell_price - part.cost_price) / part.cost_price * 100).toFixed(0) : '0';
 

@@ -29,6 +29,14 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
+  // Dev-only: bypass auth for screenshot audits
+  const isScreenshotBypass =
+    process.env.NODE_ENV === 'development' &&
+    request.nextUrl.searchParams.get('_screenshot') === '1';
+  if (isScreenshotBypass) {
+    return supabaseResponse;
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();

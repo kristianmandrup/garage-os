@@ -24,11 +24,11 @@ export function JobCardPhotos({ photos, jobCardId }: JobCardPhotosProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg">{t.jobCard.photos}</CardTitle>
+        <CardTitle className="text-lg">{t.jobCards.detail.photos}</CardTitle>
         <Link href={`/dashboard/job-cards/${jobCardId}/photos`}>
           <Button size="sm">
             <Camera className="h-4 w-4 mr-2" />
-            {t.jobCard.addPhoto}
+            {t.jobCards.detail.addPhoto}
           </Button>
         </Link>
       </CardHeader>
@@ -47,7 +47,7 @@ export function JobCardPhotos({ photos, jobCardId }: JobCardPhotosProps) {
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8">
-            {t.jobCard.noPhotosYet}
+            {t.jobCards.detail.noPhotosYet}
           </p>
         )}
       </CardContent>

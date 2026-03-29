@@ -21,4 +21,17 @@ export const common = {
   status: 'สถานะ',
   settings: 'การตั้งค่า',
   logout: 'ออกจากระบบ',
+  errors: {
+    generic: 'เกิดข้อผิดพลาด',
+    notFound: 'ไม่พบ',
+    unauthorized: 'ไม่ได้รับอนุญาต',
+    networkError: 'เกิดข้อผิดพลาดเครือข่าย กรุณาลองอีกครั้ง',
+    validationError: 'กรุณาตรวจสอบข้อมูลที่กรอก',
+  },
+  notifications: {
+    title: 'การแจ้งเตือน',
+    markAllRead: 'ทำเครื่องหมายอ่านทั้งหมด',
+    noNotifications: 'ไม่มีการแจ้งเตือน',
+    noNotificationsDescription: 'คุณติดตามทุกอย่างแล้ว!',
+  },
 } as const;

@@ -57,8 +57,8 @@ export function TaskDetailModal({ task, onClose, onMarkDone }: TaskDetailModalPr
 
   const getLinkedEntityLabel = (type: string) => {
     switch (type) {
-      case 'job_card': return t.jobCard.title;
-      case 'invoice': return t.invoice.title;
+      case 'job_card': return t.jobCards.detail.title;
+      case 'invoice': return t.invoices.title;
       case 'reminder': return t.reminder.title;
       case 'low_stock': return 'Low Stock';
       default: return type;

@@ -1,4 +1,4 @@
-export const supplier = {
+export const suppliers = {
   title: 'ผู้จัดจำหน่าย',
   description: 'จัดการผู้จัดจำหน่ายอะไหล่',
   addSupplier: 'เพิ่มผู้จัดจำหน่าย',
@@ -27,4 +27,27 @@ export const supplier = {
   confirmDelete: 'คุณแน่ใจหรือไม่ว่าต้องการลบผู้จัดจำหน่ายนี้?',
   edit: 'แก้ไข',
   delete: 'ลบ',
+  form: {
+    title: 'เพิ่มผู้จัดจำหน่าย',
+    description: 'เพิ่มผู้จัดจำหน่ายอะไหล่ใหม่',
+    supplierInformation: 'ข้อมูลผู้จัดจำหน่าย',
+    supplierInformationDescription: 'กรอกรายละเอียดผู้จัดจำหน่ายด้านล่าง',
+    companyName: 'ชื่อบริษัท',
+    contactPerson: 'ผู้ติดต่อ',
+    phone: 'โทรศัพท์',
+    email: 'อีเมล',
+    address: 'ที่อยู่',
+    rating: 'การจัดอันดับ',
+    notes: 'หมายเหตุ',
+    companyNamePlaceholder: 'เช่น อะไหล่ยนต์ไทย บจก.',
+    contactPersonPlaceholder: 'เช่น สมชาย ประเสริฐ',
+    phonePlaceholder: 'เช่น 02-123-4567',
+    emailPlaceholder: 'เช่น order@autoparts.co.th',
+    addressPlaceholder: 'ที่อยู่ผู้จัดจำหน่าย...',
+    notesPlaceholder: 'หมายเหตุเพิ่มเติมเกี่ยวกับผู้จัดจำหน่ายนี้...',
+    notRated: 'ยังไม่ได้จัดอันดับ',
+    creating: 'กำลังสร้าง...',
+    addSupplier: 'เพิ่มผู้จัดจำหน่าย',
+    cancel: 'ยกเลิก',
+  },
 } as const;

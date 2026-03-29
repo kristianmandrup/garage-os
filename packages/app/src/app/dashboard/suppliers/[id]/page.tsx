@@ -99,7 +99,7 @@ export default function SupplierDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm(t.supplier.confirmDelete)) return;
+    if (!confirm(t.suppliers.confirmDelete)) return;
 
     try {
       const response = await fetch(`/api/suppliers/${params.id}`, {

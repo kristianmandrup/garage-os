@@ -49,20 +49,20 @@ export function JobCardSidebar({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t.jobCard.statusAndAssignment}</CardTitle>
+        <CardTitle className="text-lg">{t.jobCards.detail.statusAndAssignment}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {editing ? (
           <>
             <div className="space-y-2">
-              <Label>{t.jobCard.status}</Label>
+              <Label>{t.jobCards.detail.status}</Label>
               <select
                 value={formData.status}
                 onChange={(e) => onFormChange('status', e.target.value)}
                 className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="">Select status</option>
-                {Object.entries(t.jobCard.statuses).map(([key, label]) => (
+                {Object.entries(t.jobCards.detail.statuses).map(([key, label]) => (
                   <option key={key} value={key}>
                     {label}
                   </option>
@@ -70,7 +70,7 @@ export function JobCardSidebar({
               </select>
             </div>
             <div className="space-y-2">
-              <Label>{t.jobCard.estimatedCost}</Label>
+              <Label>{t.jobCards.detail.estimatedCost}</Label>
               <Input
                 type="number"
                 value={formData.estimated_cost}
@@ -79,7 +79,7 @@ export function JobCardSidebar({
               />
             </div>
             <div className="space-y-2">
-              <Label>{t.jobCard.actualCost}</Label>
+              <Label>{t.jobCards.detail.actualCost}</Label>
               <Input
                 type="number"
                 value={formData.actual_cost}
@@ -89,7 +89,7 @@ export function JobCardSidebar({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>{t.jobCard.estimatedHours}</Label>
+                <Label>{t.jobCards.detail.estimatedHours}</Label>
                 <Input
                   type="number"
                   value={formData.estimated_hours}
@@ -98,7 +98,7 @@ export function JobCardSidebar({
                 />
               </div>
               <div className="space-y-2">
-                <Label>{t.jobCard.actualHours}</Label>
+                <Label>{t.jobCards.detail.actualHours}</Label>
                 <Input
                   type="number"
                   value={formData.actual_hours}
@@ -109,10 +109,10 @@ export function JobCardSidebar({
             </div>
             <div className="flex gap-2">
               <Button onClick={onSave} disabled={saving} className="flex-1">
-                {saving ? t.jobCard.saving : t.common.save}
+                {saving ? t.jobCards.detail.saving : t.common.save}
               </Button>
               <Button variant="outline" onClick={onCancel}>
-                {t.jobCard.cancel}
+                {t.jobCards.detail.cancel}
               </Button>
             </div>
           </>
@@ -120,19 +120,19 @@ export function JobCardSidebar({
           <>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">{t.jobCard.estimatedCost}</span>
+                <span className="text-muted-foreground">{t.jobCards.detail.estimatedCost}</span>
                 <span className="font-medium">{formatCurrency(estimatedCost || 0, locale)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">{t.jobCard.actualCost}</span>
+                <span className="text-muted-foreground">{t.jobCards.detail.actualCost}</span>
                 <span className="font-medium">{formatCurrency(actualCost || 0, locale)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">{t.jobCard.partsCost}</span>
+                <span className="text-muted-foreground">{t.jobCards.detail.partsCost}</span>
                 <span className="font-medium">{formatCurrency(totalPartsCost, locale)}</span>
               </div>
               <div className="border-t pt-3 flex justify-between">
-                <span className="font-medium">{t.jobCard.total}</span>
+                <span className="font-medium">{t.jobCards.detail.total}</span>
                 <span className="font-bold text-lg">
                   {formatCurrency((actualCost || 0) + totalPartsCost, locale)}
                 </span>
@@ -140,11 +140,11 @@ export function JobCardSidebar({
             </div>
             <div className="space-y-3 pt-4 border-t">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">{t.jobCard.estimatedHours}</span>
+                <span className="text-muted-foreground">{t.jobCards.detail.estimatedHours}</span>
                 <span className="font-medium">{estimatedHours || 0}h</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">{t.jobCard.actualHours}</span>
+                <span className="text-muted-foreground">{t.jobCards.detail.actualHours}</span>
                 <span className="font-medium">{actualHours || 0}h</span>
               </div>
             </div>
@@ -155,7 +155,7 @@ export function JobCardSidebar({
                 </div>
                 <div>
                   <p className="font-medium">{assignedTo.name}</p>
-                  <p className="text-sm text-muted-foreground">{t.jobCard.assignedTo}</p>
+                  <p className="text-sm text-muted-foreground">{t.jobCards.detail.assignedTo}</p>
                 </div>
               </div>
             )}

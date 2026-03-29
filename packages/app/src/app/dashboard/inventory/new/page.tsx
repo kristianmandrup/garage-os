@@ -110,24 +110,24 @@ export default function NewPartPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t.newPart.title}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.inventory.form.title}</h1>
           <p className="text-muted-foreground">
-            {t.newPart.description}
+            {t.inventory.form.description}
           </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t.newPart.partInformation}</CardTitle>
+          <CardTitle>{t.inventory.form.partInformation}</CardTitle>
           <CardDescription>
-            {t.newPart.partInformationDescription}
+            {t.inventory.form.partInformationDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2 col-span-2">
-              <Label htmlFor="name">{t.newPart.partName} *</Label>
+              <Label htmlFor="name">{t.inventory.form.partName} *</Label>
               <Input
                 id="name"
                 value={formData.name}
@@ -137,7 +137,7 @@ export default function NewPartPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="part_number">{t.newPart.partNumber}</Label>
+              <Label htmlFor="part_number">{t.inventory.form.partNumber}</Label>
               <Input
                 id="part_number"
                 value={formData.part_number}
@@ -147,7 +147,7 @@ export default function NewPartPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="brand">{t.newPart.brand}</Label>
+              <Label htmlFor="brand">{t.inventory.form.brand}</Label>
               <Input
                 id="brand"
                 value={formData.brand}
@@ -157,14 +157,14 @@ export default function NewPartPage() {
             </div>
 
             <div className="space-y-2 col-span-2">
-              <Label htmlFor="category">{t.newPart.category} *</Label>
+              <Label htmlFor="category">{t.inventory.form.category} *</Label>
               <select
                 id="category"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <option value="">{t.newPart.selectCategory}</option>
+                <option value="">{t.inventory.form.selectCategory}</option>
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
@@ -172,14 +172,14 @@ export default function NewPartPage() {
             </div>
 
             <div className="space-y-2 col-span-2">
-              <Label htmlFor="supplier">{t.newPart.supplier}</Label>
+              <Label htmlFor="supplier">{t.inventory.form.supplier}</Label>
               <select
                 id="supplier"
                 value={formData.supplier_id}
                 onChange={(e) => setFormData({ ...formData, supplier_id: e.target.value })}
                 className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <option value="">{t.newPart.selectSupplier}</option>
+                <option value="">{t.inventory.form.selectSupplier}</option>
                 {suppliers.map((sup) => (
                   <option key={sup.id} value={sup.id}>{sup.name}</option>
                 ))}
@@ -188,10 +188,10 @@ export default function NewPartPage() {
           </div>
 
           <div className="border-t pt-4">
-            <h3 className="font-medium mb-4">{t.newPart.pricingAndStock}</h3>
+            <h3 className="font-medium mb-4">{t.inventory.form.pricingAndStock}</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="cost_price">{t.newPart.costPrice} (฿)</Label>
+                <Label htmlFor="cost_price">{t.inventory.form.costPrice} (฿)</Label>
                 <Input
                   id="cost_price"
                   type="number"
@@ -202,7 +202,7 @@ export default function NewPartPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="sell_price">{t.newPart.sellPrice} (฿)</Label>
+                <Label htmlFor="sell_price">{t.inventory.form.sellPrice} (฿)</Label>
                 <Input
                   id="sell_price"
                   type="number"
@@ -213,7 +213,7 @@ export default function NewPartPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="quantity">{t.newPart.currentStock}</Label>
+                <Label htmlFor="quantity">{t.inventory.form.currentStock}</Label>
                 <Input
                   id="quantity"
                   type="number"
@@ -224,7 +224,7 @@ export default function NewPartPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="min_quantity">{t.newPart.minStockAlert}</Label>
+                <Label htmlFor="min_quantity">{t.inventory.form.minStockAlert}</Label>
                 <Input
                   id="min_quantity"
                   type="number"
@@ -239,7 +239,7 @@ export default function NewPartPage() {
           <div className="flex gap-3 pt-4">
             <Link href="/dashboard/inventory" className="flex-1">
               <Button variant="outline" className="w-full">
-                {t.newPart.cancel}
+                {t.inventory.form.cancel}
               </Button>
             </Link>
             <Button
@@ -247,7 +247,7 @@ export default function NewPartPage() {
               disabled={saving || !formData.name || !formData.category}
               className="flex-1 btn-gradient"
             >
-              {saving ? t.newPart.creating : t.newPart.addPart}
+              {saving ? t.inventory.form.creating : t.inventory.form.addPart}
             </Button>
           </div>
         </CardContent>

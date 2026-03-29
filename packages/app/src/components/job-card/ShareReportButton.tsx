@@ -49,7 +49,7 @@ export function ShareReportButton({ jobCardId }: ShareReportButtonProps) {
       ) : (
         <>
           <Share2 className="h-4 w-4 mr-2" />
-          {sharing ? t.jobCard.creating : t.jobCard.shareReport}
+          {sharing ? t.jobCards.detail.creating : t.jobCards.detail.shareReport}
         </>
       )}
     </Button>

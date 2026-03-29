@@ -67,7 +67,7 @@ export function CreateInvoiceButton({ jobCardId, customerId }: CreateInvoiceButt
       disabled={creating}
     >
       <FileText className="h-4 w-4 mr-2" />
-      {creating ? t.jobCard.creating : t.jobCard.createInvoice}
+      {creating ? t.jobCards.detail.creating : t.jobCards.detail.createInvoice}
     </Button>
   );
 }

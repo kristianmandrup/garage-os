@@ -33,12 +33,12 @@ export function JobsByStatusCard({ byStatus, total }: JobsByStatusCardProps) {
         <div className="space-y-4">
           {Object.entries(byStatus).map(([status, count]) => {
             const percentage = total > 0 ? (count / total) * 100 : 0;
-            const statusKey = status.replace('_', '') as keyof typeof t.jobCard.statuses;
+            const statusKey = status.replace('_', '') as keyof typeof t.jobCards.detail.statuses;
             return (
               <div key={status} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <Badge className={cn(STATUS_COLORS[status] || 'bg-slate-100')}>
-                    {t.jobCard.statuses[statusKey] || status}
+                    {t.jobCards.detail.statuses[statusKey] || status}
                   </Badge>
                   <span className="font-medium">{count} ({percentage.toFixed(0)}%)</span>
                 </div>

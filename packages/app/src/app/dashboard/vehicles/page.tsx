@@ -70,13 +70,13 @@ export default function VehiclesPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t.nav.vehicles}</h1>
           <p className="text-muted-foreground">
-            {t.vehicle.description}
+            {t.vehicles.description}
           </p>
         </div>
         <Link href="/dashboard/vehicles/new">
           <Button className="btn-gradient">
             <Plus className="h-4 w-4 mr-2" />
-            {t.vehicle.addVehicle}
+            {t.vehicles.addVehicle}
           </Button>
         </Link>
       </div>
@@ -85,7 +85,7 @@ export default function VehiclesPage() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder={t.vehicle.searchPlaceholder}
+          placeholder={t.vehicles.searchPlaceholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10"
@@ -107,12 +107,12 @@ export default function VehiclesPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Car className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t.vehicle.noVehiclesFound}</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.vehicles.noVehiclesFound}</h3>
             <p className="text-muted-foreground mb-4">
-              {search ? t.vehicle.tryAdjustingSearch : t.vehicle.noVehiclesDescription}
+              {search ? t.vehicles.tryAdjustingSearch : t.vehicles.noVehiclesDescription}
             </p>
             <Link href="/dashboard/vehicles/new">
-              <Button>{t.vehicle.addVehicle}</Button>
+              <Button>{t.vehicles.addVehicle}</Button>
             </Link>
           </CardContent>
         </Card>

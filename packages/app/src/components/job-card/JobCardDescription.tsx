@@ -22,19 +22,19 @@ export function JobCardDescription({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t.jobCard.description}</CardTitle>
+        <CardTitle className="text-lg">{t.jobCards.detail.description}</CardTitle>
       </CardHeader>
       <CardContent>
         {editing ? (
           <Textarea
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder={t.jobCard.description}
+            placeholder={t.jobCards.detail.description}
             rows={4}
           />
         ) : (
           <p className="text-muted-foreground">
-            {description || t.jobCard.noDescriptionProvided}
+            {description || t.jobCards.detail.noDescriptionProvided}
           </p>
         )}
       </CardContent>

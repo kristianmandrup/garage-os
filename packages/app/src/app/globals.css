@@ -94,6 +94,26 @@
     --input: oklch(0.22 0.02 240);
     --ring: oklch(0.65 0.17 240);
 
+    /* Override Tailwind @theme color tokens for dark mode */
+    --color-background: oklch(0.10 0.02 240);
+    --color-foreground: oklch(0.98 0 0);
+    --color-card: oklch(0.16 0.02 240);
+    --color-card-foreground: oklch(0.98 0 0);
+    --color-popover: oklch(0.16 0.02 240);
+    --color-popover-foreground: oklch(0.98 0 0);
+    --color-primary: oklch(0.65 0.17 240);
+    --color-primary-foreground: oklch(0.98 0 0);
+    --color-secondary: oklch(0.22 0.02 240);
+    --color-secondary-foreground: oklch(0.92 0 0);
+    --color-muted: oklch(0.22 0.02 240);
+    --color-muted-foreground: oklch(0.65 0 0);
+    --color-accent: oklch(0.22 0.02 240);
+    --color-accent-foreground: oklch(0.92 0 0);
+    --color-destructive: oklch(0.65 0.2 25);
+    --color-border: oklch(0.22 0.02 240);
+    --color-input: oklch(0.22 0.02 240);
+    --color-ring: oklch(0.65 0.17 240);
+
     /* Gradient backgrounds for dark mode */
     --gradient-primary: linear-gradient(135deg, oklch(0.65 0.17 240) 0%, oklch(0.55 0.17 240) 50%, oklch(0.75 0.17 240) 100%);
     --gradient-accent: linear-gradient(135deg, oklch(0.75 0.15 70) 0%, oklch(0.65 0.15 70) 100%);

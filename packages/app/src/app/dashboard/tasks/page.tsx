@@ -51,8 +51,8 @@ export default function TasksPage() {
     } catch (error) {
       console.error('Failed to fetch tasks:', error);
       addToast({
-        title: t.errors.generic,
-        description: t.errors.networkError,
+        title: t.common.errors.generic,
+        description: t.common.errors.networkError,
         variant: 'destructive',
       });
     } finally {
@@ -82,8 +82,8 @@ export default function TasksPage() {
     } catch (error) {
       console.error('Failed to mark task as done:', error);
       addToast({
-        title: t.errors.generic,
-        description: t.errors.networkError,
+        title: t.common.errors.generic,
+        description: t.common.errors.networkError,
         variant: 'destructive',
       });
     }

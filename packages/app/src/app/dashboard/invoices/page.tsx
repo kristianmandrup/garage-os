@@ -113,7 +113,7 @@ export default function InvoicesPage() {
       header: 'Status',
       render: (inv) => {
         const status = STATUS_CONFIG[inv.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.draft;
-        return <Badge className={status.color}>{t.invoice.statuses[status.labelKey as keyof typeof t.invoice.statuses]}</Badge>;
+        return <Badge className={status.color}>{t.invoices.statuses[status.labelKey as keyof typeof t.invoices.statuses]}</Badge>;
       },
     },
   ];
@@ -132,7 +132,7 @@ export default function InvoicesPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t.nav.invoices}</h1>
           <p className="text-muted-foreground">
-            {t.invoice.description}
+            {t.invoices.description}
           </p>
         </div>
       </div>
@@ -144,7 +144,7 @@ export default function InvoicesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{invoices.length}</p>
-                <p className="text-sm text-muted-foreground">{t.invoice.totalInvoices}</p>
+                <p className="text-sm text-muted-foreground">{t.invoices.totalInvoices}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -158,7 +158,7 @@ export default function InvoicesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{formatCurrency(totalOutstanding, locale)}</p>
-                <p className="text-sm text-muted-foreground">{t.invoice.outstanding}</p>
+                <p className="text-sm text-muted-foreground">{t.invoices.outstanding}</p>
               </div>
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${totalOutstanding > 0 ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'}`}>
                 <AlertTriangle className={`h-6 w-6 ${totalOutstanding > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`} />
@@ -172,7 +172,7 @@ export default function InvoicesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{formatCurrency(totalPaid, locale)}</p>
-                <p className="text-sm text-muted-foreground">{t.invoice.paid}</p>
+                <p className="text-sm text-muted-foreground">{t.invoices.paid}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                 <CheckCircle className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
@@ -189,11 +189,11 @@ export default function InvoicesPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="h-10 px-3 rounded-md border border-input bg-background text-sm"
         >
-          <option value="">{t.invoice.allStatus}</option>
-          <option value="draft">{t.invoice.statuses.draft}</option>
-          <option value="sent">{t.invoice.statuses.sent}</option>
-          <option value="paid">{t.invoice.statuses.paid}</option>
-          <option value="overdue">{t.invoice.statuses.overdue}</option>
+          <option value="">{t.invoices.allStatus}</option>
+          <option value="draft">{t.invoices.statuses.draft}</option>
+          <option value="sent">{t.invoices.statuses.sent}</option>
+          <option value="paid">{t.invoices.statuses.paid}</option>
+          <option value="overdue">{t.invoices.statuses.overdue}</option>
         </select>
       </div>
 
@@ -214,10 +214,10 @@ export default function InvoicesPage() {
           data={invoices.filter(inv => !statusFilter || inv.status === statusFilter)}
           columns={columns}
           searchable
-          searchPlaceholder={t.invoice.searchPlaceholder}
+          searchPlaceholder={t.invoices.searchPlaceholder}
           getRowKey={(inv) => inv.id}
           onRowClick={(inv) => router.push(`/dashboard/invoices/${inv.id}`)}
-          emptyMessage={t.invoice.noInvoicesFound}
+          emptyMessage={t.invoices.noInvoicesFound}
           exportable
           exportFilename="invoices"
         />

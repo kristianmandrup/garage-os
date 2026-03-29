@@ -43,9 +43,9 @@ export function VehicleFormCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t.newVehicle.vehicleDetails}</CardTitle>
+        <CardTitle>{t.vehicles.form.vehicleDetails}</CardTitle>
         <CardDescription>
-          {t.newVehicle.vehicleDetailsDescription}
+          {t.vehicles.form.vehicleDetailsDescription}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -62,13 +62,13 @@ export function VehicleFormCard({
               className="ml-auto"
               onClick={onCustomerChange}
             >
-              {t.newVehicle.change}
+              {t.vehicles.form.change}
             </Button>
           </div>
         )}
 
         <div className="grid grid-cols-2 gap-4">
-          <FormField label={t.newVehicle.licensePlate} required htmlFor="license_plate">
+          <FormField label={t.vehicles.form.licensePlate} required htmlFor="license_plate">
             <Input
               id="license_plate"
               value={formData.license_plate}
@@ -76,7 +76,7 @@ export function VehicleFormCard({
               placeholder="e.g., กข 1234"
             />
           </FormField>
-          <FormField label={t.newVehicle.vin} htmlFor="vin">
+          <FormField label={t.vehicles.form.vin} htmlFor="vin">
             <Input
               id="vin"
               value={formData.vin}
@@ -87,7 +87,7 @@ export function VehicleFormCard({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <FormField label={t.newVehicle.brand} required htmlFor="brand">
+          <FormField label={t.vehicles.form.brand} required htmlFor="brand">
             <Input
               id="brand"
               value={formData.brand}
@@ -95,7 +95,7 @@ export function VehicleFormCard({
               placeholder="e.g., Toyota"
             />
           </FormField>
-          <FormField label={t.newVehicle.model} required htmlFor="model">
+          <FormField label={t.vehicles.form.model} required htmlFor="model">
             <Input
               id="model"
               value={formData.model}
@@ -106,7 +106,7 @@ export function VehicleFormCard({
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <FormField label={t.newVehicle.year} htmlFor="year">
+          <FormField label={t.vehicles.form.year} htmlFor="year">
             <Input
               id="year"
               type="number"
@@ -115,7 +115,7 @@ export function VehicleFormCard({
               placeholder="2020"
             />
           </FormField>
-          <FormField label={t.newVehicle.color} htmlFor="color">
+          <FormField label={t.vehicles.form.color} htmlFor="color">
             <Input
               id="color"
               value={formData.color}
@@ -123,7 +123,7 @@ export function VehicleFormCard({
               placeholder="e.g., White"
             />
           </FormField>
-          <FormField label={t.newVehicle.mileage} htmlFor="mileage">
+          <FormField label={t.vehicles.form.mileage} htmlFor="mileage">
             <Input
               id="mileage"
               type="number"
@@ -135,30 +135,30 @@ export function VehicleFormCard({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <FormField label={t.newVehicle.fuelType} htmlFor="fuel_type">
+          <FormField label={t.vehicles.form.fuelType} htmlFor="fuel_type">
             <select
               id="fuel_type"
               value={formData.fuel_type}
               onChange={(e) => onFormChange('fuel_type', e.target.value)}
               className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <option value="">{t.newVehicle.selectFuelType}</option>
-              <option value="gasoline">{t.newVehicle.gasoline}</option>
-              <option value="diesel">{t.newVehicle.diesel}</option>
-              <option value="electric">{t.newVehicle.electric}</option>
-              <option value="hybrid">{t.newVehicle.hybrid}</option>
+              <option value="">{t.vehicles.form.selectFuelType}</option>
+              <option value="gasoline">{t.vehicles.form.gasoline}</option>
+              <option value="diesel">{t.vehicles.form.diesel}</option>
+              <option value="electric">{t.vehicles.form.electric}</option>
+              <option value="hybrid">{t.vehicles.form.hybrid}</option>
             </select>
           </FormField>
-          <FormField label={t.newVehicle.transmission} htmlFor="transmission">
+          <FormField label={t.vehicles.form.transmission} htmlFor="transmission">
             <select
               id="transmission"
               value={formData.transmission}
               onChange={(e) => onFormChange('transmission', e.target.value)}
               className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <option value="">{t.newVehicle.selectTransmission}</option>
-              <option value="automatic">{t.newVehicle.automatic}</option>
-              <option value="manual">{t.newVehicle.manual}</option>
+              <option value="">{t.vehicles.form.selectTransmission}</option>
+              <option value="automatic">{t.vehicles.form.automatic}</option>
+              <option value="manual">{t.vehicles.form.manual}</option>
             </select>
           </FormField>
         </div>
@@ -169,14 +169,14 @@ export function VehicleFormCard({
             onClick={onBack}
             disabled={saving}
           >
-            {t.newVehicle.back}
+            {t.vehicles.form.back}
           </Button>
           <Button
             onClick={onSubmit}
             disabled={saving || !isValid}
             className="flex-1 btn-gradient"
           >
-            {saving ? t.newVehicle.creating : t.newVehicle.addVehicle}
+            {saving ? t.vehicles.form.creating : t.vehicles.form.addVehicle}
           </Button>
         </div>
       </CardContent>

@@ -16,9 +16,9 @@ export function NewVehicleHeader() {
         </Button>
       </Link>
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t.newVehicle.title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t.vehicles.form.title}</h1>
         <p className="text-muted-foreground">
-          {t.newVehicle.description}
+          {t.vehicles.form.description}
         </p>
       </div>
     </div>

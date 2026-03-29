@@ -165,13 +165,13 @@ export default function InvoiceDetailPage() {
   }
 
   const statusConfig = STATUS_CONFIG[invoice.status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.draft;
-  const statusLabel = t.invoice.statuses[invoice.status as keyof typeof t.invoice.statuses] || invoice.status;
+  const statusLabel = t.invoices.statuses[invoice.status as keyof typeof t.invoices.statuses] || invoice.status;
 
   const paymentMethodLabels: Record<string, string> = {
-    cash: t.invoiceDetail?.cash || 'Cash',
-    transfer: t.invoiceDetail?.bankTransfer || 'Bank Transfer',
-    card: t.invoiceDetail?.creditDebitCard || 'Credit/Debit Card',
-    qr: t.invoiceDetail?.qrPayment || 'QR Payment',
+    cash: t.invoices.detail?.cash || 'Cash',
+    transfer: t.invoices.detail?.bankTransfer || 'Bank Transfer',
+    card: t.invoices.detail?.creditDebitCard || 'Credit/Debit Card',
+    qr: t.invoices.detail?.qrPayment || 'QR Payment',
   };
 
   return (
@@ -191,24 +191,24 @@ export default function InvoiceDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           <InvoiceJobCardInfo
             jobCard={invoice.job_card}
-            licenseLabel={t.invoiceDetail?.license || 'License'}
+            licenseLabel={t.invoices.detail?.license || 'License'}
           />
 
           <InvoicePartsLabor
             partUsages={invoice.job_card?.part_usages}
             actualHours={invoice.job_card?.actual_hours}
             actualCost={invoice.job_card?.actual_cost ?? null}
-            laborLabel={t.invoiceDetail?.labor || 'Labor'}
-            partsLabel={t.invoiceDetail?.parts || 'Parts'}
-            partsTotalLabel={t.invoiceDetail?.partsTotal || 'Parts Total'}
+            laborLabel={t.invoices.detail?.labor || 'Labor'}
+            partsLabel={t.invoices.detail?.parts || 'Parts'}
+            partsTotalLabel={t.invoices.detail?.partsTotal || 'Parts Total'}
           />
 
           <InvoiceNotes
             notes={notes}
             updating={updating}
-            placeholder={t.invoiceDetail?.addNotesPlaceholder || 'Add notes...'}
-            savingLabel={t.invoiceDetail?.saving || 'Saving...'}
-            saveLabel={t.invoiceDetail?.saveNotes || 'Save Notes'}
+            placeholder={t.invoices.detail?.addNotesPlaceholder || 'Add notes...'}
+            savingLabel={t.invoices.detail?.saving || 'Saving...'}
+            saveLabel={t.invoices.detail?.saveNotes || 'Save Notes'}
             onNotesChange={setNotes}
             onSave={saveNotes}
           />

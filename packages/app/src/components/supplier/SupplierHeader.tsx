@@ -45,7 +45,7 @@ export function SupplierHeader({ supplier, editing, onEdit, onDelete }: Supplier
           <>
             <Button variant="outline" onClick={onEdit}>
               <Edit2 className="h-4 w-4 mr-2" />
-              {t.supplier.edit}
+              {t.suppliers.edit}
             </Button>
             <Button variant="destructive" size="icon" onClick={onDelete}>
               <Trash2 className="h-4 w-4" />

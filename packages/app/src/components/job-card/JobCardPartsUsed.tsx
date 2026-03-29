@@ -25,7 +25,7 @@ export function JobCardPartsUsed({ partUsages }: JobCardPartsUsedProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t.jobCard.partsUsed}</CardTitle>
+        <CardTitle className="text-lg">{t.jobCards.detail.partsUsed}</CardTitle>
       </CardHeader>
       <CardContent>
         {partUsages && partUsages.length > 0 ? (
@@ -38,14 +38,14 @@ export function JobCardPartsUsed({ partUsages }: JobCardPartsUsedProps) {
                 </div>
                 <div className="text-right">
                   <p className="font-medium">{formatCurrency(pu.quantity * pu.unit_price, locale)}</p>
-                  <p className="text-sm text-muted-foreground">{t.jobCard.qty}: {pu.quantity}</p>
+                  <p className="text-sm text-muted-foreground">{t.jobCards.detail.qty}: {pu.quantity}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8">
-            {t.jobCard.noPartsUsedYet}
+            {t.jobCards.detail.noPartsUsedYet}
           </p>
         )}
       </CardContent>

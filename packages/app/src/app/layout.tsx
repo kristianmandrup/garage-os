@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { Providers } from './providers';
 import { ThemeInit } from './components/ThemeInit';
+import { PerfMonitor } from '@/components/PerfMonitor';
 import './globals.css';
 
 const inter = Inter({
@@ -70,6 +71,7 @@ export default async function RootLayout({
           Skip to content
         </a>
         <ThemeInit />
+        <PerfMonitor />
         <Providers>{children}</Providers>
       </body>
     </html>

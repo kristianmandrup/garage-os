@@ -98,7 +98,7 @@ export default function JobCardsPage() {
       header: 'Status',
       render: (card) => {
         const color = statusColors[card.status] || statusColors.completed;
-        const label = t.jobCard.statuses[card.status as keyof typeof t.jobCard.statuses] || card.status;
+        const label = t.jobCards.detail.statuses[card.status as keyof typeof t.jobCards.detail.statuses] || card.status;
         return <Badge className={color}>{label}</Badge>;
       },
     },
@@ -137,7 +137,7 @@ export default function JobCardsPage() {
           className="h-10 px-3 rounded-md border border-input bg-background text-sm"
         >
           <option value="">{t.jobCards.allStatus}</option>
-          {Object.entries(t.jobCard.statuses).map(([key, label]) => (
+          {Object.entries(t.jobCards.detail.statuses).map(([key, label]) => (
             <option key={key} value={key}>{label}</option>
           ))}
         </select>
@@ -145,7 +145,7 @@ export default function JobCardsPage() {
 
       {/* Stats */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        {Object.entries(t.jobCard.statuses).slice(0, 4).map(([key, label]) => {
+        {Object.entries(t.jobCards.detail.statuses).slice(0, 4).map(([key, label]) => {
           const count = jobCards.filter(c => c.status === key).length;
           const color = statusColors[key] || statusColors.completed;
           return (

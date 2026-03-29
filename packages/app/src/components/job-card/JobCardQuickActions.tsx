@@ -24,25 +24,25 @@ export function JobCardQuickActions({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t.jobCard.quickActions}</CardTitle>
+        <CardTitle className="text-lg">{t.jobCards.detail.quickActions}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <Link href={`/dashboard/inspection?job_card_id=${jobCardId}`} className="block">
           <Button variant="outline" className="w-full justify-start">
             <Camera className="h-4 w-4 mr-2" />
-            {t.jobCard.aiInspection}
+            {t.jobCards.detail.aiInspection}
           </Button>
         </Link>
         <Link href={`/dashboard/inventory?job_card_id=${jobCardId}`} className="block">
           <Button variant="outline" className="w-full justify-start">
             <Package className="h-4 w-4 mr-2" />
-            {t.jobCard.addParts}
+            {t.jobCards.detail.addParts}
           </Button>
         </Link>
         <Link href={`/dashboard/messages?customer_id=${customerId}&job_card_id=${jobCardId}`} className="block">
           <Button variant="outline" className="w-full justify-start">
             <MessageSquare className="h-4 w-4 mr-2" />
-            {t.jobCard.sendMessage}
+            {t.jobCards.detail.sendMessage}
           </Button>
         </Link>
         {status === 'completed' && (

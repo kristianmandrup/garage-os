@@ -73,20 +73,20 @@ export function SupplierContactCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t.supplier.contactInformation}</CardTitle>
+        <CardTitle>{t.suppliers.contactInformation}</CardTitle>
       </CardHeader>
       <CardContent>
         {editing ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>{t.supplier.companyName} *</Label>
+              <Label>{t.suppliers.companyName} *</Label>
               <Input
                 value={formData.name}
                 onChange={(e) => onFormChange('name', e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>{t.supplier.contactPerson}</Label>
+              <Label>{t.suppliers.contactPerson}</Label>
               <Input
                 value={formData.contact_person}
                 onChange={(e) => onFormChange('contact_person', e.target.value)}
@@ -94,14 +94,14 @@ export function SupplierContactCard({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>{t.supplier.phone}</Label>
+                <Label>{t.suppliers.phone}</Label>
                 <Input
                   value={formData.phone}
                   onChange={(e) => onFormChange('phone', e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label>{t.supplier.email}</Label>
+                <Label>{t.suppliers.email}</Label>
                 <Input
                   type="email"
                   value={formData.email}
@@ -110,7 +110,7 @@ export function SupplierContactCard({
               </div>
             </div>
             <div className="space-y-2">
-              <Label>{t.supplier.address}</Label>
+              <Label>{t.suppliers.address}</Label>
               <Textarea
                 value={formData.address}
                 onChange={(e) => onFormChange('address', e.target.value)}
@@ -118,7 +118,7 @@ export function SupplierContactCard({
               />
             </div>
             <div className="space-y-2">
-              <Label>{t.supplier.notes}</Label>
+              <Label>{t.suppliers.notes}</Label>
               <Textarea
                 value={formData.notes}
                 onChange={(e) => onFormChange('notes', e.target.value)}
@@ -127,10 +127,10 @@ export function SupplierContactCard({
             </div>
             <div className="flex gap-3 pt-4">
               <Button onClick={onSave} disabled={saving} className="flex-1">
-                {saving ? t.supplier.saving : t.supplier.save}
+                {saving ? t.suppliers.saving : t.suppliers.save}
               </Button>
               <Button variant="outline" onClick={onCancel}>
-                {t.supplier.cancel}
+                {t.suppliers.cancel}
               </Button>
             </div>
           </div>
@@ -140,7 +140,7 @@ export function SupplierContactCard({
               <div className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm text-muted-foreground">{t.supplier.phone}</p>
+                  <p className="text-sm text-muted-foreground">{t.suppliers.phone}</p>
                   <p className="font-medium">{supplier.phone}</p>
                 </div>
               </div>
@@ -149,7 +149,7 @@ export function SupplierContactCard({
               <div className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm text-muted-foreground">{t.supplier.email}</p>
+                  <p className="text-sm text-muted-foreground">{t.suppliers.email}</p>
                   <p className="font-medium">{supplier.email}</p>
                 </div>
               </div>
@@ -158,23 +158,23 @@ export function SupplierContactCard({
               <div className="flex items-center gap-3">
                 <MapPin className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm text-muted-foreground">{t.supplier.address}</p>
+                  <p className="text-sm text-muted-foreground">{t.suppliers.address}</p>
                   <p className="font-medium">{supplier.address}</p>
                 </div>
               </div>
             )}
             {supplier.notes && (
               <div className="pt-4 border-t">
-                <p className="text-sm text-muted-foreground mb-1">{t.supplier.notes}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t.suppliers.notes}</p>
                 <p className="font-medium">{supplier.notes}</p>
               </div>
             )}
             <div className="pt-4 border-t">
-              <p className="text-sm text-muted-foreground mb-2">{t.supplier.rating}</p>
-              {supplier.rating ? renderStars(supplier.rating) : <p className="text-muted-foreground">{t.supplier.notRated}</p>}
+              <p className="text-sm text-muted-foreground mb-2">{t.suppliers.rating}</p>
+              {supplier.rating ? renderStars(supplier.rating) : <p className="text-muted-foreground">{t.suppliers.notRated}</p>}
             </div>
             <div className="pt-4 border-t">
-              <p className="text-sm text-muted-foreground">{t.supplier.addedOn}</p>
+              <p className="text-sm text-muted-foreground">{t.suppliers.addedOn}</p>
               <p className="font-medium">{formatDateOnly(new Date(supplier.created_at), locale)}</p>
             </div>
           </div>

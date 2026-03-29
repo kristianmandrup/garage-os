@@ -83,13 +83,13 @@ export default function CustomersPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t.nav.customers}</h1>
           <p className="text-muted-foreground">
-            {t.customer.description}
+            {t.customers.description}
           </p>
         </div>
         <Link href="/dashboard/customers/new">
           <Button className="btn-gradient">
             <Plus className="h-4 w-4 mr-2" />
-            {t.customer.addCustomer}
+            {t.customers.addCustomer}
           </Button>
         </Link>
       </div>
@@ -101,7 +101,7 @@ export default function CustomersPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{customers.length}</p>
-                <p className="text-sm text-muted-foreground">{t.customer.totalCustomers}</p>
+                <p className="text-sm text-muted-foreground">{t.customers.totalCustomers}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                 <Users className="h-6 w-6 text-purple-600 dark:text-purple-400" />
@@ -128,10 +128,10 @@ export default function CustomersPage() {
           data={customers}
           columns={columns}
           searchable
-          searchPlaceholder={t.customer.searchPlaceholder}
+          searchPlaceholder={t.customers.searchPlaceholder}
           getRowKey={(c) => c.id}
           onRowClick={(c) => router.push(`/dashboard/customers/${c.id}`)}
-          emptyMessage={t.customer.noCustomersFound}
+          emptyMessage={t.customers.noCustomersFound}
           exportable
           exportFilename="customers"
         />

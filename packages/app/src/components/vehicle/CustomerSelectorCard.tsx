@@ -35,16 +35,16 @@ export function CustomerSelectorCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t.newVehicle.selectOwner}</CardTitle>
+        <CardTitle>{t.vehicles.form.selectOwner}</CardTitle>
         <CardDescription>
-          {t.newVehicle.selectOwnerDescription}
+          {t.vehicles.form.selectOwnerDescription}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t.newVehicle.searchCustomers}
+            placeholder={t.vehicles.form.searchCustomers}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10"
@@ -68,7 +68,7 @@ export function CustomerSelectorCard({
           ))}
           {filteredCustomers.length === 0 && (
             <p className="text-center py-8 text-muted-foreground">
-              {t.newVehicle.noCustomersFound}
+              {t.vehicles.form.noCustomersFound}
             </p>
           )}
         </div>

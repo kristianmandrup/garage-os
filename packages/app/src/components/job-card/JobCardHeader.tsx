@@ -37,7 +37,7 @@ export function JobCardHeader({
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
           <p className="text-muted-foreground">
-            {t.jobCard.created} {formatDateOnly(new Date(createdAt), locale)}
+            {t.jobCards.detail.created} {formatDateOnly(new Date(createdAt), locale)}
           </p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-export const supplier = {
+export const suppliers = {
   title: 'Suppliers',
   description: 'Manage your parts suppliers',
   addSupplier: 'Add Supplier',
@@ -27,4 +27,27 @@ export const supplier = {
   confirmDelete: 'Are you sure you want to delete this supplier?',
   edit: 'Edit',
   delete: 'Delete',
+  form: {
+    title: 'Add Supplier',
+    description: 'Add a new parts supplier',
+    supplierInformation: 'Supplier Information',
+    supplierInformationDescription: 'Enter the supplier details below',
+    companyName: 'Company Name',
+    contactPerson: 'Contact Person',
+    phone: 'Phone',
+    email: 'Email',
+    address: 'Address',
+    rating: 'Rating',
+    notes: 'Notes',
+    companyNamePlaceholder: 'e.g., AutoParts Thailand Co.',
+    contactPersonPlaceholder: 'e.g., Somchai Prasert',
+    phonePlaceholder: 'e.g., 02-123-4567',
+    emailPlaceholder: 'e.g., order@autoparts.co.th',
+    addressPlaceholder: 'Supplier address...',
+    notesPlaceholder: 'Additional notes about this supplier...',
+    notRated: 'Not rated',
+    creating: 'Creating...',
+    addSupplier: 'Add Supplier',
+    cancel: 'Cancel',
+  },
 } as const;

@@ -53,7 +53,7 @@ export function NewReminderForm({
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label>{t.jobCard.customer} *</Label>
+            <Label>{t.jobCards.detail.customer} *</Label>
             <select
               value={formData.customer_id}
               onChange={(e) => onFormChange('customer_id', e.target.value)}
@@ -66,7 +66,7 @@ export function NewReminderForm({
             </select>
           </div>
           <div className="space-y-2">
-            <Label>{t.jobCard.vehicle} *</Label>
+            <Label>{t.jobCards.detail.vehicle} *</Label>
             <select
               value={formData.vehicle_id}
               onChange={(e) => onFormChange('vehicle_id', e.target.value)}

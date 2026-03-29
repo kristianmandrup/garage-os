@@ -79,7 +79,7 @@ export default function AnalyticsPage() {
     return <AnalyticsLoadingState />;
   }
 
-  if (!analytics) {
+  if (!analytics || !analytics.revenue) {
     return <AnalyticsErrorState />;
   }
 

@@ -24,8 +24,9 @@ import {
   Building2,
   CheckSquare,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
+import { logRouteRender } from '@/lib/perf';
 import { cn } from '@garageos/ui/utils';
 import { Tooltip } from '@garageos/ui/tooltip';
 import { createClient } from '@/lib/supabase/client';
@@ -54,6 +55,19 @@ export default function DashboardLayout({
   const [userEmail, setUserEmail] = useState<string>('owner@garage.com');
   const { isDark, setTheme } = useAppStore();
   const { t } = useLocale();
+  const prevPathname = useRef(pathname);
+
+  // Route render timing — logs on every navigation
+  useEffect(() => {
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+    }
+    const end = logRouteRender(pathname);
+    // Mark render complete after paint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => end());
+    });
+  }, [pathname]);
 
   const navGroups = [
     {
@@ -148,6 +162,7 @@ export default function DashboardLayout({
           <span className="font-bold gradient-text">GarageOS</span>
         </Link>
         <div className="flex items-center gap-1">
+          <LocaleSwitcher compact />
           <NotificationCenter />
           <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -252,7 +267,7 @@ export default function DashboardLayout({
           {/* Bottom Section */}
           <div className="p-3 border-t space-y-2">
             {/* Locale */}
-            {!isCollapsed && <LocaleSwitcher />}
+            <LocaleSwitcher compact={isCollapsed} />
 
             {/* Notifications */}
             {!isCollapsed && <NotificationCenter />}

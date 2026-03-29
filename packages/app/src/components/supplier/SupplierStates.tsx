@@ -15,9 +15,9 @@ export function SupplierNotFoundState() {
   const t = useTranslation();
   return (
     <div className="text-center py-12">
-      <h2 className="text-xl font-semibold">{t.supplier.supplierNotFound}</h2>
+      <h2 className="text-xl font-semibold">{t.suppliers.supplierNotFound}</h2>
       <Link href="/dashboard/suppliers" className="text-primary hover:underline mt-4 inline-block">
-        {t.supplier.backToSuppliers}
+        {t.suppliers.backToSuppliers}
       </Link>
     </div>
   );

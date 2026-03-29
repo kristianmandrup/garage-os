@@ -40,8 +40,8 @@ export function ShopSwitcher({ currentShopId, onShopChange }: ShopSwitcherProps)
       const response = await fetch('/api/shops/active');
       if (response.ok) {
         const data = await response.json();
-        setShops(data.shops);
-        setActiveShop(data.activeShop);
+        setShops(data.shops || []);
+        setActiveShop(data.activeShop || null);
         if (data.activeShop && onShopChange && currentShopId !== data.activeShop.id) {
           onShopChange(data.activeShop.id);
         }

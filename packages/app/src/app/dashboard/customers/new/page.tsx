@@ -80,65 +80,65 @@ export default function NewCustomerPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t.newCustomer.title}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.customers.form.title}</h1>
           <p className="text-muted-foreground">
-            {t.newCustomer.description}
+            {t.customers.form.description}
           </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t.newCustomer.customerInformation}</CardTitle>
+          <CardTitle>{t.customers.form.customerInformation}</CardTitle>
           <CardDescription>
-            {t.newCustomer.customerInformationDescription}
+            {t.customers.form.customerInformationDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <FormField label={t.newCustomer.name} required htmlFor="name">
+          <FormField label={t.customers.form.name} required htmlFor="name">
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder={t.newCustomer.namePlaceholder}
+              placeholder={t.customers.form.namePlaceholder}
             />
           </FormField>
 
-          <FormField label={t.newCustomer.phone} required htmlFor="phone">
+          <FormField label={t.customers.form.phone} required htmlFor="phone">
             <Input
               id="phone"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              placeholder={t.newCustomer.phonePlaceholder}
+              placeholder={t.customers.form.phonePlaceholder}
             />
           </FormField>
 
-          <FormField label={t.newCustomer.email} htmlFor="email">
+          <FormField label={t.customers.form.email} htmlFor="email">
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder={t.newCustomer.emailPlaceholder}
+              placeholder={t.customers.form.emailPlaceholder}
             />
           </FormField>
 
-          <FormField label={t.newCustomer.address} htmlFor="address">
+          <FormField label={t.customers.form.address} htmlFor="address">
             <Textarea
               id="address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder={t.newCustomer.addressPlaceholder}
+              placeholder={t.customers.form.addressPlaceholder}
               rows={3}
             />
           </FormField>
 
-          <FormField label={t.newCustomer.notes} htmlFor="notes">
+          <FormField label={t.customers.form.notes} htmlFor="notes">
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder={t.newCustomer.notesPlaceholder}
+              placeholder={t.customers.form.notesPlaceholder}
               rows={3}
             />
           </FormField>
@@ -146,7 +146,7 @@ export default function NewCustomerPage() {
           <div className="flex gap-3 pt-4">
             <Link href="/dashboard/customers" className="flex-1">
               <Button variant="outline" className="w-full">
-                {t.newCustomer.cancel}
+                {t.customers.form.cancel}
               </Button>
             </Link>
             <Button
@@ -154,7 +154,7 @@ export default function NewCustomerPage() {
               disabled={saving || !formData.name || !formData.phone}
               className="flex-1 btn-gradient"
             >
-              {saving ? t.newCustomer.creating : t.newCustomer.addCustomer}
+              {saving ? t.customers.form.creating : t.customers.form.addCustomer}
             </Button>
           </div>
         </CardContent>

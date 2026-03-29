@@ -137,7 +137,7 @@ export default function JobCardDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm(t.jobCard.confirmDelete)) return;
+    if (!confirm(t.jobCards.detail.confirmDelete)) return;
 
     try {
       const response = await fetch(`/api/job-cards/${params.id}`, {
@@ -167,9 +167,9 @@ export default function JobCardDetailPage() {
   if (!jobCard) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold">{t.jobCard.jobNotFound}</h2>
+        <h2 className="text-xl font-semibold">{t.jobCards.detail.jobNotFound}</h2>
         <Link href="/dashboard/job-cards" className="text-primary hover:underline mt-4 inline-block">
-          {t.jobCard.backToJobCards}
+          {t.jobCards.detail.backToJobCards}
         </Link>
       </div>
     );

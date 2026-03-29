@@ -23,7 +23,7 @@ export function JobCardVehicleCustomer({ vehicle, customer }: JobCardVehicleCust
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t.jobCard.vehicleAndCustomer}</CardTitle>
+        <CardTitle className="text-lg">{t.jobCards.detail.vehicleAndCustomer}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4 sm:grid-cols-2">
         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">

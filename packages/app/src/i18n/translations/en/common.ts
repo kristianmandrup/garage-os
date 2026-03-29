@@ -21,4 +21,17 @@ export const common = {
   status: 'Status',
   settings: 'Settings',
   logout: 'Sign Out',
+  errors: {
+    generic: 'Something went wrong',
+    notFound: 'Not found',
+    unauthorized: 'Unauthorized',
+    networkError: 'Network error. Please try again.',
+    validationError: 'Please check your input',
+  },
+  notifications: {
+    title: 'Notifications',
+    markAllRead: 'Mark all as read',
+    noNotifications: 'No notifications',
+    noNotificationsDescription: "You're all caught up!",
+  },
 } as const;

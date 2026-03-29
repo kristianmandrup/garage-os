@@ -68,77 +68,77 @@ export default function NewSupplierPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t.newSupplier.title}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.suppliers.form.title}</h1>
           <p className="text-muted-foreground">
-            {t.newSupplier.description}
+            {t.suppliers.form.description}
           </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t.newSupplier.supplierInformation}</CardTitle>
+          <CardTitle>{t.suppliers.form.supplierInformation}</CardTitle>
           <CardDescription>
-            {t.newSupplier.supplierInformationDescription}
+            {t.suppliers.form.supplierInformationDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">{t.newSupplier.companyName} *</Label>
+            <Label htmlFor="name">{t.suppliers.form.companyName} *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder={t.newSupplier.companyNamePlaceholder}
+              placeholder={t.suppliers.form.companyNamePlaceholder}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contact_person">{t.newSupplier.contactPerson}</Label>
+            <Label htmlFor="contact_person">{t.suppliers.form.contactPerson}</Label>
             <Input
               id="contact_person"
               value={formData.contact_person}
               onChange={(e) => setFormData({ ...formData, contact_person: e.target.value })}
-              placeholder={t.newSupplier.contactPersonPlaceholder}
+              placeholder={t.suppliers.form.contactPersonPlaceholder}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phone">{t.newSupplier.phone}</Label>
+              <Label htmlFor="phone">{t.suppliers.form.phone}</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder={t.newSupplier.phonePlaceholder}
+                placeholder={t.suppliers.form.phonePlaceholder}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">{t.newSupplier.email}</Label>
+              <Label htmlFor="email">{t.suppliers.form.email}</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder={t.newSupplier.emailPlaceholder}
+                placeholder={t.suppliers.form.emailPlaceholder}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">{t.newSupplier.address}</Label>
+            <Label htmlFor="address">{t.suppliers.form.address}</Label>
             <Textarea
               id="address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder={t.newSupplier.addressPlaceholder}
+              placeholder={t.suppliers.form.addressPlaceholder}
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>{t.newSupplier.rating}</Label>
+            <Label>{t.suppliers.form.rating}</Label>
             <div className="flex items-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -156,18 +156,18 @@ export default function NewSupplierPage() {
                 </button>
               ))}
               <span className="text-sm text-muted-foreground ml-2">
-                {rating > 0 ? `${rating}/5` : t.newSupplier.notRated}
+                {rating > 0 ? `${rating}/5` : t.suppliers.form.notRated}
               </span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">{t.newSupplier.notes}</Label>
+            <Label htmlFor="notes">{t.suppliers.form.notes}</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder={t.newSupplier.notesPlaceholder}
+              placeholder={t.suppliers.form.notesPlaceholder}
               rows={3}
             />
           </div>
@@ -175,7 +175,7 @@ export default function NewSupplierPage() {
           <div className="flex gap-3 pt-4">
             <Link href="/dashboard/suppliers" className="flex-1">
               <Button variant="outline" className="w-full">
-                {t.newSupplier.cancel}
+                {t.suppliers.form.cancel}
               </Button>
             </Link>
             <Button
@@ -183,7 +183,7 @@ export default function NewSupplierPage() {
               disabled={saving || !formData.name}
               className="flex-1 btn-gradient"
             >
-              {saving ? t.newSupplier.creating : t.newSupplier.addSupplier}
+              {saving ? t.suppliers.form.creating : t.suppliers.form.addSupplier}
             </Button>
           </div>
         </CardContent>
