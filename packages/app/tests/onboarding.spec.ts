@@ -25,23 +25,22 @@ test.describe('Onboarding Page', () => {
     await page.goto('/auth/onboarding');
     await page.waitForLoadState('networkidle');
 
-    await expect(page.locator('text=GarageOS').first()).toBeVisible();
+    await expect(page.locator('[data-testid="onboarding-brand"]')).toBeVisible();
   });
 
   test('has step indicator', async ({ page }) => {
     await page.goto('/auth/onboarding');
     await page.waitForLoadState('networkidle');
 
-    // Step indicator with rounded dots
-    const dots = page.locator('.rounded-full.bg-blue-600');
-    await expect(dots.first()).toBeVisible();
+    const stepIndicator = page.locator('[data-testid="onboarding-step-indicator"]');
+    await expect(stepIndicator).toBeVisible();
   });
 
   test('has Create My Shop button', async ({ page }) => {
     await page.goto('/auth/onboarding');
     await page.waitForLoadState('networkidle');
 
-    const btn = page.locator('button:has-text("Create My Shop")');
+    const btn = page.locator('[data-testid="onboarding-submit"]');
     await expect(btn).toBeVisible();
   });
 

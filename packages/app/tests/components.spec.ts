@@ -6,7 +6,7 @@ test.describe('Component Integration', () => {
       await page.goto('/dashboard');
       await page.waitForLoadState('networkidle');
 
-      const bell = page.locator('button[aria-label*="Notification"]');
+      const bell = page.locator('[data-testid="notification-btn"]');
       await expect(bell).toBeVisible();
     });
 
@@ -14,8 +14,8 @@ test.describe('Component Integration', () => {
       await page.goto('/dashboard');
       await page.waitForLoadState('networkidle');
 
-      await page.locator('button[aria-label*="Notification"]').first().click();
-      await expect(page.locator('text=Notifications').first()).toBeVisible();
+      await page.locator('[data-testid="notification-btn"]').click();
+      await expect(page.locator('[data-testid="notification-panel"]')).toBeVisible();
     });
   });
 
@@ -37,13 +37,13 @@ test.describe('Component Integration', () => {
       await page.waitForLoadState('networkidle');
 
       // Bottom tab bar should be visible
-      const tabBar = page.locator('nav.lg\\:hidden').last();
+      const tabBar = page.locator('[data-testid="bottom-tab-bar"]');
       await expect(tabBar).toBeVisible();
-      await expect(page.locator('text=Home')).toBeVisible();
-      await expect(page.locator('text=Jobs')).toBeVisible();
-      await expect(page.locator('text=Vehicles')).toBeVisible();
-      await expect(page.locator('text=Customers')).toBeVisible();
-      await expect(page.locator('text=More')).toBeVisible();
+      await expect(page.locator('[data-testid="tab-home"]')).toBeVisible();
+      await expect(page.locator('[data-testid="tab-jobs"]')).toBeVisible();
+      await expect(page.locator('[data-testid="tab-vehicles"]')).toBeVisible();
+      await expect(page.locator('[data-testid="tab-customers"]')).toBeVisible();
+      await expect(page.locator('[data-testid="tab-more"]')).toBeVisible();
     });
   });
 });

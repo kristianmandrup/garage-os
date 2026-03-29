@@ -22,7 +22,7 @@ export function SiteHeader({ onContact }: SiteHeaderProps) {
   ];
 
   return (
-    <header className="border-b border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md sticky top-0 z-50">
+    <header data-testid="site-header" className="border-b border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -49,6 +49,7 @@ export function SiteHeader({ onContact }: SiteHeaderProps) {
             <LocaleSwitcher />
             <ThemeToggle />
             <Button
+              data-testid="site-cta"
               onClick={onContact}
               className="bg-blue-600 dark:bg-blue-500 text-white px-5 py-2.5 font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/25 dark:shadow-blue-500/25"
             >

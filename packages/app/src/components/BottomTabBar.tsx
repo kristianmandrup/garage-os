@@ -23,7 +23,7 @@ export function BottomTabBar({ onMenuPress }: BottomTabBarProps) {
   const tabs = tabDefs.map((tab) => ({ ...tab, label: t.dashboard[tab.key] }));
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border safe-area-bottom">
+    <nav data-testid="bottom-tab-bar" className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border safe-area-bottom">
       <div className="flex items-center justify-around h-16 px-2">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
@@ -31,6 +31,7 @@ export function BottomTabBar({ onMenuPress }: BottomTabBarProps) {
             <Link
               key={tab.href}
               href={tab.href}
+              data-testid={`tab-${tab.key}`}
               className={cn(
                 'flex flex-col items-center justify-center gap-0.5 flex-1 py-2 rounded-lg transition-colors',
                 isActive
@@ -45,6 +46,7 @@ export function BottomTabBar({ onMenuPress }: BottomTabBarProps) {
         })}
         <button
           onClick={onMenuPress}
+          data-testid="tab-more"
           className="flex flex-col items-center justify-center gap-0.5 flex-1 py-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
           aria-label="More navigation options"
         >

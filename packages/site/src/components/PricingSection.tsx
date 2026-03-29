@@ -31,7 +31,7 @@ export function PricingSection() {
   const { t } = useLocale();
 
   return (
-    <section id="pricing" className="py-20 bg-white dark:bg-gray-950">
+    <section id="pricing" data-testid="pricing-section" className="py-20 bg-white dark:bg-gray-950">
       <div className="container mx-auto px-4">
         <AnimateIn>
           <div className="text-center mb-16">
@@ -47,6 +47,7 @@ export function PricingSection() {
           {pricingPlans.map((plan, index) => (
             <AnimateIn key={plan.nameKey} delay={index * 150}>
             <div
+              data-testid="pricing-card"
               className={`p-8 rounded-2xl border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
                 plan.popular
                   ? 'relative ring-2 ring-blue-500/50 border-transparent bg-blue-50 dark:bg-blue-900/20 shadow-xl shadow-blue-500/10'
@@ -54,7 +55,7 @@ export function PricingSection() {
               }`}
             >
               {plan.popular && (
-                <span className="inline-block px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
+                <span data-testid="popular-badge" className="inline-block px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
                   {t('mostPopular')}
                 </span>
               )}

@@ -44,7 +44,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div data-testid="login-page" className="min-h-screen flex">
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 relative overflow-hidden">
         {/* Hero Image */}
@@ -61,7 +61,7 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           {/* Logo and Controls */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div data-testid="login-brand" className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
                 <Wrench className="w-6 h-6 text-white" />
               </div>
@@ -165,7 +165,7 @@ export default function LoginPage() {
           {/* Login Card */}
           <Card className="shadow-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
             <CardHeader className="text-center pb-2">
-              <CardTitle className="text-2xl text-gray-900 dark:text-white">Welcome Back</CardTitle>
+              <CardTitle data-testid="login-title" className="text-2xl text-gray-900 dark:text-white">Welcome Back</CardTitle>
               <CardDescription className="text-gray-600 dark:text-gray-400">
                 Sign in to manage your auto repair shop
               </CardDescription>
@@ -173,7 +173,7 @@ export default function LoginPage() {
             <CardContent className="space-y-6 pt-4">
               {/* Google Sign In */}
               <form action={loginWithGoogle}>
-                <Button type="submit" className="w-full h-12 text-base bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-blue-700 hover:via-blue-700 hover:to-indigo-700 text-white" size="lg">
+                <Button data-testid="login-google-btn" type="submit" className="w-full h-12 text-base bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-blue-700 hover:via-blue-700 hover:to-indigo-700 text-white" size="lg">
                   <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
@@ -221,7 +221,7 @@ export default function LoginPage() {
           </Card>
 
           {/* Trust Badges */}
-          <div className="flex items-center justify-center gap-8 text-gray-500 dark:text-gray-400">
+          <div data-testid="trust-badges" className="flex items-center justify-center gap-8 text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-2 text-sm">
               <Shield className="h-4 w-4" />
               <span>Secure</span>

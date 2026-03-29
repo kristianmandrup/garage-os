@@ -95,7 +95,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-4 relative overflow-hidden">
+    <div data-testid="onboarding-page" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-4 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -125,18 +125,18 @@ export default function OnboardingPage() {
 
       <Card className="w-full max-w-lg border border-gray-100 dark:border-gray-700/50 shadow-2xl backdrop-blur-sm bg-white/80 dark:bg-gray-800/80">
         <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-6">
+          <div data-testid="onboarding-brand" className="flex items-center justify-center gap-2 mb-6">
             <Wrench className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <span className="text-lg font-bold text-gray-900 dark:text-white">GarageOS</span>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25">
             <Building2 className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl text-gray-900 dark:text-white">Set Up Your Shop</CardTitle>
+          <CardTitle data-testid="onboarding-title" className="text-2xl text-gray-900 dark:text-white">Set Up Your Shop</CardTitle>
           <CardDescription className="text-gray-600 dark:text-gray-400">
             Tell us about your auto repair shop to get started
           </CardDescription>
-          <div className="flex items-center justify-center gap-2 mt-3">
+          <div data-testid="onboarding-step-indicator" className="flex items-center justify-center gap-2 mt-3">
             <div className="h-1.5 w-8 rounded-full bg-blue-600" />
             <div className="h-1.5 w-8 rounded-full bg-gray-200 dark:bg-gray-700" />
           </div>
@@ -235,6 +235,7 @@ export default function OnboardingPage() {
             </div>
 
             <Button
+              data-testid="onboarding-submit"
               type="submit"
               className="w-full h-12 text-base bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-blue-700 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-600/25"
               size="lg"

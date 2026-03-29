@@ -10,9 +10,9 @@ test.describe('Mobile Responsive', () => {
     await page.waitForLoadState('networkidle');
 
     // Logo should be visible
-    await expect(page.locator('text=GarageOS').first()).toBeVisible();
+    await expect(page.locator('[data-testid="login-brand"]')).toBeVisible();
     // Google button should be visible
-    await expect(page.locator('button:has-text("Google")').first()).toBeVisible();
+    await expect(page.locator('[data-testid="login-google-btn"]')).toBeVisible();
   });
 
   test('login mobile screenshot', async ({ page }) => {
@@ -30,6 +30,6 @@ test.describe('Mobile Responsive', () => {
 
     // Form should be visible and usable
     await expect(page.locator('#shopName')).toBeVisible();
-    await expect(page.locator('button:has-text("Create My Shop")')).toBeVisible();
+    await expect(page.locator('[data-testid="onboarding-submit"]')).toBeVisible();
   });
 });

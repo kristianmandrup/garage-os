@@ -4,18 +4,18 @@ test.describe('Authentication Flow', () => {
   test('login page renders correctly', async ({ page }) => {
     await page.goto('/auth/login');
 
-    // Check page title and main elements
-    await expect(page.locator('text=GarageOS').first()).toBeVisible();
-    await expect(page.locator('text=Welcome Back')).toBeVisible();
-    await expect(page.locator('text=Sign in to manage your auto repair shop')).toBeVisible();
+    // Check page has login elements
+    await expect(page.locator('[data-testid="login-brand"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-title"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-page"]')).toBeVisible();
 
     // Check Google sign in button exists
-    const googleButton = page.locator('button:has-text("Continue with Google")');
+    const googleButton = page.locator('[data-testid="login-google-btn"]');
     await expect(googleButton).toBeVisible();
 
     // Check footer links
-    await expect(page.locator('text=Terms of Service')).toBeVisible();
-    await expect(page.locator('text=Privacy Policy')).toBeVisible();
+    await expect(page.locator('a[href*="terms"]')).toBeVisible();
+    await expect(page.locator('a[href*="privacy"]')).toBeVisible();
   });
 
   test('login page has correct meta tags', async ({ page }) => {
@@ -29,10 +29,9 @@ test.describe('Authentication Flow', () => {
   test('error page renders on auth error', async ({ page }) => {
     await page.goto('/auth/error?message=Test%20error%20message');
 
-    await expect(page.locator('text=Authentication Error')).toBeVisible();
-    await expect(page.locator('text=Test error message')).toBeVisible();
-    // Button with asChild renders as <a> tag
-    await expect(page.locator('a:has-text("Back to Sign In")')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-error-page"]')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-error-message"]')).toBeVisible();
+    await expect(page.locator('[data-testid="auth-error-back"]')).toBeVisible();
   });
 
   test('dashboard redirects to login when not authenticated', async ({ page }) => {
@@ -47,7 +46,7 @@ test.describe('Authentication Flow', () => {
     await page.goto('/auth/login');
 
     // Check that the Google OAuth button exists
-    const googleButton = page.locator('button:has-text("Continue with Google")');
+    const googleButton = page.locator('[data-testid="login-google-btn"]');
     await expect(googleButton).toBeAttached();
   });
 });

@@ -13,42 +13,43 @@ describe('Pagination', () => {
   });
 
   it('highlights current page', () => {
-    const { getByText } = render(
+    const { getByTestId } = render(
       <Pagination currentPage={3} totalPages={5} onPageChange={() => {}} />
     );
-    const current = getByText('3');
+    const current = getByTestId('pagination-page-3');
     expect(current.getAttribute('aria-current')).toBe('page');
   });
 
   it('calls onPageChange when clicking a page', () => {
     const onChange = vi.fn();
-    const { getByText } = render(
+    const { getByTestId } = render(
       <Pagination currentPage={1} totalPages={5} onPageChange={onChange} />
     );
-    fireEvent.click(getByText('3'));
+    fireEvent.click(getByTestId('pagination-page-3'));
     expect(onChange).toHaveBeenCalledWith(3);
   });
 
   it('disables prev button on first page', () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <Pagination currentPage={1} totalPages={5} onPageChange={() => {}} />
     );
-    expect((getByLabelText('Previous page') as HTMLButtonElement).disabled).toBe(true);
+    expect((getByTestId('pagination-prev') as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('disables next button on last page', () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <Pagination currentPage={5} totalPages={5} onPageChange={() => {}} />
     );
-    expect((getByLabelText('Next page') as HTMLButtonElement).disabled).toBe(true);
+    expect((getByTestId('pagination-next') as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('shows ellipsis for many pages', () => {
-    const { container } = render(
+    const { getByTestId } = render(
       <Pagination currentPage={5} totalPages={20} onPageChange={() => {}} />
     );
-    // Ellipsis renders MoreHorizontal SVG icon; check for the span wrappers
-    const spans = container.querySelectorAll('span');
+    // Verify pagination renders with many pages
+    const pagination = getByTestId('pagination');
+    const spans = pagination.querySelectorAll('span');
     expect(spans.length).toBeGreaterThan(0);
   });
 });

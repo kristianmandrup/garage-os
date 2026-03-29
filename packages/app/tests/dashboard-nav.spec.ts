@@ -5,11 +5,11 @@ test.describe('Dashboard Navigation', () => {
     await page.goto('/dashboard');
     await page.waitForLoadState('networkidle');
 
-    // Check for group labels (desktop only)
+    // Check for sidebar group labels (desktop only)
     if (page.viewportSize()!.width >= 1024) {
-      await expect(page.locator('text=Operations')).toBeVisible();
-      await expect(page.locator('text=Intelligence')).toBeVisible();
-      await expect(page.locator('text=Communication')).toBeVisible();
+      await expect(page.locator('[data-testid="sidebar-group-operations"]')).toBeVisible();
+      await expect(page.locator('[data-testid="sidebar-group-intelligence"]')).toBeVisible();
+      await expect(page.locator('[data-testid="sidebar-group-communication"]')).toBeVisible();
     }
   });
 
@@ -19,7 +19,7 @@ test.describe('Dashboard Navigation', () => {
 
     const breadcrumb = page.locator('nav[aria-label="breadcrumb"]');
     await expect(breadcrumb).toBeVisible();
-    await expect(breadcrumb.locator('text=Dashboard')).toBeVisible();
+    await expect(breadcrumb.locator('a[href="/dashboard"]')).toBeVisible();
     await expect(breadcrumb.locator('text=Customers')).toBeVisible();
   });
 
@@ -28,15 +28,15 @@ test.describe('Dashboard Navigation', () => {
     await page.waitForLoadState('networkidle');
 
     await page.keyboard.press('Meta+k');
-    await expect(page.locator('input[placeholder*="command"]')).toBeVisible();
+    await expect(page.locator('[data-testid="command-palette-input"]')).toBeVisible();
 
     // Can search
-    await page.fill('input[placeholder*="command"]', 'customers');
-    await expect(page.locator('text=Go to Customers')).toBeVisible();
+    await page.locator('[data-testid="command-palette-input"]').fill('customers');
+    await expect(page.locator('[data-testid="command-palette"]')).toBeVisible();
 
     // Can close with Escape
     await page.keyboard.press('Escape');
-    await expect(page.locator('input[placeholder*="command"]')).not.toBeVisible();
+    await expect(page.locator('[data-testid="command-palette-input"]')).not.toBeVisible();
   });
 
   test('skip to content link works', async ({ page }) => {

@@ -14,7 +14,7 @@ export default async function AuthErrorPage({
   const errorMessage = params?.message || 'Please try again.';
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white p-4">
+    <main data-testid="auth-error-page" className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-4">
@@ -27,11 +27,11 @@ export default async function AuthErrorPage({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="p-4 rounded-lg bg-red-50 border border-red-200">
-            <p className="text-sm text-red-800">
+            <p data-testid="auth-error-message" className="text-sm text-red-800">
               {errorMessage}
             </p>
           </div>
-          <Button asChild className="w-full">
+          <Button data-testid="auth-error-back" asChild className="w-full">
             <Link href="/auth/login">Back to Sign In</Link>
           </Button>
         </CardContent>

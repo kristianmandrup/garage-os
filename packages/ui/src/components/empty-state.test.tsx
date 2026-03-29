@@ -4,29 +4,30 @@ import { EmptyState } from './empty-state';
 
 describe('EmptyState', () => {
   it('renders title', () => {
-    const { getByText } = render(<EmptyState title="No items" />);
-    expect(getByText('No items')).toBeTruthy();
+    const { getByTestId } = render(<EmptyState title="No items" />);
+    expect(getByTestId('empty-state')).toBeTruthy();
+    expect(getByTestId('empty-state-title').textContent).toBe('No items');
   });
 
   it('renders description', () => {
-    const { getByText } = render(<EmptyState title="Empty" description="Nothing here yet" />);
-    expect(getByText('Nothing here yet')).toBeTruthy();
+    const { getByTestId } = render(<EmptyState title="Empty" description="Nothing here yet" />);
+    expect(getByTestId('empty-state').textContent).toContain('Nothing here yet');
   });
 
   it('renders action button', () => {
     const onClick = vi.fn();
-    const { getByText } = render(
+    const { getByTestId } = render(
       <EmptyState title="Empty" action={{ label: 'Add Item', onClick }} />
     );
-    const btn = getByText('Add Item');
+    const btn = getByTestId('empty-state-action');
     expect(btn).toBeTruthy();
     fireEvent.click(btn);
     expect(onClick).toHaveBeenCalledOnce();
   });
 
   it('applies variant-specific colors', () => {
-    const { container } = render(<EmptyState title="No jobs" variant="jobs" />);
-    expect(container.innerHTML).toContain('blue');
+    const { getByTestId } = render(<EmptyState title="No jobs" variant="jobs" />);
+    expect(getByTestId('empty-state').innerHTML).toContain('blue');
   });
 
   it('renders compact size', () => {

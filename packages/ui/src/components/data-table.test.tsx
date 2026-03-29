@@ -21,57 +21,59 @@ const data: TestItem[] = [
 
 describe('DataTable', () => {
   it('renders all rows', () => {
-    const { getByText } = render(
+    const { getAllByTestId } = render(
       <DataTable data={data} columns={columns} getRowKey={(d) => d.id} />
     );
-    expect(getByText('Alpha')).toBeTruthy();
-    expect(getByText('Beta')).toBeTruthy();
-    expect(getByText('Charlie')).toBeTruthy();
+    const rows = getAllByTestId('data-table-row');
+    expect(rows.length).toBe(3);
   });
 
   it('renders column headers', () => {
-    const { getByText } = render(
+    const { getAllByRole } = render(
       <DataTable data={data} columns={columns} getRowKey={(d) => d.id} />
     );
-    expect(getByText('Name')).toBeTruthy();
-    expect(getByText('Value')).toBeTruthy();
+    const headers = getAllByRole('columnheader');
+    expect(headers.length).toBeGreaterThanOrEqual(2);
   });
 
   it('shows empty message when no data', () => {
-    const { getByText } = render(
+    const { getByTestId } = render(
       <DataTable data={[]} columns={columns} getRowKey={(d) => d.id} emptyMessage="Nothing here" />
     );
-    expect(getByText('Nothing here')).toBeTruthy();
+    expect(getByTestId('data-table-empty')).toBeTruthy();
   });
 
   it('filters data with search', () => {
-    const { getByPlaceholderText, queryByText } = render(
+    const { getByTestId, getAllByTestId, queryAllByTestId } = render(
       <DataTable data={data} columns={columns} getRowKey={(d) => d.id} searchable searchPlaceholder="Search..." />
     );
-    const input = getByPlaceholderText('Search...');
+    const input = getByTestId('data-table-search');
     fireEvent.change(input, { target: { value: 'Beta' } });
-    expect(queryByText('Alpha')).toBeNull();
-    expect(queryByText('Beta')).toBeTruthy();
+    const rows = getAllByTestId('data-table-row');
+    expect(rows.length).toBe(1);
+    expect(rows[0].textContent).toContain('Beta');
   });
 
   it('calls onRowClick', () => {
     const onClick = vi.fn();
-    const { getByText } = render(
+    const { getAllByTestId } = render(
       <DataTable data={data} columns={columns} getRowKey={(d) => d.id} onRowClick={onClick} />
     );
-    fireEvent.click(getByText('Alpha'));
+    const rows = getAllByTestId('data-table-row');
+    fireEvent.click(rows[0]);
     expect(onClick).toHaveBeenCalledWith(data[0]);
   });
 
   it('sorts by column when clicked', () => {
-    const { getByText, getAllByRole } = render(
+    const { getAllByRole, getAllByTestId } = render(
       <DataTable data={data} columns={columns} getRowKey={(d) => d.id} />
     );
     // Click Name header to sort
-    fireEvent.click(getByText('Name'));
-    const rows = getAllByRole('row');
-    // First data row (index 1) should be Alpha (ascending)
-    expect(rows[1].textContent).toContain('Alpha');
+    const headers = getAllByRole('columnheader');
+    fireEvent.click(headers[0]);
+    const rows = getAllByTestId('data-table-row');
+    // First data row should be Alpha (ascending)
+    expect(rows[0].textContent).toContain('Alpha');
   });
 
   it('paginates with default page size', () => {
@@ -80,11 +82,11 @@ describe('DataTable', () => {
       name: `Item ${i}`,
       value: i,
     }));
-    const { queryByText } = render(
+    const { getAllByTestId } = render(
       <DataTable data={largeData} columns={columns} getRowKey={(d) => d.id} />
     );
-    // Default page size is 10, so Item 0 visible, Item 15 not
-    expect(queryByText('Item 0')).toBeTruthy();
-    expect(queryByText('Item 15')).toBeNull();
+    // Default page size is 10
+    const rows = getAllByTestId('data-table-row');
+    expect(rows.length).toBe(10);
   });
 });

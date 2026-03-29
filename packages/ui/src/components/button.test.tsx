@@ -4,42 +4,40 @@ import { Button } from './button';
 
 describe('Button', () => {
   it('renders children', () => {
-    const { getByText } = render(<Button>Click me</Button>);
-    expect(getByText('Click me')).toBeTruthy();
+    const { getByTestId } = render(<Button>Click me</Button>);
+    expect(getByTestId('button')).toBeTruthy();
+    expect(getByTestId('button').textContent).toBe('Click me');
   });
 
   it('handles click events', () => {
     const onClick = vi.fn();
-    const { getByText } = render(<Button onClick={onClick}>Click</Button>);
-    fireEvent.click(getByText('Click'));
+    const { getByTestId } = render(<Button onClick={onClick}>Click</Button>);
+    fireEvent.click(getByTestId('button'));
     expect(onClick).toHaveBeenCalledOnce();
   });
 
   it('shows loading spinner and disables button', () => {
-    const { container, getByText } = render(<Button loading>Submit</Button>);
-    const btn = container.querySelector('button');
-    expect(btn?.disabled).toBe(true);
+    const { getByTestId } = render(<Button loading>Submit</Button>);
+    const btn = getByTestId('button') as HTMLButtonElement;
+    expect(btn.disabled).toBe(true);
     // Loader2 icon should be present (has animate-spin class)
-    expect(container.innerHTML).toContain('animate-spin');
+    expect(btn.innerHTML).toContain('animate-spin');
   });
 
   it('applies variant classes', () => {
-    const { container } = render(<Button variant="destructive">Delete</Button>);
-    const btn = container.querySelector('button');
-    expect(btn?.className).toContain('destructive');
+    const { getByTestId } = render(<Button variant="destructive">Delete</Button>);
+    expect(getByTestId('button').className).toContain('destructive');
   });
 
   it('applies size classes', () => {
-    const { container } = render(<Button size="lg">Large</Button>);
-    const btn = container.querySelector('button');
-    expect(btn?.className).toContain('h-11');
+    const { getByTestId } = render(<Button size="lg">Large</Button>);
+    expect(getByTestId('button').className).toContain('h-11');
   });
 
   it('can be disabled', () => {
     const onClick = vi.fn();
-    const { container } = render(<Button disabled onClick={onClick}>Disabled</Button>);
-    const btn = container.querySelector('button')!;
-    fireEvent.click(btn);
+    const { getByTestId } = render(<Button disabled onClick={onClick}>Disabled</Button>);
+    fireEvent.click(getByTestId('button'));
     expect(onClick).not.toHaveBeenCalled();
   });
 });

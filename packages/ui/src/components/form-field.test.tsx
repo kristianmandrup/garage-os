@@ -4,49 +4,52 @@ import { FormField } from './form-field';
 
 describe('FormField', () => {
   it('renders label and children', () => {
-    const { getByText, getByRole } = render(
+    const { getByTestId, getByRole } = render(
       <FormField label="Name" htmlFor="name">
         <input id="name" role="textbox" />
       </FormField>
     );
-    expect(getByText('Name')).toBeTruthy();
+    expect(getByTestId('form-field')).toBeTruthy();
     expect(getByRole('textbox')).toBeTruthy();
   });
 
   it('shows required asterisk', () => {
-    const { container } = render(
+    const { getByTestId } = render(
       <FormField label="Name" required>
         <input />
       </FormField>
     );
-    expect(container.textContent).toContain('*');
+    expect(getByTestId('form-field').textContent).toContain('*');
   });
 
   it('shows error message', () => {
-    const { getByText } = render(
+    const { getByTestId } = render(
       <FormField label="Name" error="Name is required">
         <input />
       </FormField>
     );
-    expect(getByText('Name is required')).toBeTruthy();
+    expect(getByTestId('form-field-error')).toBeTruthy();
+    expect(getByTestId('form-field-error').textContent).toBe('Name is required');
   });
 
   it('shows hint when no error', () => {
-    const { getByText } = render(
+    const { getByTestId } = render(
       <FormField label="Name" hint="Enter your full name">
         <input />
       </FormField>
     );
-    expect(getByText('Enter your full name')).toBeTruthy();
+    expect(getByTestId('form-field-hint')).toBeTruthy();
+    expect(getByTestId('form-field-hint').textContent).toBe('Enter your full name');
   });
 
   it('hides hint when error is present', () => {
-    const { queryByText } = render(
+    const { queryByTestId } = render(
       <FormField label="Name" error="Required" hint="Enter your name">
         <input />
       </FormField>
     );
-    expect(queryByText('Enter your name')).toBeNull();
-    expect(queryByText('Required')).toBeTruthy();
+    expect(queryByTestId('form-field-hint')).toBeNull();
+    expect(queryByTestId('form-field-error')).toBeTruthy();
+    expect(queryByTestId('form-field-error')?.textContent).toBe('Required');
   });
 });

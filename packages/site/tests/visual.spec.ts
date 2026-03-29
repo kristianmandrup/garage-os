@@ -29,15 +29,15 @@ test.describe('Site Visual Regression Tests', () => {
     test('has pill badge', async ({ page }) => {
       await page.goto('/');
       await page.waitForLoadState('networkidle');
-      const pill = page.locator('text=AI-Powered Shop Management').first();
+      const pill = page.locator('[data-testid="hero-pill"]');
       await expect(pill).toBeVisible();
     });
 
     test('has CTA buttons', async ({ page }) => {
       await page.goto('/');
       await page.waitForLoadState('networkidle');
-      const startBtn = page.locator('button:has-text("Start Free Trial")').first();
-      const demoBtn = page.locator('button:has-text("Watch Demo")').first();
+      const startBtn = page.locator('[data-testid="hero-cta-primary"]');
+      const demoBtn = page.locator('[data-testid="hero-cta-secondary"]');
       await expect(startBtn).toBeVisible();
       await expect(demoBtn).toBeVisible();
     });
@@ -49,7 +49,7 @@ test.describe('Site Visual Regression Tests', () => {
       await page.waitForLoadState('networkidle');
       await page.evaluate(() => window.scrollTo(0, 500));
       await page.waitForTimeout(200);
-      const header = page.locator('header');
+      const header = page.locator('[data-testid="site-header"]');
       await expect(header).toBeVisible();
     });
 
@@ -65,16 +65,16 @@ test.describe('Site Visual Regression Tests', () => {
       await page.goto('/');
       await page.waitForLoadState('networkidle');
       // Scroll to pricing
-      await page.locator('#pricing').scrollIntoViewIfNeeded();
+      await page.locator('[data-testid="pricing-section"]').scrollIntoViewIfNeeded();
       await page.waitForTimeout(500);
-      const plans = page.locator('#pricing [class*="rounded-2xl"]');
+      const plans = page.locator('[data-testid="pricing-card"]');
       await expect(plans).toHaveCount(3);
     });
 
     test('popular plan is highlighted', async ({ page }) => {
       await page.goto('/');
       await page.waitForLoadState('networkidle');
-      const popularBadge = page.locator('text=Most Popular').first();
+      const popularBadge = page.locator('[data-testid="popular-badge"]');
       await expect(popularBadge).toBeVisible();
     });
   });

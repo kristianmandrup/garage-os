@@ -18,8 +18,8 @@ test.describe('Dark Mode', () => {
     await page.goto('/auth/onboarding');
     await page.waitForLoadState('networkidle');
 
-    // The card should exist
-    await expect(page.locator('text=Set Up Your Shop')).toBeVisible();
+    // The onboarding page should exist
+    await expect(page.locator('[data-testid="onboarding-page"]')).toBeVisible();
   });
 
   test('login desktop dark screenshot', async ({ page }) => {

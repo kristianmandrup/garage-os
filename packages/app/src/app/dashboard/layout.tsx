@@ -147,8 +147,9 @@ export default function DashboardLayout({
       <CommandPalette />
       <KeyboardShortcutsHelp />
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-card border-b flex items-center justify-between px-4">
+      <header data-testid="mobile-header" className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-card border-b flex items-center justify-between px-4">
         <button
+          data-testid="mobile-menu-btn"
           onClick={() => setIsMobileOpen(true)}
           className="p-2 hover:bg-accent rounded-lg"
           aria-label="Open navigation menu"
@@ -164,7 +165,7 @@ export default function DashboardLayout({
         <div className="flex items-center gap-1">
           <LocaleSwitcher compact />
           <NotificationCenter />
-          <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
+          <Button data-testid="theme-toggle" variant="ghost" size="sm" onClick={toggleTheme} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
         </div>
@@ -180,6 +181,7 @@ export default function DashboardLayout({
 
       {/* Sidebar */}
       <aside
+        data-testid="sidebar"
         className={cn(
           'fixed top-0 left-0 z-50 h-full bg-card border-r transition-all duration-300',
           isCollapsed ? 'w-20' : 'w-64',
@@ -224,7 +226,7 @@ export default function DashboardLayout({
               });
               if (groupItems.length === 0) return null;
               return (
-                <div key={gi} className="space-y-1">
+                <div key={gi} data-testid={group.label ? `sidebar-group-${group.label.toLowerCase()}` : undefined} className="space-y-1">
                   {group.label && !isCollapsed && (
                     <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       {group.label}
@@ -274,6 +276,7 @@ export default function DashboardLayout({
 
             {/* Theme Toggle */}
             <Button
+              data-testid="theme-toggle-sidebar"
               variant="ghost"
               className={cn(
                 'w-full justify-start gap-3',
@@ -307,6 +310,7 @@ export default function DashboardLayout({
 
             {/* User Profile */}
             <div
+              data-testid="user-profile"
               className={cn(
                 'flex items-center gap-3 p-3 rounded-xl bg-accent/50',
                 isCollapsed && 'justify-center p-2'

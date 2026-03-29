@@ -121,12 +121,13 @@ export function CommandPalette() {
     <>
       <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={() => { setOpen(false); setQuery(''); }} />
       <div className="fixed inset-x-0 top-[20%] z-50 mx-auto w-full max-w-lg">
-        <div className="rounded-xl border border-border bg-card shadow-2xl overflow-hidden">
+        <div data-testid="command-palette" className="rounded-xl border border-border bg-card shadow-2xl overflow-hidden">
           {/* Search Input */}
           <div className="flex items-center gap-3 border-b border-border px-4">
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <input
               ref={inputRef}
+              data-testid="command-palette-input"
               value={query}
               onChange={(e) => { setQuery(e.target.value); setSelectedIndex(0); }}
               placeholder={t.dashboard.typeCommand}

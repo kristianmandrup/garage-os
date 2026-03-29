@@ -27,12 +27,13 @@ function Pagination({ currentPage, totalPages, onPageChange, className }: Pagina
   };
 
   return (
-    <nav aria-label="pagination" className={cn('flex items-center justify-center gap-1', className)}>
+    <nav aria-label="pagination" className={cn('flex items-center justify-center gap-1', className)} data-testid="pagination">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
         className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-sm transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
         aria-label="Previous page"
+        data-testid="pagination-prev"
       >
         <ChevronLeft className="h-4 w-4" />
       </button>
@@ -52,6 +53,7 @@ function Pagination({ currentPage, totalPages, onPageChange, className }: Pagina
                 : 'border border-border bg-background hover:bg-accent hover:text-accent-foreground'
             )}
             aria-current={page === currentPage ? 'page' : undefined}
+            data-testid={`pagination-page-${page}`}
           >
             {page}
           </button>
@@ -62,6 +64,7 @@ function Pagination({ currentPage, totalPages, onPageChange, className }: Pagina
         disabled={currentPage >= totalPages}
         className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-sm transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50"
         aria-label="Next page"
+        data-testid="pagination-next"
       >
         <ChevronRight className="h-4 w-4" />
       </button>

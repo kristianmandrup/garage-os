@@ -12,7 +12,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, startIcon: StartIcon, endIcon: EndIcon, error, ...props }, ref) => {
     if (StartIcon || EndIcon) {
       return (
-        <div className="relative">
+        <div className="relative" data-testid="input-wrapper">
           {StartIcon && (
             <StartIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           )}
@@ -26,6 +26,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               className
             )}
             ref={ref}
+            data-testid="input"
             {...props}
           />
           {EndIcon && (
@@ -44,6 +45,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         ref={ref}
+        data-testid="input"
         {...props}
       />
     );

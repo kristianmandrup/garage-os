@@ -121,6 +121,7 @@ function DataTable<T extends Record<string, any>>({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="flex h-10 w-full max-w-sm rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                data-testid="data-table-search"
               />
             </div>
           )}
@@ -137,7 +138,7 @@ function DataTable<T extends Record<string, any>>({
         </div>
       )}
       <div className="rounded-lg border border-border overflow-hidden">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" data-testid="data-table">
           <thead>
             <tr className="border-b border-border bg-muted/50">
               {columns.map((col) => (
@@ -166,7 +167,7 @@ function DataTable<T extends Record<string, any>>({
           </thead>
           <tbody>
             {paginated.length === 0 ? (
-              <tr>
+              <tr data-testid="data-table-empty">
                 <td colSpan={columns.length} className="h-24 text-center text-muted-foreground">
                   {emptyMessage}
                 </td>
@@ -180,6 +181,7 @@ function DataTable<T extends Record<string, any>>({
                     onRowClick && 'cursor-pointer'
                   )}
                   onClick={onRowClick ? () => onRowClick(item) : undefined}
+                  data-testid="data-table-row"
                 >
                   {columns.map((col) => (
                     <td key={col.key} className={cn('px-4 py-3', col.className)}>

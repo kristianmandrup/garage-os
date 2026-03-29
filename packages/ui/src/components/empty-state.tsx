@@ -51,6 +51,7 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
           compact ? 'py-8 px-4' : 'py-16 px-6',
           className
         )}
+        data-testid="empty-state"
         {...props}
       >
         <div className={cn(
@@ -60,14 +61,14 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
         )}>
           <Icon className={cn(compact ? 'h-6 w-6' : 'h-10 w-10', config.color)} strokeWidth={1.5} />
         </div>
-        <h3 className={cn('font-semibold mb-1', compact ? 'text-base' : 'text-lg')}>{title}</h3>
+        <h3 className={cn('font-semibold mb-1', compact ? 'text-base' : 'text-lg')} data-testid="empty-state-title">{title}</h3>
         {description && (
           <p className={cn('text-muted-foreground max-w-sm', compact ? 'text-xs mb-3' : 'text-sm mb-5')}>
             {description}
           </p>
         )}
         {action && (
-          <Button onClick={action.onClick} size={compact ? 'sm' : 'default'}>
+          <Button onClick={action.onClick} size={compact ? 'sm' : 'default'} data-testid="empty-state-action">
             {action.label}
           </Button>
         )}

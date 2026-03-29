@@ -173,23 +173,174 @@ async function setupAuthMocking(page) {
     });
   });
 
-  // Analytics API — return proper shape
+  // Analytics API — return rich data
   await page.route(`${APP_BASE}/api/analytics**`, (route) => {
     return route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        revenue: { total: 0, paid: 0, pending: 0, byDay: {} },
-        jobs: { total: 0, completed: 0, inProgress: 0, byStatus: {} },
-        inventory: { total: 0, lowStock: 0, outOfStock: 0, totalValue: 0 },
-        mechanics: [],
-        customerRetention: { total: 0, returning: 0, rate: 0 },
+        revenue: {
+          total: 245000, paid: 198000, pending: 47000,
+          byDay: { '2026-03-23': 12000, '2026-03-24': 18000, '2026-03-25': 15000, '2026-03-26': 22000, '2026-03-27': 19000, '2026-03-28': 25000, '2026-03-29': 21000 },
+        },
+        jobs: {
+          total: 47, completed: 31, inProgress: 12,
+          byStatus: { inspection: 4, diagnosed: 3, parts_ordered: 5, in_progress: 12, pending_approval: 2, completed: 31, cancelled: 1 },
+        },
+        inventory: { total: 156, lowStock: 8, outOfStock: 2, totalValue: 89500 },
+        mechanics: [
+          { id: 'm-1', name: 'Somkiat C.', jobsCompleted: 14, activeJobs: 4, rating: 4.8 },
+          { id: 'm-2', name: 'Wichai P.', jobsCompleted: 11, activeJobs: 5, rating: 4.6 },
+          { id: 'm-3', name: 'Apichart N.', jobsCompleted: 6, activeJobs: 3, rating: 4.9 },
+        ],
+        customerRetention: { total: 89, returning: 52, rate: 58.4 },
         period: 30,
       }),
     });
   });
 
-  // All other API routes — return empty arrays
+  // Job Cards API
+  await page.route(`${APP_BASE}/api/job-cards`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'jc-1', title: 'Engine Oil Change', status: 'in_progress', license_plate: 'กท 1234', customer_name: 'Somchai P.', assigned_to: 'Mechanic A', created_at: '2026-03-28', estimated_cost: 2500 },
+        { id: 'jc-2', title: 'Brake Pad Replacement', status: 'completed', license_plate: 'ชร 5678', customer_name: 'Nattaya W.', assigned_to: 'Mechanic B', created_at: '2026-03-27', estimated_cost: 4200 },
+        { id: 'jc-3', title: 'AC Compressor Repair', status: 'diagnosed', license_plate: 'สก 9012', customer_name: 'Prasert K.', assigned_to: 'Mechanic A', created_at: '2026-03-27', estimated_cost: 8500 },
+        { id: 'jc-4', title: 'Tire Rotation & Balance', status: 'inspection', license_plate: 'นบ 3456', customer_name: 'Waraporn S.', assigned_to: 'Mechanic C', created_at: '2026-03-26', estimated_cost: 1800 },
+        { id: 'jc-5', title: 'Transmission Fluid Flush', status: 'parts_ordered', license_plate: 'กท 7890', customer_name: 'Arun T.', assigned_to: 'Mechanic B', created_at: '2026-03-25', estimated_cost: 3500 },
+      ]),
+    });
+  });
+
+  // Vehicles API
+  await page.route(`${APP_BASE}/api/vehicles`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'v-1', make: 'Toyota', model: 'Camry', year: 2022, license_plate: 'กท 1234', color: 'White', customer_name: 'Somchai P.', vin: 'JTDKN3DU5N0123456', last_service: '2026-03-28' },
+        { id: 'v-2', make: 'Honda', model: 'Civic', year: 2021, license_plate: 'ชร 5678', color: 'Silver', customer_name: 'Nattaya W.', vin: '2HGFC2F59MH567890', last_service: '2026-03-27' },
+        { id: 'v-3', make: 'Isuzu', model: 'D-Max', year: 2023, license_plate: 'สก 9012', color: 'Blue', customer_name: 'Prasert K.', vin: 'MPATFS86JRT012345', last_service: '2026-03-20' },
+        { id: 'v-4', make: 'Mazda', model: '3', year: 2020, license_plate: 'นบ 3456', color: 'Red', customer_name: 'Waraporn S.', vin: '3MZBM1V76LM654321', last_service: '2026-03-15' },
+      ]),
+    });
+  });
+
+  // Customers API
+  await page.route(`${APP_BASE}/api/customers`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'c-1', name: 'Somchai Phanomwan', email: 'somchai@email.com', phone: '081-234-5678', address: '123 Sukhumvit Soi 31, Bangkok 10110', vehicles_count: 2, total_spent: 45000, created_at: '2025-06-15' },
+        { id: 'c-2', name: 'Nattaya Wongsakul', email: 'nattaya@email.com', phone: '089-876-5432', address: '45 Rama IX Rd, Bangkok 10310', vehicles_count: 1, total_spent: 28000, created_at: '2025-08-20' },
+        { id: 'c-3', name: 'Prasert Kamolrat', email: 'prasert@email.com', phone: '062-345-6789', address: '78 Ladprao Soi 15, Bangkok 10230', vehicles_count: 1, total_spent: 62000, created_at: '2025-04-10' },
+        { id: 'c-4', name: 'Waraporn Srisuk', email: 'waraporn@email.com', phone: '095-111-2233', address: '9 Silom Rd, Bangkok 10500', vehicles_count: 1, total_spent: 18500, created_at: '2026-01-05' },
+        { id: 'c-5', name: 'Arun Thongchai', email: 'arun@email.com', phone: '083-999-8877', address: '234 Ratchadaphisek Rd, Bangkok 10400', vehicles_count: 3, total_spent: 95000, created_at: '2025-02-28' },
+      ]),
+    });
+  });
+
+  // Inventory / Parts API
+  await page.route(`${APP_BASE}/api/inventory`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'p-1', name: 'Engine Oil 5W-30 (4L)', sku: 'OIL-5W30-4L', category: 'Fluids', quantity: 24, min_stock: 10, price: 850, cost: 620, status: 'in_stock' },
+        { id: 'p-2', name: 'Brake Pad Set (Front)', sku: 'BRK-PAD-F01', category: 'Brakes', quantity: 8, min_stock: 5, price: 1200, cost: 780, status: 'in_stock' },
+        { id: 'p-3', name: 'Air Filter - Toyota Camry', sku: 'FLT-AIR-TC22', category: 'Filters', quantity: 3, min_stock: 5, price: 450, cost: 280, status: 'low_stock' },
+        { id: 'p-4', name: 'Spark Plug Set (4pc)', sku: 'SPK-PLG-4PC', category: 'Ignition', quantity: 0, min_stock: 4, price: 680, cost: 420, status: 'out_of_stock' },
+        { id: 'p-5', name: 'Transmission Fluid ATF (1L)', sku: 'FLD-ATF-1L', category: 'Fluids', quantity: 15, min_stock: 8, price: 380, cost: 240, status: 'in_stock' },
+        { id: 'p-6', name: 'Serpentine Belt - Honda Civic', sku: 'BLT-SRP-HC21', category: 'Belts', quantity: 2, min_stock: 3, price: 950, cost: 600, status: 'low_stock' },
+      ]),
+    });
+  });
+
+  // Also match /api/parts in case that's used
+  await page.route(`${APP_BASE}/api/parts`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'p-1', name: 'Engine Oil 5W-30 (4L)', sku: 'OIL-5W30-4L', category: 'Fluids', quantity: 24, min_stock: 10, price: 850, cost: 620, status: 'in_stock' },
+        { id: 'p-2', name: 'Brake Pad Set (Front)', sku: 'BRK-PAD-F01', category: 'Brakes', quantity: 8, min_stock: 5, price: 1200, cost: 780, status: 'in_stock' },
+        { id: 'p-3', name: 'Air Filter - Toyota Camry', sku: 'FLT-AIR-TC22', category: 'Filters', quantity: 3, min_stock: 5, price: 450, cost: 280, status: 'low_stock' },
+        { id: 'p-4', name: 'Spark Plug Set (4pc)', sku: 'SPK-PLG-4PC', category: 'Ignition', quantity: 0, min_stock: 4, price: 680, cost: 420, status: 'out_of_stock' },
+        { id: 'p-5', name: 'Transmission Fluid ATF (1L)', sku: 'FLD-ATF-1L', category: 'Fluids', quantity: 15, min_stock: 8, price: 380, cost: 240, status: 'in_stock' },
+        { id: 'p-6', name: 'Serpentine Belt - Honda Civic', sku: 'BLT-SRP-HC21', category: 'Belts', quantity: 2, min_stock: 3, price: 950, cost: 600, status: 'low_stock' },
+      ]),
+    });
+  });
+
+  // Invoices API
+  await page.route(`${APP_BASE}/api/invoices`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'inv-1', invoice_number: 'INV-2026-0047', customer_name: 'Somchai P.', total: 2500, status: 'paid', issued_at: '2026-03-28', paid_at: '2026-03-28', job_card_id: 'jc-1' },
+        { id: 'inv-2', invoice_number: 'INV-2026-0046', customer_name: 'Nattaya W.', total: 4200, status: 'paid', issued_at: '2026-03-27', paid_at: '2026-03-27', job_card_id: 'jc-2' },
+        { id: 'inv-3', invoice_number: 'INV-2026-0045', customer_name: 'Prasert K.', total: 8500, status: 'pending', issued_at: '2026-03-27', paid_at: null, job_card_id: 'jc-3' },
+        { id: 'inv-4', invoice_number: 'INV-2026-0044', customer_name: 'Arun T.', total: 3500, status: 'overdue', issued_at: '2026-03-20', paid_at: null, job_card_id: 'jc-5' },
+      ]),
+    });
+  });
+
+  // Suppliers API
+  await page.route(`${APP_BASE}/api/suppliers`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 's-1', name: 'Thai Auto Parts Co.', contact_name: 'Kittisak M.', phone: '02-123-4567', email: 'sales@thaiAutoparts.co.th', address: '88 Bangna-Trad Rd, Bangkok 10260', categories: ['Filters', 'Belts', 'Ignition'], rating: 4.7 },
+        { id: 's-2', name: 'Bangkok Brake Supply', contact_name: 'Piyarat S.', phone: '02-987-6543', email: 'orders@bkkbrake.com', address: '15 Lat Krabang Rd, Bangkok 10520', categories: ['Brakes', 'Suspension'], rating: 4.5 },
+        { id: 's-3', name: 'Siam Lubricants Ltd.', contact_name: 'Chaiwat R.', phone: '02-555-1234', email: 'info@siamlube.co.th', address: '200 Rama II Rd, Bangkok 10150', categories: ['Fluids', 'Oils'], rating: 4.8 },
+      ]),
+    });
+  });
+
+  // Messages API
+  await page.route(`${APP_BASE}/api/messages`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'msg-1', from: 'Somchai P.', subject: 'Oil change appointment', body: 'I would like to schedule an oil change for next Tuesday.', read: false, created_at: '2026-03-29T09:15:00Z' },
+        { id: 'msg-2', from: 'Nattaya W.', subject: 'Invoice receipt request', body: 'Could you send me a copy of my latest invoice?', read: true, created_at: '2026-03-28T14:30:00Z' },
+        { id: 'msg-3', from: 'Arun T.', subject: 'Parts status update?', body: 'Any update on when the transmission parts will arrive?', read: false, created_at: '2026-03-28T11:00:00Z' },
+      ]),
+    });
+  });
+
+  // Reminders API
+  await page.route(`${APP_BASE}/api/reminders`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'rem-1', title: 'Follow up with Prasert K.', description: 'Confirm AC compressor repair approval', due_date: '2026-03-30', status: 'pending', customer_name: 'Prasert K.', type: 'follow_up' },
+        { id: 'rem-2', title: 'Reorder air filters', description: 'Toyota Camry air filters running low (3 remaining)', due_date: '2026-03-31', status: 'pending', type: 'inventory' },
+      ]),
+    });
+  });
+
+  // Tasks API
+  await page.route(`${APP_BASE}/api/tasks`, (route) => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { id: 'task-1', title: 'Order spark plugs from Thai Auto Parts', status: 'pending', priority: 'high', assigned_to: 'Demo Owner', due_date: '2026-03-30', created_at: '2026-03-28' },
+        { id: 'task-2', title: 'Complete quarterly inventory audit', status: 'in_progress', priority: 'medium', assigned_to: 'Somkiat C.', due_date: '2026-03-31', created_at: '2026-03-25' },
+        { id: 'task-3', title: 'Update customer loyalty program pricing', status: 'completed', priority: 'low', assigned_to: 'Demo Owner', due_date: '2026-03-28', created_at: '2026-03-20' },
+      ]),
+    });
+  });
+
+  // All other API routes — return empty arrays (catch-all, must be last)
   await page.route(`${APP_BASE}/api/**`, (route) => {
     return route.fulfill({
       status: 200,

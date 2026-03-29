@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { cn } from '../utils';
 
 function Breadcrumb({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
-  return <nav aria-label="breadcrumb" className={cn('flex', className)} {...props} />;
+  return <nav aria-label="breadcrumb" data-testid="breadcrumb" className={cn('flex', className)} {...props} />;
 }
 
 function BreadcrumbList({ className, ...props }: React.HTMLAttributes<HTMLOListElement>) {
