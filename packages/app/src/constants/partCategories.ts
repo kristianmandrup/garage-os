@@ -1,0 +1,16 @@
+export const PART_CATEGORIES = [
+  'Engine',
+  'Brake',
+  'Suspension',
+  'Electrical',
+  'Transmission',
+  'Body',
+  'Exhaust',
+  'Cooling',
+  'Filters',
+  'Wheels & Tires',
+  'Interior',
+  'Exterior',
+  'Fluids',
+  'Other',
+];

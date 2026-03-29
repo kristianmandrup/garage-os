@@ -1,98 +1,20 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import { Button } from '@garageos/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@garageos/ui/card';
-import { Input } from '@garageos/ui/input';
-import { FormField } from '@garageos/ui/form-field';
-import { Wrench, Building2, MapPin, Phone, Mail, Sun, Moon, Globe } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@garageos/ui/card';
+import { Sun, Moon, Globe } from 'lucide-react';
 import { useAppStore } from '@/stores/useAppStore';
 import { useLocale } from '@/i18n';
-import { useEffect, useState as useStateHook } from 'react';
+import { useOnboarding } from '@/hooks/useOnboarding';
+import { OnboardingHeader } from '@/components/auth/OnboardingHeader';
+import { OnboardingForm } from '@/components/auth/OnboardingForm';
 
 export default function OnboardingPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useStateHook(false);
   const { isDark, setTheme } = useAppStore();
   const { locale, setLocale } = useLocale();
+  const { formData, handleChange, handleSubmit, loading, mounted } = useOnboarding();
 
-  const [formData, setFormData] = useState({
-    shopName: '',
-    shopPhone: '',
-    shopEmail: '',
-    shopAddress: '',
-    timezone: 'Asia/Bangkok',
-    currency: 'THB',
-  });
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const toggleTheme = () => {
-    setTheme(isDark ? 'light' : 'dark');
-  };
-
-  const toggleLocale = () => {
-    setLocale(locale === 'en' ? 'th' : 'en');
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const supabase = createClient();
-
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/auth/login');
-        return;
-      }
-
-      // Create shop
-      const { data: shop, error: shopError } = await supabase
-        .from('shops')
-        .insert({
-          owner_id: user.id,
-          name: formData.shopName,
-          phone: formData.shopPhone || null,
-          email: formData.shopEmail || null,
-          address: formData.shopAddress || null,
-          timezone: formData.timezone,
-          currency: formData.currency,
-          status: 'active',
-        })
-        .select()
-        .single();
-
-      if (shopError) throw shopError;
-
-      // Update user role to owner
-      await supabase
-        .from('users')
-        .update({ role: 'owner' })
-        .eq('id', user.id);
-
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Onboarding error:', error);
-      alert('Failed to create shop. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
+  const toggleLocale = () => setLocale(locale === 'en' ? 'th' : 'en');
 
   return (
     <div data-testid="onboarding-page" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-4 relative overflow-hidden">
@@ -125,125 +47,16 @@ export default function OnboardingPage() {
 
       <Card className="w-full max-w-lg border border-gray-100 dark:border-gray-700/50 shadow-2xl backdrop-blur-sm bg-white/80 dark:bg-gray-800/80">
         <CardHeader className="text-center">
-          <div data-testid="onboarding-brand" className="flex items-center justify-center gap-2 mb-6">
-            <Wrench className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            <span className="text-lg font-bold text-gray-900 dark:text-white">GarageOS</span>
-          </div>
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25">
-            <Building2 className="w-8 h-8 text-white" />
-          </div>
-          <CardTitle data-testid="onboarding-title" className="text-2xl text-gray-900 dark:text-white">Set Up Your Shop</CardTitle>
-          <CardDescription className="text-gray-600 dark:text-gray-400">
-            Tell us about your auto repair shop to get started
-          </CardDescription>
-          <div data-testid="onboarding-step-indicator" className="flex items-center justify-center gap-2 mt-3">
-            <div className="h-1.5 w-8 rounded-full bg-blue-600" />
-            <div className="h-1.5 w-8 rounded-full bg-gray-200 dark:bg-gray-700" />
-          </div>
+          <OnboardingHeader t={{}} />
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <FormField label="Shop Name" required htmlFor="shopName">
-              <div className="relative">
-                <Wrench className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
-                <Input
-                  id="shopName"
-                  name="shopName"
-                  placeholder="e.g., Bangkok Auto Repair"
-                  value={formData.shopName}
-                  onChange={handleChange}
-                  className="pl-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700"
-                  required
-                />
-              </div>
-            </FormField>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField label="Phone" htmlFor="shopPhone">
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
-                  <Input
-                    id="shopPhone"
-                    name="shopPhone"
-                    placeholder="02-xxx-xxxx"
-                    value={formData.shopPhone}
-                    onChange={handleChange}
-                    className="pl-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700"
-                  />
-                </div>
-              </FormField>
-
-              <FormField label="Email" htmlFor="shopEmail">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
-                  <Input
-                    id="shopEmail"
-                    name="shopEmail"
-                    type="email"
-                    placeholder="contact@garage.com"
-                    value={formData.shopEmail}
-                    onChange={handleChange}
-                    className="pl-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700"
-                  />
-                </div>
-              </FormField>
-            </div>
-
-            <FormField label="Address" htmlFor="shopAddress">
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
-                <Input
-                  id="shopAddress"
-                  name="shopAddress"
-                  placeholder="123 Main Street, Bangkok"
-                  value={formData.shopAddress}
-                  onChange={handleChange}
-                  className="pl-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700"
-                />
-              </div>
-            </FormField>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField label="Timezone" htmlFor="timezone">
-                <select
-                  id="timezone"
-                  name="timezone"
-                  value={formData.timezone}
-                  onChange={handleChange}
-                  className="w-full h-10 px-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm"
-                >
-                  <option value="Asia/Bangkok">Bangkok (GMT+7)</option>
-                  <option value="Asia/Jakarta">Jakarta (GMT+7)</option>
-                  <option value="Asia/Singapore">Singapore (GMT+8)</option>
-                </select>
-              </FormField>
-
-              <FormField label="Currency" htmlFor="currency">
-                <select
-                  id="currency"
-                  name="currency"
-                  value={formData.currency}
-                  onChange={handleChange}
-                  className="w-full h-10 px-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm"
-                >
-                  <option value="THB">THB - Thai Baht</option>
-                  <option value="USD">USD - US Dollar</option>
-                  <option value="SGD">SGD - Singapore Dollar</option>
-                  <option value="IDR">IDR - Indonesian Rupiah</option>
-                </select>
-              </FormField>
-            </div>
-
-            <Button
-              data-testid="onboarding-submit"
-              type="submit"
-              className="w-full h-12 text-base bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 hover:from-blue-700 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-600/25"
-              size="lg"
-              disabled={loading}
-            >
-              {loading ? 'Creating Shop...' : 'Create My Shop'}
-            </Button>
-          </form>
+          <OnboardingForm
+            formData={formData}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            loading={loading}
+            t={{}}
+          />
         </CardContent>
       </Card>
     </div>

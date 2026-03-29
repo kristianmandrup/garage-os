@@ -2,44 +2,22 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  LayoutDashboard,
-  Wrench,
-  Users,
-  Package,
-  Car,
-  Settings,
-  LogOut,
-  Bell,
-  ChevronLeft,
-  ChevronRight,
-  Sun,
-  Moon,
-  Menu,
-  X,
-  MessageSquare,
-  FileText,
-  BarChart3,
-  Search,
-  Building2,
-  CheckSquare,
-} from 'lucide-react';
+import { Wrench, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/stores/useAppStore';
 import { logRouteRender } from '@/lib/perf';
 import { cn } from '@garageos/ui/utils';
 import { Tooltip } from '@garageos/ui/tooltip';
-import { createClient } from '@/lib/supabase/client';
-import { Button } from '@garageos/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@garageos/ui/avatar';
 import { signOut } from '@/lib/supabase/auth';
 import { PageTransition } from '@/components/PageTransition';
 import { BottomTabBar } from '@/components/BottomTabBar';
 import { CommandPalette } from '@/components/CommandPalette';
 import { KeyboardShortcutsHelp } from '@/components/KeyboardShortcutsHelp';
 import { ShopSwitcher } from '@/components/shop/ShopSwitcher';
-import { LocaleSwitcher } from '@/components/locale/LocaleSwitcher';
-import { NotificationCenter } from '@/components/NotificationCenter';
+import { MobileHeader } from '@/components/dashboard/MobileHeader';
+import { SidebarFooter } from '@/components/dashboard/SidebarFooter';
+import { navGroups } from '@/config/navigationGroups';
+import { useDashboardUser } from '@/hooks/useDashboardUser';
 import { useLocale } from '@/i18n';
 
 export default function DashboardLayout({
@@ -50,11 +28,9 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string>('Garage Owner');
-  const [userEmail, setUserEmail] = useState<string>('owner@garage.com');
   const { isDark, setTheme } = useAppStore();
   const { t } = useLocale();
+  const { userName, userEmail, userRole } = useDashboardUser();
   const prevPathname = useRef(pathname);
 
   // Route render timing — logs on every navigation
@@ -63,75 +39,10 @@ export default function DashboardLayout({
       prevPathname.current = pathname;
     }
     const end = logRouteRender(pathname);
-    // Mark render complete after paint
     requestAnimationFrame(() => {
       requestAnimationFrame(() => end());
     });
   }, [pathname]);
-
-  const navGroups = [
-    {
-      label: null,
-      items: [
-        { nameKey: 'dashboard' as const, href: '/dashboard', icon: LayoutDashboard },
-      ],
-    },
-    {
-      label: 'Operations',
-      items: [
-        { nameKey: 'jobCards' as const, href: '/dashboard/job-cards', icon: Wrench },
-        { nameKey: 'vehicles' as const, href: '/dashboard/vehicles', icon: Car },
-        { nameKey: 'customers' as const, href: '/dashboard/customers', icon: Users },
-        { nameKey: 'inventory' as const, href: '/dashboard/inventory', icon: Package },
-        { nameKey: 'invoices' as const, href: '/dashboard/invoices', icon: FileText },
-      ],
-    },
-    {
-      label: 'Intelligence',
-      items: [
-        { nameKey: 'analytics' as const, href: '/dashboard/analytics', icon: BarChart3 },
-        { nameKey: 'multiShop' as const, href: '/dashboard/analytics/multi-shop', icon: Building2 },
-        { nameKey: 'aiDiagnostics' as const, href: '/dashboard/diagnostics', icon: Search },
-      ],
-    },
-    {
-      label: 'Communication',
-      items: [
-        { nameKey: 'messages' as const, href: '/dashboard/messages', icon: MessageSquare },
-        { nameKey: 'reminders' as const, href: '/dashboard/reminders', icon: Bell },
-        { nameKey: 'tasks' as const, href: '/dashboard/tasks', icon: CheckSquare, roles: ['owner', 'manager'] as string[] },
-      ],
-    },
-    {
-      label: null,
-      items: [
-        { nameKey: 'settings' as const, href: '/dashboard/settings', icon: Settings },
-      ],
-    },
-  ];
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('name, role')
-          .eq('id', user.id)
-          .single();
-
-        if (profile) {
-          setUserRole(profile.role || 'owner');
-          setUserName(profile.name || 'User');
-          setUserEmail(user.email || '');
-        } else {
-          setUserRole('owner');
-        }
-      }
-    };
-    fetchUser();
-  }, []);
 
   const toggleTheme = () => {
     setTheme(isDark ? 'light' : 'dark');
@@ -141,35 +52,17 @@ export default function DashboardLayout({
     await signOut();
   };
 
-
   return (
     <div className="min-h-screen bg-background">
       <CommandPalette />
       <KeyboardShortcutsHelp />
+
       {/* Mobile Header */}
-      <header data-testid="mobile-header" className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-card border-b flex items-center justify-between px-4">
-        <button
-          data-testid="mobile-menu-btn"
-          onClick={() => setIsMobileOpen(true)}
-          className="p-2 hover:bg-accent rounded-lg"
-          aria-label="Open navigation menu"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
-            <Wrench className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold gradient-text">GarageOS</span>
-        </Link>
-        <div className="flex items-center gap-1">
-          <LocaleSwitcher compact />
-          <NotificationCenter />
-          <Button data-testid="theme-toggle" variant="ghost" size="sm" onClick={toggleTheme} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-        </div>
-      </header>
+      <MobileHeader
+        onMenuOpen={() => setIsMobileOpen(true)}
+        isDark={isDark}
+        onThemeToggle={toggleTheme}
+      />
 
       {/* Mobile Sidebar Overlay */}
       {isMobileOpen && (
@@ -221,7 +114,7 @@ export default function DashboardLayout({
           <nav className="flex-1 py-2 px-3 space-y-4 overflow-y-auto">
             {navGroups.map((group, gi) => {
               const groupItems = group.items.filter(item => {
-                if (!('roles' in item) || !item.roles) return true;
+                if (!item.roles) return true;
                 return item.roles.includes(userRole || '');
               });
               if (groupItems.length === 0) return null;
@@ -267,77 +160,15 @@ export default function DashboardLayout({
           </nav>
 
           {/* Bottom Section */}
-          <div className="p-3 border-t space-y-2">
-            {/* Locale */}
-            <LocaleSwitcher compact={isCollapsed} />
-
-            {/* Notifications */}
-            {!isCollapsed && <NotificationCenter />}
-
-            {/* Theme Toggle */}
-            <Button
-              data-testid="theme-toggle-sidebar"
-              variant="ghost"
-              className={cn(
-                'w-full justify-start gap-3',
-                isCollapsed && 'justify-center px-2'
-              )}
-              onClick={toggleTheme}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {isDark ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-              {!isCollapsed && <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>}
-            </Button>
-
-            {/* Collapse Toggle (Desktop only) */}
-            <Button
-              variant="ghost"
-              className="hidden lg:flex w-full justify-start gap-3"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {isCollapsed ? (
-                <ChevronRight className="h-5 w-5" />
-              ) : (
-                <ChevronLeft className="h-5 w-5" />
-              )}
-              {!isCollapsed && <span>Collapse</span>}
-            </Button>
-
-            {/* User Profile */}
-            <div
-              data-testid="user-profile"
-              className={cn(
-                'flex items-center gap-3 p-3 rounded-xl bg-accent/50',
-                isCollapsed && 'justify-center p-2'
-              )}
-            >
-              <Avatar className="h-9 w-9">
-                <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" />
-                <AvatarFallback>GO</AvatarFallback>
-              </Avatar>
-              {!isCollapsed && (
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{userName}</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {userEmail}
-                  </p>
-                </div>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(isCollapsed && 'hidden')}
-                onClick={handleSignOut}
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          <SidebarFooter
+            isCollapsed={isCollapsed}
+            onCollapse={() => setIsCollapsed(!isCollapsed)}
+            isDark={isDark}
+            onThemeToggle={toggleTheme}
+            userName={userName}
+            userEmail={userEmail}
+            onSignOut={handleSignOut}
+          />
         </div>
       </aside>
 
